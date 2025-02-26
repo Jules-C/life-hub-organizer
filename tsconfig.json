@@ -1,0 +1,14 @@
+{
+  "extends": ["@tsconfig/node18/tsconfig.json"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "types": ["vite/client", "vue"],
+    "moduleResolution": "bundler",     // Changed back to bundler
+    "module": "ESNext",                // Works with bundler
+    "target": "ESNext",
+  }
+}

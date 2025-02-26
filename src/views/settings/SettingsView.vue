@@ -1,0 +1,486 @@
+<template>
+  <AppLayout>
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:px-6">
+        <h2 class="text-xl font-semibold text-gray-900">Settings</h2>
+        <p class="mt-1 text-sm text-gray-500">
+          Manage your account and preferences
+        </p>
+      </div>
+      
+      <!-- Settings Tabs -->
+      <div class="border-t border-gray-200">
+        <div class="px-4 py-4 sm:px-6">
+          <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8">
+              <button
+                @click="activeTab = 'profile'"
+                class="py-4 px-1 border-b-2 font-medium text-sm"
+                :class="activeTab === 'profile' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+              >
+                Profile
+              </button>
+              <button
+                @click="activeTab = 'family'"
+                class="py-4 px-1 border-b-2 font-medium text-sm"
+                :class="activeTab === 'family' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+              >
+                Family
+              </button>
+              <button
+                @click="activeTab = 'integrations'"
+                class="py-4 px-1 border-b-2 font-medium text-sm"
+                :class="activeTab === 'integrations' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+              >
+                Integrations
+              </button>
+              <button
+                @click="activeTab = 'notifications'"
+                class="py-4 px-1 border-b-2 font-medium text-sm"
+                :class="activeTab === 'notifications' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+              >
+                Notifications
+              </button>
+            </nav>
+          </div>
+        </div>
+        
+        <!-- Profile Tab -->
+        <div v-if="activeTab === 'profile'" class="px-4 py-5 sm:px-6">
+          <div v-if="loading" class="py-12 flex justify-center">
+            <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          
+          <form v-else @submit.prevent="saveProfile" class="space-y-6">
+            <!-- Profile Picture -->
+            <div class="flex items-center">
+              <div class="h-16 w-16 rounded-full bg-gray-200 flex items-center justify-center text-gray-400">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <button type="button" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                Change
+              </button>
+            </div>
+            
+            <!-- Name -->
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+              <div class="sm:col-span-3">
+                <label for="first-name" class="block text-sm font-medium text-gray-700">
+                  First name
+                </label>
+                <div class="mt-1">
+                  <input
+                    type="text"
+                    name="first-name"
+                    id="first-name"
+                    v-model="profile.firstName"
+                    autocomplete="given-name"
+                    class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+
+              <div class="sm:col-span-3">
+                <label for="last-name" class="block text-sm font-medium text-gray-700">
+                  Last name
+                </label>
+                <div class="mt-1">
+                  <input
+                    type="text"
+                    name="last-name"
+                    id="last-name"
+                    v-model="profile.lastName"
+                    autocomplete="family-name"
+                    class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <!-- Email -->
+            <div>
+              <label for="email" class="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <div class="mt-1">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  v-model="profile.email"
+                  autocomplete="email"
+                  disabled
+                  class="bg-gray-100 shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                />
+              </div>
+              <p class="mt-1 text-sm text-gray-500">To change your email, please contact support.</p>
+            </div>
+            
+            <!-- Save Button -->
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                :disabled="saving"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              >
+                <span v-if="saving">Saving...</span>
+                <span v-else>Save</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <!-- Family Tab -->
+        <div v-if="activeTab === 'family'" class="px-4 py-5 sm:px-6">
+          <div v-if="loading" class="py-12 flex justify-center">
+            <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          
+          <div v-else class="space-y-6">
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Family Members</h3>
+                <button
+                  type="button"
+                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <svg class="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Add Family Member
+                </button>
+              </div>
+              <p class="mt-1 text-sm text-gray-500">
+                You haven't added any family members yet.
+              </p>
+            </div>
+            
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Family Groups</h3>
+                <button
+                  type="button"
+                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <svg class="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Create Family
+                </button>
+              </div>
+              <p class="mt-1 text-sm text-gray-500">
+                Create a family group to start organizing documents and schedules.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Integrations Tab -->
+        <div v-if="activeTab === 'integrations'" class="px-4 py-5 sm:px-6">
+          <div v-if="loading" class="py-12 flex justify-center">
+            <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          
+          <div v-else class="space-y-6">
+            <!-- Calendar Integrations -->
+            <div>
+              <h3 class="text-lg font-medium leading-6 text-gray-900">Calendar Integrations</h3>
+              <div class="mt-4 space-y-4">
+                <div class="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
+                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M22 12.25c0 5.66-4.59 10.25-10.25 10.25S1.5 17.91 1.5 12.25 6.09 2 11.75 2 22 6.59 22 12.25z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11.75 8v4.25l2.75 2.75" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-sm font-medium text-gray-900">Google Calendar</h4>
+                      <p class="text-sm text-gray-500">Sync your Google Calendar events</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  >
+                    Connect
+                  </button>
+                </div>
+                
+                <div class="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-blue-100 rounded-full flex items-center justify-center">
+                      <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 8v8a5 5 0 01-5 5H8a5 5 0 01-5-5V8a5 5 0 015-5h8a5 5 0 015 5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M8 10h5.586c.89 0 1.337 0 1.677.269.34.268.396.74.509 1.683l.857 7.136c.014.117.021.175.001.224a.21.21 0 01-.119.117C16.458 19.458 16.4 19.45 16.284 19.437l-7.136-.857c-.944-.113-1.415-.17-1.683-.509C7.196 17.73 7.196 17.284 7.196 16.394V10.8c0-.466 0-.699.076-.891a1 1 0 01.633-.633c.192-.076.425-.076.891-.076V10z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-sm font-medium text-gray-900">Outlook Calendar</h4>
+                      <p class="text-sm text-gray-500">Sync your Outlook calendar events</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  >
+                    Connect
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Email Integrations -->
+            <div>
+              <h3 class="text-lg font-medium leading-6 text-gray-900">Email Integrations</h3>
+              <div class="mt-4 space-y-4">
+                <div class="flex justify-between items-center p-4 border border-gray-200 rounded-md">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 flex-shrink-0 bg-red-100 rounded-full flex items-center justify-center">
+                      <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <div class="ml-4">
+                      <h4 class="text-sm font-medium text-gray-900">Gmail</h4>
+                      <p class="text-sm text-gray-500">Process emails from your Gmail account</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                  >
+                    Connect
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Notifications Tab -->
+        <div v-if="activeTab === 'notifications'" class="px-4 py-5 sm:px-6">
+          <div v-if="loading" class="py-12 flex justify-center">
+            <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          
+          <div v-else class="space-y-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Notification Preferences</h3>
+            <p class="mt-1 text-sm text-gray-500">
+              Configure how and when you receive notifications from LifeHubOrganizer.
+            </p>
+            
+            <div class="mt-6">
+              <div class="space-y-4">
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input
+                      id="email-notifications"
+                      name="email-notifications"
+                      type="checkbox"
+                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      v-model="notifications.email"
+                    />
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="email-notifications" class="font-medium text-gray-700">Email notifications</label>
+                    <p class="text-gray-500">Receive email notifications for important events and updates.</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input
+                      id="browser-notifications"
+                      name="browser-notifications"
+                      type="checkbox"
+                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      v-model="notifications.browser"
+                    />
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="browser-notifications" class="font-medium text-gray-700">Browser notifications</label>
+                    <p class="text-gray-500">Receive browser push notifications when using the web app.</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input
+                      id="document-notifications"
+                      name="document-notifications"
+                      type="checkbox"
+                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      v-model="notifications.documents"
+                    />
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="document-notifications" class="font-medium text-gray-700">Document updates</label>
+                    <p class="text-gray-500">Receive notifications when documents are added, updated, or shared.</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input
+                      id="calendar-notifications"
+                      name="calendar-notifications"
+                      type="checkbox"
+                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      v-model="notifications.calendar"
+                    />
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="calendar-notifications" class="font-medium text-gray-700">Calendar reminders</label>
+                    <p class="text-gray-500">Receive notifications for upcoming events and appointments.</p>
+                  </div>
+                </div>
+                
+                <div class="flex items-start">
+                  <div class="flex items-center h-5">
+                    <input
+                      id="task-notifications"
+                      name="task-notifications"
+                      type="checkbox"
+                      class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                      v-model="notifications.tasks"
+                    />
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="task-notifications" class="font-medium text-gray-700">Task assignments</label>
+                    <p class="text-gray-500">Receive notifications when tasks are assigned to you or completed.</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-6">
+                <h4 class="text-sm font-medium text-gray-700">Quiet Hours</h4>
+                <p class="mt-1 text-sm text-gray-500">Set times when you don't want to receive non-urgent notifications.</p>
+                
+                <div class="mt-4 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                  <div class="sm:col-span-3">
+                    <label for="quiet-hours-start" class="block text-sm font-medium text-gray-700">
+                      Start time
+                    </label>
+                    <div class="mt-1">
+                      <input
+                        type="time"
+                        name="quiet-hours-start"
+                        id="quiet-hours-start"
+                        v-model="notifications.quietHoursStart"
+                        class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+
+                  <div class="sm:col-span-3">
+                    <label for="quiet-hours-end" class="block text-sm font-medium text-gray-700">
+                      End time
+                    </label>
+                    <div class="mt-1">
+                      <input
+                        type="time"
+                        name="quiet-hours-end"
+                        id="quiet-hours-end"
+                        v-model="notifications.quietHoursEnd"
+                        class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mt-6 flex justify-end">
+                <button
+                  type="button"
+                  :disabled="saving"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <span v-if="saving">Saving...</span>
+                  <span v-else>Save</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </AppLayout>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import AppLayout from '@/components/layout/AppLayout.vue';
+import { useAuthStore } from '@/stores/auth';
+
+const authStore = useAuthStore();
+const activeTab = ref('profile');
+const loading = ref(true);
+const saving = ref(false);
+
+const profile = ref({
+  firstName: '',
+  lastName: '',
+  email: ''
+});
+
+const notifications = ref({
+  email: true,
+  browser: true,
+  documents: true,
+  calendar: true,
+  tasks: true,
+  quietHoursStart: '22:00',
+  quietHoursEnd: '08:00'
+});
+
+onMounted(async () => {
+  // Simulate loading delay
+  setTimeout(() => {
+    if (authStore.user) {
+      // Get user metadata from Supabase user
+      const metadata = authStore.user.user_metadata;
+      
+      profile.value = {
+        firstName: metadata?.first_name || '',
+        lastName: metadata?.last_name || '',
+        email: authStore.user.email || ''
+      };
+    }
+    
+    loading.value = false;
+  }, 1000);
+});
+
+async function saveProfile() {
+  saving.value = true;
+  
+  try {
+    await authStore.updateProfile({
+      firstName: profile.value.firstName,
+      lastName: profile.value.lastName
+    });
+    
+    // Show success message or toast notification here
+  } catch (error) {
+    console.error('Failed to update profile:', error);
+    // Show error message or toast notification here
+  } finally {
+    saving.value = false;
+  }
+}
+</script>
