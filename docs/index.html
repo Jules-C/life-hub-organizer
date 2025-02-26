@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LifeHubOrganizer</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="A comprehensive life organization system">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'LifeHubOrganizer',
+      repo: '', // Add your GitHub repo URL here if you have one
+      loadSidebar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      search: {
+        paths: 'auto',
+        placeholder: 'Search',
+        noData: 'No Results!'
+      }
+    }
+  </script>
+  <!-- Docsify v4 -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- Mermaid -->
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    var num = 0;
+    mermaid.initialize({ startOnLoad: false });
+
+    window.$docsify.markdown = {
+      renderer: {
+        code: function(code, lang) {
+          if (lang === "mermaid") {
+            return (
+              '<div class="mermaid">' + code + "</div>"
+            );
+          }
+          return this.origin.code.apply(this, arguments);
+        }
+      }
+    }
+
+    // Mermaid rendering hook
+    window.$docsify.plugins = [
+      function(hook, vm) {
+        hook.afterEach(function(html, next) {
+          next(html);
+        });
+        
+        hook.doneEach(function() {
+          const elements = document.querySelectorAll(".mermaid");
+          elements.forEach((element) => {
+            const content = element.textContent.trim();
+            if (!content) return;
+            element.textContent = '';
+            mermaid.render('mermaid-svg-' + num++, content, function(svgCode) {
+              element.innerHTML = svgCode;
+            });
+          });
+        });
+      }
+    ].concat(window.$docsify.plugins || []);
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+</body>
+</html>
