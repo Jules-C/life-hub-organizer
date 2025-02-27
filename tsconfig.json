@@ -1,5 +1,6 @@
 {
   "extends": ["@tsconfig/node18/tsconfig.json"],
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -7,8 +8,14 @@
     },
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "types": ["vite/client", "vue"],
-    "moduleResolution": "bundler",     // Changed back to bundler
-    "module": "ESNext",                // Works with bundler
+    "moduleResolution": "bundler",
+    "module": "ESNext",
     "target": "ESNext",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }
