@@ -39,8 +39,8 @@
 - [ ] Create permission slip tracking subsystem
 - [ ] Implement role-based document access control
 - [ ] Create voice memo capture for quick information recording
-- [ ] Implement basic period tracking system
-- [ ] Create health data privacy controls
+- [x] Implement basic period tracking system
+- [x] Create health data privacy controls
 - [ ] Implement document type management system
 - [ ] Create database table for document types
 - [ ] Build UI for defining custom document types
@@ -72,8 +72,8 @@
 - [ ] Build school and extracurricular activity categorization
 - [ ] Create carpooling coordination features
 - [ ] Implement context-aware event display logic
-- [ ] Add personal events and work schedule management
-- [ ] Implement event sharing controls
+- [x] Add personal events and work schedule management
+- [x] Implement event sharing controls
 
 **Milestone**: Unified calendar system with multi-calendar support and family views
 
