@@ -241,3 +241,66 @@ erDiagram
     USERS ||--o{ NOTIFICATIONS : "receives"
     USERS ||--o{ AUTOMATIONS : "creates"
     FAMILIES ||--o{ AUTOMATIONS : "uses"
+
+
+# Database Schema Changes for Health Tracking and Personal Events
+
+## New Tables Added
+
+### CYCLE_TRACKING Table
+This table supports the period tracking feature with these key attributes:
+- `user_id`: Links to the specific user who owns this health data
+- `family_id`: Connects to family for optional sharing
+- `start_date` and `end_date`: Track cycle duration
+- `flow_intensity`: Numerical measurement (1-5 scale)
+- `symptoms`: JSONB field for flexible symptom tracking
+- `notes`: Text field for additional observations
+- `is_private`: Boolean flag for privacy controls
+
+### PERSONAL_EVENTS Table
+This table extends the calendar system with privacy-aware events:
+- `user_id`: Owner of the personal event
+- `family_id`: Optional association with family
+- `title`, `description`: Basic event information
+- `start_time`, `end_time`: Event timing
+- `location`: Where the event takes place
+- `is_all_day`: Flag for all-day events
+- `recurrence_rule`: For repeating events like work schedules
+- `event_type`: Categorization (work, personal, health, etc.)
+- `visibility`: Privacy level (private, family, public)
+
+### EVENT_SHARING Table
+This table manages the sharing of personal events:
+- `event_id`: References the shared personal event
+- `shared_with`: User who receives access
+- `permission`: Level of access (view, edit, admin)
+- `status`: Sharing state (pending, accepted, declined)
+
+## Row-Level Security Policies
+
+The SQL migration includes RLS policies to ensure data privacy:
+
+### For Cycle Tracking
+- Users can only view, insert, and update their own cycle tracking data
+
+### For Personal Events
+- Users can view their own events
+- Users can view family events with "family" visibility level
+- Users can view events explicitly shared with them (status="accepted")
+- Users can only insert and update their own events
+
+### For Event Sharing
+- Users can view sharing records for their own events
+- Users can view sharing records where they are the recipient
+- Users can only create sharing records for their own events
+
+## Integration Points
+These new tables integrate with existing tables through:
+- User authentication system (`auth.users`)
+- Family membership system (`families`)
+- Calendar visualization system (displayed alongside regular events)
+
+## Privacy Considerations
+- Default visibility for cycle tracking is private
+- Granular permission system for event sharing
+- Row-level security enforces access controls at the database level

@@ -8,6 +8,8 @@
 - Also coordinating care for aging parents who live nearby
 - Technically savvy but time-constrained
 - Overwhelmed by the constant stream of information
+- Balancing personal health tracking needs with family responsibilities
+- Struggling to maintain work-life boundaries while managing family needs
 
 **Goals:**
 - Reduce cognitive load from managing multiple family members' needs
@@ -15,6 +17,8 @@
 - Ensure nothing important falls through the cracks
 - Delegate appropriate tasks to family members
 - Maintain privacy while enabling necessary information sharing
+- Track personal health data securely and privately
+- Manage work schedule with appropriate family visibility
 
 **Pain Points:**
 - Too many emails, notifications, and paper documents
@@ -22,6 +26,9 @@
 - Difficulty prioritizing what needs immediate attention
 - Information scattered across different platforms and systems
 - Limited time to organize everything manually
+- Concerned about privacy of sensitive health information
+- Work schedule conflicts with family responsibilities
+- No clear boundary between personal and family information
 
 **Usage Patterns:**
 - Accesses system multiple times daily
@@ -29,6 +36,9 @@
 - Needs mobile access during the day for quick reference
 - Weekly planning sessions on weekends
 - Occasional deep dives for specific document organization
+- Records health data regularly throughout the month
+- Updates work schedule and checks for conflicts with family events
+- Requires fine-grained control over information visibility
 
 ## Child User: Jamie
 

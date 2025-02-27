@@ -410,3 +410,190 @@ Help family members manage personal and professional commitments while facilitat
 - Design intuitive sharing controls that prevent accidental oversharing
 - Build schedule templates for recurring work patterns
 - Create audit logs for visibility changes to personal events
+
+
+
+# Feature Integration Updates
+
+## Personal Health Management - Integration Points
+
+I need to enhance the Personal Health Management section to better describe how it integrates with other system components:
+
+### Integration with Medical Document Subsystem
+- **Health Document Association**: Link cycle tracking entries with related medical documents (test results, prescriptions, doctor visit notes)
+- **Medical History Context**: Display relevant health tracking data when viewing medical documents for comprehensive health context
+- **Document Type Templates**: Provide specialized document types for gynecological records, test results, and prescriptions
+- **Unified Health View**: Create a holistic health dashboard that combines tracked data with medical documents
+
+### Integration with Calendar Management
+- **Privacy-Aware Calendar Overlay**: Display cycle predictions on calendar with configurable privacy levels
+- **Health Appointment Coordination**: Automatically suggest optimal timing for gynecological appointments based on cycle data
+- **Smart Reminders**: Generate medication reminders or preparation instructions tied to cycle phases 
+- **Conflict Awareness**: Flag potential conflicts between predicted cycle dates and important events
+
+### Integration with Dashboard System
+- **Private Health Section**: Add a privacy-protected health summary to the dashboard visible only to the user
+- **Predictive Insights**: Surface relevant health predictions and patterns in the context-aware dashboard
+- **Custom Widgets**: Allow users to add specific health tracking widgets to their personal dashboard
+- **Mobile-First Design**: Optimize health tracking for quick mobile entry with privacy-aware notifications
+
+### Integration with Notification System
+- **Discreet Notifications**: Create privacy-focused notification templates for health-related alerts
+- **Smart Delivery Timing**: Schedule health reminders for appropriate private moments
+- **Multi-Channel Options**: Provide options for how health notifications are delivered (app, email, SMS)
+- **Configurable Sensitivity**: Allow users to set the level of detail included in notifications
+
+## Work-Life Balance Management - Integration Points
+
+The Work-Life Balance Management section needs similar enhancement to describe integration with other components:
+
+### Integration with Calendar System
+- **Unified Calendar View**: Display work schedules alongside family events with clear visual differentiation
+- **Calendar Filtering**: Provide toggles to show/hide personal events in family views
+- **Family Availability Aggregation**: Create a combined "family availability" view that respects personal event privacy
+- **Conflict Detection**: Alert users to potential conflicts between work schedule and family commitments
+
+### Integration with Task Management
+- **Context-Based Task Assignments**: Avoid assigning family tasks during known work commitments
+- **Personalized Task Views**: Filter tasks based on current context (work vs. home)
+- **Workload Balancing**: Analyze task distribution in context of work schedule to avoid overloading
+- **Work-Home Transition Reminders**: Create reminders that help transition between work and family contexts
+
+### Integration with Document Management
+- **Work Document Separation**: Maintain clear boundaries between work and family documents
+- **Context-Appropriate Templates**: Provide document templates specific to work vs. personal contexts
+- **Unified Search with Context Filtering**: Allow searching across all documents with context filters (work/personal)
+- **Permission Controls**: Implement robust access controls to prevent work documents from being visible to family
+
+### Integration with Communication Hub
+- **Context-Aware Messaging**: Label and filter messages by context (work vs. family)
+- **Status Indicators**: Show appropriate availability status based on personal schedule
+- **Communication Boundaries**: Enforce communication quiet times during focused work periods
+- **Role-Based Communication**: Direct messages to appropriate roles based on context and availability
+
+## API Integration Points
+
+The API documentation should be enhanced to describe these additional integration endpoints:
+
+### Health Data Integration Endpoints
+
+#### GET /health/cycle-entries/documents
+Associate medical documents with cycle tracking entries.
+```
+Request: {
+  query: {
+    "entry_id": string
+  }
+}
+
+Response: {
+  "documents": Document[]
+}
+```
+
+#### POST /health/cycle-entries/:id/documents
+Link a document to a cycle tracking entry.
+```
+Request: {
+  "document_id": string
+}
+
+Response: {
+  "success": boolean
+}
+```
+
+#### GET /health/export
+Export health data in a standardized format.
+```
+Request: {
+  query: {
+    "format": string, // "pdf", "csv", "json"
+    "start_date": string,
+    "end_date": string,
+    "include_documents": boolean
+  }
+}
+
+Response: {
+  "download_url": string,
+  "expires_at": string
+}
+```
+
+### Calendar Integration Endpoints
+
+#### GET /personal-events/conflicts
+Check for conflicts between personal and family events.
+```
+Request: {
+  query: {
+    "start_date": string,
+    "end_date": string,
+    "include_busy_only": boolean
+  }
+}
+
+Response: {
+  "conflicts": [
+    {
+      "personal_event": PersonalEvent,
+      "family_event": Event,
+      "conflict_type": string, // "overlap", "travel_time", etc.
+      "severity": string // "high", "medium", "low"
+    }
+  ]
+}
+```
+
+#### POST /personal-events/:id/sharing
+Manage sharing settings for a personal event.
+```
+Request: {
+  "shared_with": [
+    {
+      "user_id": string,
+      "permission": string // "view", "edit"
+    }
+  ],
+  "visibility": string // "private", "busy", "details", "full"
+}
+
+Response: {
+  "event": PersonalEvent,
+  "sharing": [
+    {
+      "user_id": string,
+      "status": string // "pending", "accepted", "declined"
+    }
+  ]
+}
+```
+
+#### GET /calendar/availability
+Get family member availability with privacy controls.
+```
+Request: {
+  query: {
+    "user_ids": string[],
+    "start_date": string,
+    "end_date": string,
+    "granularity": string // "hour", "day", "week"
+  }
+}
+
+Response: {
+  "availability": [
+    {
+      "user_id": string,
+      "slots": [
+        {
+          "start_time": string,
+          "end_time": string,
+          "status": string // "free", "busy", "tentative"
+        }
+      ]
+    }
+  ]
+}
+```

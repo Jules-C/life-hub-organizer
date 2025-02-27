@@ -23,6 +23,32 @@
 | **Follow-up** | Sets reminder for action if needed | Action item extraction and reminder setting | Forward-thinking | Due date extraction and calendar integration |
 | **Sharing** | Determines if others need access | Role-based sharing suggestions | Collaborative | Automatic sharing based on document type |
 
+## Health Tracking Journey: Period Management
+
+| Stage | Actions | System Features | Emotional State | Opportunities |
+|-------|---------|----------------|-----------------|---------------|
+| **Initial Setup** | Sets up health tracking preferences | Privacy-first setup process | Concerned about data privacy | Clear privacy indicators throughout |
+| **Regular Tracking** | Logs daily cycle information | Intuitive tracking interface with symptom selection | Routine, habit-forming | Reminders with privacy-aware notifications |
+| **Pattern Review** | Reviews historical data to identify patterns | Visual cycle analytics | Analytical, information-seeking | Pattern identification and insights |
+| **Health Appointment** | Prepares for doctor visit | Health data export | Prepared, organized | Customizable health summary reports |
+| **Calendar Integration** | Views cycle data alongside calendar | Privacy-controlled calendar overlay | Appreciation for contextual information | Subtle health indicators in calendar |
+| **Prediction Utilization** | Plans activities based on predictions | Next cycle prediction | Forward-planning, confident | Accurate predictions with confidence levels |
+| **Symptom Management** | Tracks symptoms and potential treatments | Symptom correlation analysis | Relief-seeking, problem-solving | Treatment efficacy tracking |
+| **Data Privacy Control** | Reviews and adjusts sharing settings | Granular privacy controls | Control, ownership | Clear visibility into who can see what data |
+
+## Personal Schedule Journey: Work-Life Management
+
+| Stage | Actions | System Features | Emotional State | Opportunities |
+|-------|---------|----------------|-----------------|---------------|
+| **Work Schedule Creation** | Sets up recurring work schedule | Template-based schedule creation | Organized, efficient | Quick templates for common work patterns |
+| **Visibility Control** | Configures what family can see | Privacy-level selection | Thoughtful about boundaries | Visual indicators of privacy status |
+| **Family Coordination** | Checks schedule against family events | Unified calendar with privacy filters | Coordinating, balancing | Conflict detection with privacy-respecting alerts |
+| **Schedule Adjustment** | Makes changes to work schedule | Flexible schedule editing | Adapting, problem-solving | Easy propagation of changes to recurring events |
+| **Availability Sharing** | Shares busy status without details | "Busy" status sharing mode | Considerate, boundary-setting | Simple busy/free sharing options |
+| **Mobile Updates** | Updates schedule while on the go | Mobile-optimized interface | Busy, multitasking | Quick status updates from any device |
+| **Work-Life Analysis** | Reviews work-life balance | Time allocation visualization | Reflective, evaluative | Insights into work vs. personal time balance |
+| **Schedule Integration** | Links work schedule with personal events | Cross-category scheduling | Holistic planning | Smart suggestions for personal time |
+
 ## Child User Journey: After School Routine
 
 | Stage | Actions | System Features | Emotional State | Opportunities |

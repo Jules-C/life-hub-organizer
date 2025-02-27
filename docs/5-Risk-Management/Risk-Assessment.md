@@ -43,6 +43,79 @@
 | **Work Schedule Privacy** | Professional commitments could be inappropriately shared | Medium | Medium | Default private setting for work events, explicit sharing controls, visibility indicators |
 | **Cross-user Data Leakage** | Data from one family member could be visible to others | Medium | High | Role-based access control, per-feature privacy settings, audit logs for sensitive data access |
 
+# Enhanced Privacy Risk Assessment
+
+## Health Data Privacy Risks
+
+| Risk | Impact | Probability | Severity | Mitigation Strategy |
+|------|--------|------------|----------|---------------------|
+| **Health Data Breach** | Exposure of sensitive menstrual cycle data | Low | Very High | Implement end-to-end encryption specifically for health data tables; use separate encryption keys from general document storage |
+| **Regulatory Non-Compliance** | Legal liabilities in jurisdictions with health data regulations | Medium | High | Implement HIPAA-compliant controls (US) and GDPR-ready functionality (EU); consult with legal experts for compliance review |
+| **Unintended Health Data Sharing** | Family members seeing health data meant to be private | Medium | High | Create separate UI confirmation for any health data sharing; provide clear visibility indicators; implement row-level database security |
+| **Metadata Leakage** | Calendar view inadvertently revealing health patterns | Medium | Medium | Design health indicators to be subtle and non-specific in shared views; allow users to hide indicators completely |
+| **Children Accessing Adult Health Data** | Inappropriate access to adult health information | Low | Medium | Age-appropriate interfaces with limited access to sensitive data; parental controls for child accounts |
+
+## Personal Schedule Privacy Risks
+
+| Risk | Impact | Probability | Severity | Mitigation Strategy |
+|------|--------|-------------|----------|---------------------|
+| **Work-Personal Information Bleed** | Professional contacts seeing personal information or vice versa | Medium | Medium | Implement clear separation between personal and professional contexts; privacy-focused default settings |
+| **Excessive Location Tracking** | Invasive tracking of family members through schedule | Medium | Medium | Make location sharing opt-in only; implement regular privacy prompts; provide granular controls over location visibility |
+| **Calendar Inference Attacks** | Pattern analysis revealing sensitive information from seemingly innocuous data | Low | Medium | Educate users about data patterns; offer "privacy mode" that intentionally obscures patterns |
+| **Sharing Permission Confusion** | Accidental over-sharing of private events | High | Medium | Clear UI indicators for sharing status; confirmation dialogs for sharing changes; periodic privacy review prompts |
+| **Third-Party Calendar Exposure** | Data leakage when integrating with external calendar providers | Medium | Medium | Transparent OAuth permissions; minimal data syncing options; privacy mode for external calendar sync |
+
+## Technical Privacy Controls
+
+1. **Row-Level Security**:
+   - Database-enforced access controls
+   - User-specific filtering of sensitive data
+   - Family-aware permission system
+
+2. **Encryption Strategy**:
+   - At-rest encryption for all database data
+   - Enhanced encryption for health-related tables
+   - Encrypted backups with separate key management
+
+3. **Authentication Enhancement**:
+   - Multi-factor authentication option for health data access
+   - Session timeout controls for sensitive features
+   - Login notification for privacy-critical account changes
+
+4. **Anonymization Options**:
+   - Data export with anonymization capabilities
+   - "Privacy mode" for shared devices
+   - Obfuscation of sensitive patterns in family-visible views
+
+5. **Transparency Controls**:
+   - Privacy dashboards showing who can see what
+   - Access logs for sensitive data viewing
+   - Regular privacy review prompts
+
+## Testing Strategy for Privacy Features
+
+1. **Penetration Testing**:
+   - Focused testing of health data access controls
+   - Attempt to bypass privacy boundaries between users
+   - Calendar inference testing to detect information leakage
+
+2. **Usability Testing**:
+   - Evaluate clarity of privacy indicators
+   - Test user understanding of sharing controls
+   - Verify effectiveness of privacy-related notifications
+
+3. **Compliance Verification**:
+   - GDPR compliance validation
+   - HIPAA readiness assessment
+   - Children's privacy protection review
+
+4. **Automated Privacy Tests**:
+   - Regular testing of access control boundaries
+   - Validation of encryption implementation
+   - Cross-user data leakage detection
+
+By implementing these enhanced privacy controls and testing procedures, LifeHubOrganizer can provide users with secure, private management of sensitive health data and personal scheduling while still enabling appropriate family information sharing.
+
 ## Project Management Risks
 
 | Risk | Impact | Probability | Severity | Mitigation Strategy |
