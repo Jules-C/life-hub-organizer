@@ -8,7 +8,10 @@ flowchart TD
     subgraph "Core Services"
         AuthService[Authentication & Authorization]
         DocumentService[Document Management]
+        DocumentTypeService[Document Type Management]
         CalendarService[Calendar Management]
+        HealthTrackingService[Health Data Management]
+        PersonalEventService[Personal Schedule Management]
         EmailService[Email Processing]
         TaskService[Task Management]
         UserService[User & Family Management]
@@ -56,7 +59,13 @@ flowchart TD
 
     APIGateway <--> AuthService
     APIGateway <--> DocumentService
+    APIGateway <--> DocumentTypeService
+    DocumentService <--> DocumentTypeService
     APIGateway <--> CalendarService
+    APIGateway <--> HealthTrackingService
+    APIGateway <--> PersonalEventService
+    CalendarService <--> PersonalEventService
+    UserService <--> HealthTrackingService
     APIGateway <--> EmailService
     APIGateway <--> TaskService
     APIGateway <--> UserService
@@ -92,11 +101,17 @@ flowchart TD
     SupabaseDB <--> TaskService
     SupabaseDB <--> UserService
     SupabaseDB <--> MedicalModule
+    SupabaseDB <--> HealthTrackingService
+    SupabaseDB <--> PersonalEventService
     SupabaseDB <--> SchoolModule
     SupabaseDB <--> ElderCareModule
     SupabaseDB <--> FinancialModule
     SupabaseDB <--> CommunicationHub
 
+    %% Health connections
+    HealthTrackingService <--> MedicalModule
+    HealthTrackingService <--> CalendarService
+    
     %% Specialized connections
     MedicalModule <--> ElderCareModule
     SchoolModule <--> TaskService
@@ -118,7 +133,7 @@ flowchart TD
     classDef intelligence fill:#f5f5f5,stroke:#333,stroke-width:1px
     classDef ui fill:#e0f2f1,stroke:#333,stroke-width:1px
     
-    class AuthService,DocumentService,CalendarService,EmailService,TaskService,UserService core
+    class AuthService,DocumentService,DocumentTypeService,CalendarService,HealthTrackingService,PersonalEventService,EmailService,TaskService,UserService core
     class MedicalModule,SchoolModule,ElderCareModule,FinancialModule,CommunicationHub specialized
     class APIGateway,WebhookService,IntegrationEngine integration
     class GoogleCalendar,OutlookCalendar,GmailAPI,YNAB,WeatherAPI external

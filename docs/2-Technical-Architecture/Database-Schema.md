@@ -37,8 +37,21 @@ erDiagram
         datetime created_at
         uuid created_by FK
         uuid family_id FK
+        uuid document_type_id FK
         jsonb metadata
         string status
+    }
+    
+    DOCUMENT_TYPES {
+        uuid id PK
+        string name
+        string icon
+        text description
+        jsonb metadata_schema
+        uuid family_id FK
+        uuid created_by FK
+        datetime created_at
+        boolean is_system
     }
     
     DOCUMENT_TAGS {
@@ -85,6 +98,48 @@ erDiagram
         string recurrence_rule
         jsonb metadata
         string status
+    }
+    
+    PERSONAL_EVENTS {
+        uuid id PK
+        uuid user_id FK
+        uuid family_id FK
+        string title
+        text description
+        datetime start_time
+        datetime end_time
+        string location
+        boolean is_all_day
+        string recurrence_rule
+        string event_type
+        string color
+        datetime created_at
+        datetime updated_at
+        string visibility
+    }
+    
+    EVENT_SHARING {
+        uuid id PK
+        uuid event_id FK
+        uuid shared_with FK
+        string permission
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    
+    CYCLE_TRACKING {
+        uuid id PK
+        uuid user_id FK
+        uuid family_id FK
+        date start_date
+        date end_date
+        int flow_intensity
+        jsonb symptoms
+        text notes
+        datetime created_at
+        datetime updated_at
+        boolean is_private
     }
     
     EVENT_ATTENDEES {
@@ -163,11 +218,20 @@ erDiagram
     FAMILIES ||--o{ FAMILY_MEMBERS : "has"
     FAMILIES ||--o{ DOCUMENTS : "owns"
     FAMILIES ||--o{ TAGS : "has"
+    FAMILIES ||--o{ DOCUMENT_TYPES : "has"
     USERS ||--o{ DOCUMENTS : "creates"
+    USERS ||--o{ DOCUMENT_TYPES : "creates"
+    DOCUMENT_TYPES ||--o{ DOCUMENTS : "categorizes"
     DOCUMENTS ||--o{ DOCUMENT_TAGS : "has"
     TAGS ||--o{ DOCUMENT_TAGS : "used in"
     USERS ||--o{ CALENDARS : "owns"
     CALENDARS ||--o{ EVENTS : "contains"
+    USERS ||--o{ PERSONAL_EVENTS : "creates"
+    FAMILIES ||--o{ PERSONAL_EVENTS : "contains"
+    PERSONAL_EVENTS ||--o{ EVENT_SHARING : "shared via"
+    USERS ||--o{ EVENT_SHARING : "receives"
+    USERS ||--o{ CYCLE_TRACKING : "records"
+    FAMILIES ||--o{ CYCLE_TRACKING : "contains"
     EVENTS ||--o{ EVENT_ATTENDEES : "has"
     USERS ||--o{ EVENT_ATTENDEES : "attends"
     USERS ||--o{ EMAIL_ACCOUNTS : "owns"

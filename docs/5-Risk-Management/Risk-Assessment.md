@@ -10,6 +10,8 @@
 | **Mobile Compatibility** | System doesn't work well on family devices | Medium | High | Use responsive frameworks, test on multiple devices, create simplified mobile views |
 | **OCR Limitations** | Document text extraction is inaccurate | High | Medium | Use client-side preview of OCR results, allow manual correction, focus OCR on critical fields only |
 | **Multi-user Conflicts** | Simultaneous edits from different family members | Medium | Medium | Implement locking mechanisms, conflict resolution, real-time update notifications |
+| **Schema Evolution** | Changes to document type schemas could break existing documents | Medium | Medium | Schema versioning, backward compatibility, data migration tools |
+| **Metadata Complexity** | User-defined schemas could become overly complex | Medium | Low | Field type limitations, UI guidance, template recommendations |
 | **Accessibility Barriers** | Elderly users struggle with interface | High | High | Create high-contrast themes, larger text options, simplified views for elderly users |
 | **Integration Complexity** | Multi-generational feature set increases complexity | High | Medium | Modular design, gradual feature rollout, extensive testing with different user types |
 
@@ -32,6 +34,14 @@
 | **Cross-Site Scripting** | Front-end vulnerabilities | Medium | Medium | Input sanitization, Content Security Policy, regular security testing |
 | **API Security** | Backend API exposed to attacks | Medium | High | API rate limiting, proper authentication, input validation, OWASP security practices |
 | **Dependency Vulnerabilities** | Third-party libraries with security issues | Medium | Medium | Regular dependency updates, vulnerability scanning, minimal dependency usage |
+
+## Privacy Risks
+
+| Risk | Impact | Probability | Severity | Mitigation Strategy |
+|------|--------|------------|----------|---------------------|
+| **Health Data Exposure** | Sensitive health information could be exposed | Low | Very High | Enhanced encryption for health data, granular privacy controls, clear sharing indicators |
+| **Work Schedule Privacy** | Professional commitments could be inappropriately shared | Medium | Medium | Default private setting for work events, explicit sharing controls, visibility indicators |
+| **Cross-user Data Leakage** | Data from one family member could be visible to others | Medium | High | Role-based access control, per-feature privacy settings, audit logs for sensitive data access |
 
 ## Project Management Risks
 

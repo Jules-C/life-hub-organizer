@@ -74,10 +74,17 @@
 
 ## Scalability Considerations
 
-The proposed architecture can comfortably handle:
+The system is designed to handle:
 - 10-50 documents per week
 - 5-10 family members
 - Several years of document history
+- Personal health tracking data
+- Multiple calendar integrations and personal schedules
+
+As needs grow, consider:
+- Additional privacy controls for sensitive health data
+- Enhanced calendar conflict resolution for complex schedules
+- More sophisticated health trend analysis
 
 As your needs grow, the most likely scaling points will be:
 1. Storage requirements (especially for high-resolution document scans)

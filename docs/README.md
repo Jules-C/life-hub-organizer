@@ -8,7 +8,9 @@ LifeHubOrganizer aims to reduce information overload and cognitive burden by con
 
 ### Key Features
 
-- **Document Management** - Capture, organize, and find important documents for all family members
+- **Document Management** - Capture, organize, and find important documents for all family members with **customizable document types and metadata schemas**
+- **Health Tracking** - Private, secure tracking of personal health data including period tracking
+- **Personal & Work Scheduling** - Manage personal commitments and work schedules with privacy controls
 - **Calendar Integration** - Unified view of all family schedules with specialized views for different needs
 - **Email Processing** - Smart filtering and prioritization to reduce notification fatigue
 - **Multi-generational Task Management** - Age-appropriate task assignment and tracking

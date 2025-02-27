@@ -30,7 +30,7 @@
 - [ ] Create family member tagging for documents
 - [ ] Build specialized medical document handling
 
-### Week 4: Advanced Document Processing
+### Week 4: Advanced Document Processing and Health Features
 - [ ] Add basic OCR capabilities for text extraction
 - [ ] Implement receipt-specific processing
 - [ ] Create document tagging system
@@ -39,8 +39,17 @@
 - [ ] Create permission slip tracking subsystem
 - [ ] Implement role-based document access control
 - [ ] Create voice memo capture for quick information recording
+- [ ] Implement basic period tracking system
+- [ ] Create health data privacy controls
+- [ ] Implement document type management system
+- [ ] Create database table for document types
+- [ ] Build UI for defining custom document types
+- [ ] Implement metadata schema builder
+- [ ] Migrate existing document types to the new system
+- [ ] Create document upload flow with dynamic metadata fields
 
 **Milestone**: Functional document management system with upload, categorization, and search
+
 
 ## Phase 2: Calendar Integration (Weeks 5-6)
 
@@ -53,7 +62,7 @@
 - [ ] Create specialized views for children's events
 - [ ] Build medical appointment subsystem
 
-### Week 6: Calendar Enhancements
+### Week 6: Calendar Enhancements and Personal Scheduling
 - [ ] Create family schedule view
 - [ ] Implement conflict detection for schedules
 - [ ] Add event detail enhancement
@@ -63,6 +72,8 @@
 - [ ] Build school and extracurricular activity categorization
 - [ ] Create carpooling coordination features
 - [ ] Implement context-aware event display logic
+- [ ] Add personal events and work schedule management
+- [ ] Implement event sharing controls
 
 **Milestone**: Unified calendar system with multi-calendar support and family views
 

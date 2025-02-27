@@ -56,6 +56,7 @@ A centralized life organization system to manage family documents, schedules, an
   - Medical document subsystem with specialized fields
   - Permission slip tracking for school-related documents
   - Specialized document collections for major life events
+  - **Customizable document types with dynamic metadata fields**
 
 - **Nice to Have:**
   - Automatic text extraction (OCR)
@@ -65,6 +66,34 @@ A centralized life organization system to manage family documents, schedules, an
   - Medication information extraction
   - Legacy planning document section for aging parents
   - Voice memo features for quick information capture
+  - **Document type templates for common family scenarios**
+  - **Family-specific document type sharing**
+
+### Health Management
+- **Must Have:**
+  - Period tracking with symptom logging
+  - Cycle prediction based on historical data
+  - Privacy controls for sensitive health information
+  - Basic statistics and insights from tracking data
+  
+- **Nice to Have:**
+  - Health appointment reminders tied to cycle data
+  - Symptom pattern identification
+  - Custom symptom tracking options
+  - Health notes and observations logging
+
+### Personal & Work Schedule Management
+- **Must Have:**
+  - Personal event management separate from family calendar
+  - Work schedule recurring patterns
+  - Sharing controls for personal events
+  - Color-coding for different event types
+  
+- **Nice to Have:**
+  - Work-life balance visualization
+  - Conflict detection between personal and family events
+  - Availability sharing without detail disclosure
+  - Custom event categories and filtering
 
 ### Calendar Management
 - **Must Have:**
