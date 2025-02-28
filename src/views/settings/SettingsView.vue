@@ -35,12 +35,19 @@
                 Integrations
               </button>
               <button
-                @click="activeTab = 'notifications'"
-                class="py-4 px-1 border-b-2 font-medium text-sm"
-                :class="activeTab === 'notifications' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+              @click="activeTab = 'features'"
+              class="py-4 px-1 border-b-2 font-medium text-sm"
+              :class="activeTab === 'features' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
               >
-                Notifications
+              Features
               </button>
+                <button
+                  @click="activeTab = 'notifications'"
+                  class="py-4 px-1 border-b-2 font-medium text-sm"
+                  :class="activeTab === 'notifications' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                >
+                  Notifications
+                </button>
             </nav>
           </div>
         </div>
@@ -269,6 +276,114 @@
           </div>
         </div>
         
+        <!-- Features Tab -->
+        <div v-if="activeTab === 'features'" class="px-4 py-5 sm:px-6">
+          <div v-if="loading" class="py-12 flex justify-center">
+            <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          
+          <div v-else class="space-y-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">Feature Settings</h3>
+            <p class="mt-1 text-sm text-gray-500">
+              Enable or disable features based on your preferences.
+            </p>
+            
+            <div class="mt-6">
+              <div class="space-y-4">
+                <!-- Personal Health Features -->
+                <div class="border-t border-gray-200 pt-6">
+                  <h4 class="text-sm font-medium text-gray-900">Personal Health Features</h4>
+                  
+                  <div class="mt-4 flex items-start">
+                    <div class="flex items-center h-5">
+                      <input
+                        id="feature-health-tracking"
+                        name="feature-health-tracking"
+                        type="checkbox"
+                        class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                        v-model="features.healthTracking"
+                      />
+                    </div>
+                    <div class="ml-3 text-sm">
+                      <label for="feature-health-tracking" class="font-medium text-gray-700">Enable Health Tracking</label>
+                      <p class="text-gray-500">Track your health data with cycle tracking and analysis.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4 flex items-start pl-8" v-if="features.healthTracking">
+                    <div class="flex items-center h-5">
+                      <input
+                        id="feature-health-privacy"
+                        name="feature-health-privacy"
+                        type="checkbox"
+                        class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                        v-model="features.healthPrivacy"
+                      />
+                    </div>
+                    <div class="ml-3 text-sm">
+                      <label for="feature-health-privacy" class="font-medium text-gray-700">Enhanced Privacy Mode</label>
+                      <p class="text-gray-500">Hide all health indicators from shared views and calendars.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Personal Events Features -->
+                <div class="border-t border-gray-200 pt-6">
+                  <h4 class="text-sm font-medium text-gray-900">Personal Events Features</h4>
+                  
+                  <div class="mt-4 flex items-start">
+                    <div class="flex items-center h-5">
+                      <input
+                        id="feature-personal-events"
+                        name="feature-personal-events"
+                        type="checkbox"
+                        class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                        v-model="features.personalEvents"
+                      />
+                    </div>
+                    <div class="ml-3 text-sm">
+                      <label for="feature-personal-events" class="font-medium text-gray-700">Enable Personal Events</label>
+                      <p class="text-gray-500">Manage personal and work events with privacy controls. Disabling this feature simplifies the calendar to focus only on family events and removes work/private event separation.</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-4 flex items-start pl-8" v-if="features.personalEvents">
+                    <div class="flex items-center h-5">
+                      <input
+                        id="feature-work-schedule"
+                        name="feature-work-schedule"
+                        type="checkbox"
+                        class="focus:ring-primary-500 h-4 w-4 text-primary-600 border-gray-300 rounded"
+                        v-model="features.workSchedule"
+                      />
+                    </div>
+                    <div class="ml-3 text-sm">
+                      <label for="feature-work-schedule" class="font-medium text-gray-700">Work Schedule Template</label>
+                      <p class="text-gray-500">Enable work schedule templates and recurring patterns.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Save Button -->
+              <div class="mt-8 flex justify-end">
+                <button
+                  type="button"
+                  :disabled="saving"
+                  @click="saveFeatures"
+                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                >
+                  <span v-if="saving">Saving...</span>
+                  <span v-else>Save</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <!-- Notifications Tab -->
         <div v-if="activeTab === 'notifications'" class="px-4 py-5 sm:px-6">
           <div v-if="loading" class="py-12 flex justify-center">
@@ -426,11 +541,14 @@
 import { ref, onMounted } from 'vue';
 import AppLayout from '@/components/layout/AppLayout.vue';
 import { useAuthStore } from '@/stores/auth';
+import { useUserPreferencesStore } from '@/stores/userPreferences';
 
 const authStore = useAuthStore();
 const activeTab = ref('profile');
 const loading = ref(true);
 const saving = ref(false);
+const userPreferencesStore = useUserPreferencesStore();
+const features = ref({...userPreferencesStore.features});
 
 const profile = ref({
   firstName: '',
@@ -448,22 +566,47 @@ const notifications = ref({
   quietHoursEnd: '08:00'
 });
 
-onMounted(async () => {
-  // Simulate loading delay
-  setTimeout(() => {
-    if (authStore.user) {
-      // Get user metadata from Supabase user
-      const metadata = authStore.user.user_metadata;
-      
-      profile.value = {
-        firstName: metadata?.first_name || '',
-        lastName: metadata?.last_name || '',
-        email: authStore.user.email || ''
-      };
+async function saveFeatures() {
+  saving.value = true;
+  try {
+    const result = await userPreferencesStore.updateFeatures(features.value);
+    if (result.success) {
+      // Show success message
+      alert('Feature settings saved successfully!');
+    } else {
+      // Show error message
+      alert('Failed to save feature settings. Please try again.');
     }
+  } catch (error) {
+    console.error('Error saving features:', error);
+    alert('An error occurred while saving. Please try again.');
+  } finally {
+    saving.value = false;
+  }
+}
+
+onMounted(async () => {
+  loading.value = true;
+  
+  // Initialize user preferences
+  await userPreferencesStore.initialize();
+  
+  // Copy the feature values from the store to our local state
+  features.value = JSON.parse(JSON.stringify(userPreferencesStore.features));
+  
+  // Get user profile data if available
+  if (authStore.user) {
+    // Get user metadata from Supabase user
+    const metadata = authStore.user.user_metadata;
     
-    loading.value = false;
-  }, 1000);
+    profile.value = {
+      firstName: metadata?.first_name || '',
+      lastName: metadata?.last_name || '',
+      email: authStore.user.email || ''
+    };
+  }
+  
+  loading.value = false;
 });
 
 async function saveProfile() {

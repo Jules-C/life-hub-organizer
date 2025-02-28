@@ -9,6 +9,7 @@
           </p>
         </div>
         <button
+          @click="openAddEventModal"
           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,6 +20,25 @@
       </div>
       
       <!-- Calendar Header -->
+      <!-- Calendar Types Navigation -->
+      <div class="flex border-t border-gray-200 bg-gray-50 px-6 py-3">
+        <nav class="flex space-x-4">
+          <a
+            href="#"
+            class="px-3 py-1 text-sm font-medium rounded-md bg-primary-100 text-primary-700"
+          >
+            Family Calendar
+          </a>
+          <router-link
+            v-if="isPersonalEventsEnabled"
+            to="/personal-events"
+            class="px-3 py-1 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+          >
+            Personal Events
+          </router-link>
+        </nav>
+      </div>
+      
       <div class="flex items-center justify-between px-6 py-2 border-t border-b border-gray-200 bg-gray-50">
         <div class="flex">
           <button
@@ -117,15 +137,109 @@
         </p>
       </div>
     </div>
+    
+    <!-- Add Event Modal -->
+    <div v-if="showAddEventModal" class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showAddEventModal = false"></div>
+
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Add New Event</h3>
+                <div class="mt-4 space-y-4">
+                  <!-- Event Form -->
+                  <div>
+                    <label for="event-title" class="block text-sm font-medium text-gray-700">Event Title</label>
+                    <input
+                      type="text"
+                      id="event-title"
+                      v-model="newEvent.title"
+                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      placeholder="Enter event title"
+                    />
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label for="event-start" class="block text-sm font-medium text-gray-700">Start Time</label>
+                      <input
+                        type="datetime-local"
+                        id="event-start"
+                        v-model="newEvent.startTime"
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label for="event-end" class="block text-sm font-medium text-gray-700">End Time</label>
+                      <input
+                        type="datetime-local"
+                        id="event-end"
+                        v-model="newEvent.endTime"
+                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label for="event-location" class="block text-sm font-medium text-gray-700">Location</label>
+                    <input
+                      type="text"
+                      id="event-location"
+                      v-model="newEvent.location"
+                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      placeholder="Event location (optional)"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label for="event-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea
+                      id="event-description"
+                      v-model="newEvent.description"
+                      rows="3"
+                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      placeholder="Event description (optional)"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              type="button"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm"
+              @click="saveEvent"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              @click="showAddEventModal = false"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </AppLayout>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import AppLayout from '@/components/layout/AppLayout.vue';
+import { useUserPreferencesStore } from '@/stores/userPreferences';
 
 const loading = ref(true);
 const currentDate = ref(new Date());
+const userPreferencesStore = useUserPreferencesStore();
+const isPersonalEventsEnabled = computed(() => userPreferencesStore.isPersonalEventsEnabled);
 
 const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
