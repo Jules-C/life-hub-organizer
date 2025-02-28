@@ -3,13 +3,13 @@
     <div class="bg-white shadow rounded-lg">
       <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
         <div>
-          <h2 class="text-xl font-semibold text-gray-900">Family Calendar</h2>
+          <h2 class="text-xl font-semibold text-gray-900">Unified Calendar</h2>
           <p class="mt-1 text-sm text-gray-500">
-            Manage your family's schedule in one place
+            View and manage all your events in one place
           </p>
         </div>
         <button
-          @click="openAddEventModal"
+          @click="showAddEventMenu = true"
           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,211 +19,170 @@
         </button>
       </div>
       
-      <!-- Calendar Header -->
-      <!-- Calendar Types Navigation -->
-      <div class="flex border-t border-gray-200 bg-gray-50 px-6 py-3">
-        <nav class="flex space-x-4">
-          <a
-            href="#"
-            class="px-3 py-1 text-sm font-medium rounded-md bg-primary-100 text-primary-700"
-          >
-            Family Calendar
-          </a>
-          <router-link
-            v-if="isPersonalEventsEnabled"
-            to="/personal-events"
-            class="px-3 py-1 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-          >
-            Personal Events
-          </router-link>
-        </nav>
-      </div>
-      
-      <div class="flex items-center justify-between px-6 py-2 border-t border-b border-gray-200 bg-gray-50">
-        <div class="flex">
+      <!-- Event Type Filters -->
+      <div class="border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-6">
+        <div class="flex flex-wrap gap-2">
+          <!-- Family Events Toggle -->
           <button
-            type="button"
-            class="p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            @click="toggleFilter('family')"
+            class="px-3 py-1.5 text-sm font-medium rounded-md"
+            :class="filters.family ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
           >
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            <svg class="inline-block -ml-1 mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <span class="sr-only">Previous month</span>
+            Family Events
           </button>
-          <button
-            type="button"
-            class="ml-2 p-1.5 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-            <span class="sr-only">Next month</span>
-          </button>
-          <h2 class="mx-4 text-lg font-semibold text-gray-900">{{ currentMonth }}</h2>
-        </div>
-        <div class="flex">
-          <button
-            type="button"
-            class="ml-2 px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            Today
-          </button>
-          <select
-            class="ml-2 px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          >
-            <option>Month</option>
-            <option>Week</option>
-            <option>Day</option>
-          </select>
-        </div>
-      </div>
-      
-      <!-- Calendar Grid -->
-      <div v-if="loading" class="py-12 flex justify-center">
-        <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-      </div>
-      
-      <div v-else class="p-4">
-        <!-- Calendar grid -->
-        <div class="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden">
-          <!-- Calendar header row (day names) -->
-          <div 
-            v-for="day in dayNames" 
-            :key="day"
-            class="bg-gray-50 py-2 text-center text-sm font-medium text-gray-500"
-          >
-            {{ day }}
-          </div>
           
-          <!-- Calendar cells -->
-          <div
-            v-for="(day, index) in calendarDays"
-            :key="index"
-            class="min-h-[100px] p-2 bg-white border-t border-gray-200"
-            :class="{ 
-              'bg-gray-50': !day.isCurrentMonth,
-              'bg-blue-50': day.isToday
-            }"
+          <!-- Personal Events Toggle -->
+          <button
+            v-if="isPersonalEventsEnabled"
+            @click="toggleFilter('personal')"
+            class="px-3 py-1.5 text-sm font-medium rounded-md"
+            :class="filters.personal ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
           >
-            <div class="flex justify-between">
-              <span 
-                class="text-sm font-medium"
-                :class="day.isCurrentMonth ? 'text-gray-900' : 'text-gray-400'"
-              >
-                {{ day.date }}
-              </span>
-              <span v-if="day.isToday" class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-white text-sm">
-                {{ day.date }}
-              </span>
-            </div>
-            
-            <!-- Empty state for each day -->
-            <div class="mt-2">
-              <!-- Events would go here -->
-            </div>
-          </div>
+            <svg class="inline-block -ml-1 mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            Personal Events
+          </button>
+          
+          <!-- Work Schedule Toggle -->
+          <button
+            v-if="isPersonalEventsEnabled"
+            @click="toggleFilter('work')"
+            class="px-3 py-1.5 text-sm font-medium rounded-md"
+            :class="filters.work ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+          >
+            <svg class="inline-block -ml-1 mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Work Schedule
+          </button>
+          
+          <!-- Health Events Toggle -->
+          <button
+            v-if="isHealthTrackingEnabled"
+            @click="toggleFilter('health')"
+            class="px-3 py-1.5 text-sm font-medium rounded-md"
+            :class="filters.health ? 'bg-pink-100 text-pink-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+          >
+            <svg class="inline-block -ml-1 mr-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            Health Events
+          </button>
         </div>
       </div>
       
-      <!-- Calendar connection message -->
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 text-center">
-        <p class="text-sm text-gray-500">
-          No calendars connected. 
-          <button class="text-primary-600 font-medium hover:text-primary-500">Connect a calendar</button>
-          to start managing your family's schedule.
-        </p>
+      <!-- Calendar Component -->
+      <div class="p-4">
+        <div v-if="loading" class="py-12 flex justify-center">
+          <svg class="animate-spin h-8 w-8 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        
+        <CalendarGrid
+          v-else
+          :initialDate="currentDate"
+          @month-changed="handleMonthChanged"
+          @date-selected="handleDateSelected"
+        >
+          <!-- Custom controls in the top right of the calendar -->
+          <template #controls>
+            <button
+              type="button"
+              class="px-3 py-1.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+              @click="goToToday"
+            >
+              Today
+            </button>
+          </template>
+          
+          <!-- Date indicators (dots for events) -->
+          <template #date-indicators="{ day }">
+            <div v-if="getEventIndicators(day).length > 0" class="flex space-x-1">
+              <div 
+                v-for="indicator in getEventIndicators(day)" 
+                :key="indicator.type"
+                class="w-2 h-2 rounded-full"
+                :class="indicator.class"
+              ></div>
+            </div>
+          </template>
+          
+          <!-- Day content (events) -->
+          <template #day-content="{ day }">
+            <template v-for="event in getEventsForDay(day)" :key="event.id || event._id">
+              <CalendarEvent 
+                :event="event" 
+                :eventType="getEventType(event)"
+                @event-click="viewEvent(event)"
+              />
+            </template>
+          </template>
+        </CalendarGrid>
       </div>
-    </div>
-    
-    <!-- Add Event Modal -->
-    <div v-if="showAddEventModal" class="fixed inset-0 z-10 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Background overlay -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showAddEventModal = false"></div>
+      
+      <!-- Simple "Add Event" Menu -->
+      <div v-if="showAddEventMenu" class="fixed inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showAddEventMenu = false"></div>
 
-        <!-- Modal panel -->
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Add New Event</h3>
-                <div class="mt-4 space-y-4">
-                  <!-- Event Form -->
-                  <div>
-                    <label for="event-title" class="block text-sm font-medium text-gray-700">Event Title</label>
-                    <input
-                      type="text"
-                      id="event-title"
-                      v-model="newEvent.title"
-                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      placeholder="Enter event title"
-                    />
-                  </div>
+          <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+          <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+            <div>
+              <div class="mt-3 text-center sm:mt-0 sm:text-left">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                  Select Event Type
+                </h3>
+                <div class="mt-4 space-y-2">
+                  <button
+                    @click="goToEventCreator('family')"
+                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-purple-50"
+                  >
+                    <span class="font-medium text-purple-800">Family Event</span>
+                  </button>
                   
-                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                      <label for="event-start" class="block text-sm font-medium text-gray-700">Start Time</label>
-                      <input
-                        type="datetime-local"
-                        id="event-start"
-                        v-model="newEvent.startTime"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label for="event-end" class="block text-sm font-medium text-gray-700">End Time</label>
-                      <input
-                        type="datetime-local"
-                        id="event-end"
-                        v-model="newEvent.endTime"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      />
-                    </div>
-                  </div>
+                  <button
+                    v-if="isPersonalEventsEnabled"
+                    @click="goToEventCreator('personal')"
+                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-blue-50"
+                  >
+                    <span class="font-medium text-blue-800">Personal Event</span>
+                  </button>
                   
-                  <div>
-                    <label for="event-location" class="block text-sm font-medium text-gray-700">Location</label>
-                    <input
-                      type="text"
-                      id="event-location"
-                      v-model="newEvent.location"
-                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      placeholder="Event location (optional)"
-                    />
-                  </div>
+                  <button
+                    v-if="isPersonalEventsEnabled"
+                    @click="goToEventCreator('work')"
+                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-emerald-50"
+                  >
+                    <span class="font-medium text-emerald-800">Work Schedule</span>
+                  </button>
                   
-                  <div>
-                    <label for="event-description" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea
-                      id="event-description"
-                      v-model="newEvent.description"
-                      rows="3"
-                      class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                      placeholder="Event description (optional)"
-                    ></textarea>
-                  </div>
+                  <button
+                    v-if="isHealthTrackingEnabled"
+                    @click="goToEventCreator('health')"
+                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-pink-50"
+                  >
+                    <span class="font-medium text-pink-800">Health Entry</span>
+                  </button>
+                </div>
+                
+                <div class="mt-5 sm:mt-6">
+                  <button
+                    type="button"
+                    class="w-full inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    @click="showAddEventMenu = false"
+                  >
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="saveEvent"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-              @click="showAddEventModal = false"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       </div>
@@ -232,79 +191,293 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import AppLayout from '@/components/layout/AppLayout.vue';
+import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
+import CalendarEvent from '@/components/calendar/CalendarEvent.vue';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
+import { personalEventService } from '@/services/calendar/personalEvents';
+import { cycleTrackingService } from '@/services/health/cycleTracking';
 
-const loading = ref(true);
+// State variables
+const router = useRouter();
 const currentDate = ref(new Date());
+const loading = ref(true);
+const showAddEventMenu = ref(false);
+
+// Data stores
+const familyEvents = ref([]);
+const personalEvents = ref([]);
+const healthEvents = ref([]);
+
+// User preferences
 const userPreferencesStore = useUserPreferencesStore();
+const isHealthTrackingEnabled = computed(() => userPreferencesStore.isHealthTrackingEnabled);
 const isPersonalEventsEnabled = computed(() => userPreferencesStore.isPersonalEventsEnabled);
 
-const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-const currentMonth = computed(() => {
-  return currentDate.value.toLocaleString('default', { month: 'long', year: 'numeric' });
+// Filter settings
+const filters = ref({
+  family: true,
+  personal: true,
+  work: true,
+  health: true
 });
 
-const calendarDays = computed(() => {
-  const year = currentDate.value.getFullYear();
-  const month = currentDate.value.getMonth();
-  
-  // Get first day of the month
-  const firstDay = new Date(year, month, 1);
-  // Get last day of the month
-  const lastDay = new Date(year, month + 1, 0);
-  
-  // Get the day of the week for the first day (0-6)
-  const firstDayOfWeek = firstDay.getDay();
-  
-  // Array to hold all calendar cells
-  const days = [];
-  
-  // Add days from previous month to fill the first row
-  const prevMonth = new Date(year, month, 0);
-  const prevMonthDays = prevMonth.getDate();
-  
-  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    days.push({
-      date: prevMonthDays - i,
-      isCurrentMonth: false,
-      isToday: false
-    });
-  }
-  
-  // Add days from current month
-  const today = new Date();
-  const isCurrentMonthAndYear = 
-    today.getMonth() === month && 
-    today.getFullYear() === year;
-  
-  for (let i = 1; i <= lastDay.getDate(); i++) {
-    days.push({
-      date: i,
-      isCurrentMonth: true,
-      isToday: isCurrentMonthAndYear && today.getDate() === i
-    });
-  }
-  
-  // Add days from next month to complete the grid (6 rows × 7 days = 42 cells)
-  const remainingCells = 42 - days.length;
-  for (let i = 1; i <= remainingCells; i++) {
-    days.push({
-      date: i,
-      isCurrentMonth: false,
-      isToday: false
-    });
-  }
-  
-  return days;
-});
+// Functions to handle filter toggling
+function toggleFilter(type) {
+  filters.value[type] = !filters.value[type];
+}
 
-onMounted(() => {
-  // Simulate loading data
-  setTimeout(() => {
+// Get event indicators for a specific day
+function getEventIndicators(day) {
+  const indicators = [];
+  const eventsForDay = getEventsForDay(day);
+  
+  // Check for family events
+  if (eventsForDay.some(event => event._source === 'family')) {
+    indicators.push({ type: 'family', class: 'bg-purple-500' });
+  }
+  
+  // Check for personal events
+  if (eventsForDay.some(event => event._source === 'personal')) {
+    indicators.push({ type: 'personal', class: 'bg-blue-500' });
+  }
+  
+  // Check for work events
+  if (eventsForDay.some(event => event._source === 'work' || event.event_type === 'work')) {
+    indicators.push({ type: 'work', class: 'bg-emerald-500' });
+  }
+  
+  // Check for health events
+  if (eventsForDay.some(event => event._source === 'health')) {
+    indicators.push({ type: 'health', class: 'bg-pink-500' });
+  }
+  
+  return indicators;
+}
+
+// Get all events for a specific day
+function getEventsForDay(day) {
+  // Get all visible events based on filters
+  const allEvents = [];
+  
+  if (filters.value.family) {
+    allEvents.push(...familyEvents.value);
+  }
+  
+  if (filters.value.personal && isPersonalEventsEnabled.value) {
+    allEvents.push(...personalEvents.value.filter(e => e.event_type !== 'work'));
+  }
+  
+  if (filters.value.work && isPersonalEventsEnabled.value) {
+    allEvents.push(...personalEvents.value.filter(e => e.event_type === 'work'));
+  }
+  
+  if (filters.value.health && isHealthTrackingEnabled.value) {
+    allEvents.push(...healthEvents.value);
+  }
+  
+  // Filter to only events on this day
+  return allEvents.filter(event => {
+    const eventStart = new Date(event.start_time);
+    const eventEnd = new Date(event.end_time || event.start_time);
+    const dayDate = new Date(day.dateString);
+    
+    // Set time to 00:00:00 for date comparison
+    const dateStart = new Date(dayDate);
+    dateStart.setHours(0, 0, 0, 0);
+    
+    // Set time to 23:59:59 for end of day
+    const dateEnd = new Date(dayDate);
+    dateEnd.setHours(23, 59, 59, 999);
+    
+    return eventStart <= dateEnd && eventEnd >= dateStart;
+  });
+}
+
+// Get the event type for styling purposes
+function getEventType(event) {
+  if (event._source === 'family') return 'family';
+  if (event._source === 'health') return 'health';
+  if (event._source === 'work' || event.event_type === 'work') return 'work';
+  if (event._source === 'personal') return 'personal';
+  return 'default';
+}
+
+// Handle month change in the calendar
+async function handleMonthChanged(data) {
+  loading.value = true;
+  try {
+    // Format dates for API requests
+    const startDate = new Date(data.year, data.month, 1).toISOString();
+    const endDate = new Date(data.year, data.month + 1, 0).toISOString();
+    
+    // Load data in parallel
+    await Promise.all([
+      loadFamilyEvents(startDate, endDate),
+      loadPersonalEvents(startDate, endDate),
+      loadHealthEvents(startDate, endDate)
+    ]);
+  } catch (error) {
+    console.error('Error loading events:', error);
+  } finally {
     loading.value = false;
-  }, 1000);
+  }
+}
+
+// Load family events (placeholder implementation)
+async function loadFamilyEvents(startDate, endDate) {
+  // This is a placeholder. In a real implementation, you would
+  // fetch family events from a service
+  familyEvents.value = [
+    {
+      _id: 'family-event-1',
+      title: 'Family Dinner',
+      start_time: new Date().toISOString(),
+      end_time: new Date(new Date().getTime() + 2 * 60 * 60 * 1000).toISOString(),
+      _source: 'family'
+    },
+    {
+      _id: 'family-event-2',
+      title: 'Movie Night',
+      start_time: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(),
+      end_time: new Date(new Date(new Date().setDate(new Date().getDate() + 3)).getTime() + 3 * 60 * 60 * 1000).toISOString(),
+      _source: 'family'
+    }
+  ];
+}
+
+// Load personal events
+async function loadPersonalEvents(startDate, endDate) {
+  if (!isPersonalEventsEnabled.value) {
+    personalEvents.value = [];
+    return;
+  }
+  
+  try {
+    const response = await personalEventService.getEventsForDateRange(startDate, endDate);
+    
+    if (response.data) {
+      // Add source identifier
+      personalEvents.value = response.data.map(event => ({
+        ...event,
+        _source: event.event_type === 'work' ? 'work' : 'personal'
+      }));
+    }
+  } catch (error) {
+    console.error('Error loading personal events:', error);
+    personalEvents.value = [];
+  }
+}
+
+// Load health events
+async function loadHealthEvents(startDate, endDate) {
+  if (!isHealthTrackingEnabled.value) {
+    healthEvents.value = [];
+    return;
+  }
+  
+  try {
+    const response = await cycleTrackingService.getEntriesForDateRange(startDate, endDate);
+    
+    if (response.data) {
+      // Convert health entries to calendar-compatible format
+      healthEvents.value = response.data.map(entry => {
+        // Create start and end times
+        const startDate = new Date(entry.start_date);
+        const endDate = entry.end_date ? new Date(entry.end_date) : new Date(startDate);
+        
+        if (!entry.end_date) {
+          endDate.setHours(23, 59, 59);
+        }
+        
+        return {
+          _id: entry.id,
+          title: 'Cycle Entry',
+          description: entry.notes || 'Health tracking entry',
+          start_time: startDate.toISOString(),
+          end_time: endDate.toISOString(),
+          is_all_day: true,
+          is_private: entry.is_private,
+          _source: 'health',
+          // Preserve original data
+          original: entry
+        };
+      });
+    }
+  } catch (error) {
+    console.error('Error loading health events:', error);
+    healthEvents.value = [];
+  }
+}
+
+// Handle date selection
+function handleDateSelected(data) {
+  console.log('Date selected:', data.dateString);
+  // Pre-filling date in the appropriate form could be implemented here
+}
+
+// Navigate to today
+function goToToday() {
+  currentDate.value = new Date();
+  handleMonthChanged({
+    month: currentDate.value.getMonth(),
+    year: currentDate.value.getFullYear()
+  });
+}
+
+// View event details
+function viewEvent(event) {
+  // Based on event type, navigate to the appropriate editor
+  switch (getEventType(event)) {
+    case 'family':
+      // Navigate to family event editor
+      console.log('View family event:', event);
+      break;
+    case 'personal':
+    case 'work':
+      // Navigate to personal event editor
+      console.log('View personal/work event:', event);
+      break;
+    case 'health':
+      // Navigate to health entry editor
+      console.log('View health entry:', event);
+      break;
+  }
+}
+
+// Navigate to the appropriate event creator
+function goToEventCreator(type) {
+  showAddEventMenu.value = false;
+  
+  switch (type) {
+    case 'family':
+      router.push('/calendar'); // Navigate to family calendar
+      break;
+    case 'personal':
+    case 'work':
+      router.push('/personal-events'); // Navigate to personal events
+      break;
+    case 'health':
+      router.push('/health/cycle-tracking'); // Navigate to health tracking
+      break;
+  }
+}
+
+// Initialize data on component mount
+onMounted(async () => {
+  await handleMonthChanged({
+    month: currentDate.value.getMonth(),
+    year: currentDate.value.getFullYear()
+  });
+});
+
+// Watch for feature toggle changes
+watch([isHealthTrackingEnabled, isPersonalEventsEnabled], async () => {
+  await handleMonthChanged({
+    month: currentDate.value.getMonth(),
+    year: currentDate.value.getFullYear()
+  });
 });
 </script>

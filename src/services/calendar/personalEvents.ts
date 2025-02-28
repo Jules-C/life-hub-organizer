@@ -62,16 +62,28 @@ export const personalEventService = {
    * Get events for a specific date range
    */
   async getEventsForDateRange(startDate: string, endDate: string): Promise<EventResponse> {
-    const { data, error } = await supabase
-      .from('personal_events')
-      .select('*')
-      .or(`start_time.gte.${startDate},end_time.gte.${startDate}`)
-      .lt('start_time', endDate)
-      .order('start_time', { ascending: true });
-    
-    return { data, error };
+    try {
+      // First approach: Get events that start within the date range
+      const query = supabase
+        .from('personal_events')
+        .select('*')
+        .gte('start_time', startDate)
+        .lt('start_time', endDate)
+        .order('start_time', { ascending: true });
+      
+      const { data, error } = await query;
+      
+      if (error) {
+        console.error('Supabase query error:', error);
+        return { data: [], error };
+      }
+      
+      return { data, error: null };
+    } catch (err) {
+      console.error('Unexpected error in getEventsForDateRange:', err);
+      return { data: [], error: err as any };
+    }
   },
-
   /**
    * Get all events for the current user
    */
