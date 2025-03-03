@@ -9,7 +9,7 @@
           </p>
         </div>
         <button
-          @click="showAddEventMenu = true"
+          @click="createNewEvent"
           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
           <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,66 +126,25 @@
         </CalendarGrid>
       </div>
       
-      <!-- Simple "Add Event" Menu -->
-      <div v-if="showAddEventMenu" class="fixed inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showAddEventMenu = false"></div>
-
-          <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-          <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
-            <div>
-              <div class="mt-3 text-center sm:mt-0 sm:text-left">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                  Select Event Type
-                </h3>
-                <div class="mt-4 space-y-2">
-                  <button
-                    @click="goToEventCreator('family')"
-                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-purple-50"
-                  >
-                    <span class="font-medium text-purple-800">Family Event</span>
-                  </button>
-                  
-                  <button
-                    v-if="isPersonalEventsEnabled"
-                    @click="goToEventCreator('personal')"
-                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-blue-50"
-                  >
-                    <span class="font-medium text-blue-800">Personal Event</span>
-                  </button>
-                  
-                  <button
-                    v-if="isPersonalEventsEnabled"
-                    @click="goToEventCreator('work')"
-                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-emerald-50"
-                  >
-                    <span class="font-medium text-emerald-800">Work Schedule</span>
-                  </button>
-                  
-                  <button
-                    v-if="isHealthTrackingEnabled"
-                    @click="goToEventCreator('health')"
-                    class="w-full text-left px-4 py-2 border rounded-md hover:bg-pink-50"
-                  >
-                    <span class="font-medium text-pink-800">Health Entry</span>
-                  </button>
-                </div>
-                
-                <div class="mt-5 sm:mt-6">
-                  <button
-                    type="button"
-                    class="w-full inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                    @click="showAddEventMenu = false"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Event Modal Components -->
+      <EventModal
+        :show="showEventModal"
+        :mode="eventModalMode"
+        :event="selectedEvent"
+        :processing="saveInProgress"
+        @close="closeEventModal"
+        @save="saveEvent"
+        @edit="enterEditMode"
+        @delete="openDeleteConfirmation"
+      />
+      
+      <DeleteConfirmationModal
+        :show="showDeleteConfirmation"
+        :event="selectedEvent"
+        :processing="deleteInProgress"
+        @confirm="deleteEvent"
+        @cancel="showDeleteConfirmation = false"
+      />
     </div>
   </AppLayout>
 </template>
@@ -196,20 +155,34 @@ import { useRouter } from 'vue-router';
 import AppLayout from '@/components/layout/AppLayout.vue';
 import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
 import CalendarEvent from '@/components/calendar/CalendarEvent.vue';
+import EventModal from '@/components/calendar/EventModal.vue';
+import DeleteConfirmationModal from '@/components/calendar/DeleteConfirmationModal.vue';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
-import { personalEventService } from '@/services/calendar/personalEvents';
-import { cycleTrackingService } from '@/services/health/cycleTracking';
+import { personalEventService, type PersonalEvent } from '@/services/calendar/personalEvents';
+import { cycleTrackingService, type CycleTrackingEntry } from '@/services/health/cycleTracking';
+import { supabase } from '@/services/supabase';
 
 // State variables
 const router = useRouter();
 const currentDate = ref(new Date());
 const loading = ref(true);
-const showAddEventMenu = ref(false);
+
+// Event modal state
+const showEventModal = ref(false);
+const eventModalMode = ref<'create' | 'edit' | 'view'>('view');
+const selectedEvent = ref<any>(null);
+const showDeleteConfirmation = ref(false);
+const saveInProgress = ref(false);
+const deleteInProgress = ref(false);
+
+// Important: Add these lock variables to prevent recursive data loading
+const isLoadingData = ref(false);
+const lastLoadedMonth = ref('');
 
 // Data stores
-const familyEvents = ref([]);
-const personalEvents = ref([]);
-const healthEvents = ref([]);
+const familyEvents = ref<any[]>([]);
+const personalEvents = ref<PersonalEvent[]>([]);
+const healthEvents = ref<any[]>([]);
 
 // User preferences
 const userPreferencesStore = useUserPreferencesStore();
@@ -225,12 +198,16 @@ const filters = ref({
 });
 
 // Functions to handle filter toggling
-function toggleFilter(type) {
-  filters.value[type] = !filters.value[type];
+function toggleFilter(type: string) {
+  filters.value[type as keyof typeof filters.value] = !filters.value[type as keyof typeof filters.value];
 }
 
 // Get event indicators for a specific day
-function getEventIndicators(day) {
+function getEventIndicators(day: any) {
+  if (!day || !day.dateString) {
+    return [];
+  }
+  
   const indicators = [];
   const eventsForDay = getEventsForDay(day);
   
@@ -258,7 +235,11 @@ function getEventIndicators(day) {
 }
 
 // Get all events for a specific day
-function getEventsForDay(day) {
+function getEventsForDay(day: any) {
+  if (!day || !day.dateString) {
+    return [];
+  }
+
   // Get all visible events based on filters
   const allEvents = [];
   
@@ -280,8 +261,10 @@ function getEventsForDay(day) {
   
   // Filter to only events on this day
   return allEvents.filter(event => {
+    if (!event || !event.start_time) return false;
+    
     const eventStart = new Date(event.start_time);
-    const eventEnd = new Date(event.end_time || event.start_time);
+    const eventEnd = event.end_time ? new Date(event.end_time) : new Date(event.start_time);
     const dayDate = new Date(day.dateString);
     
     // Set time to 00:00:00 for date comparison
@@ -297,7 +280,9 @@ function getEventsForDay(day) {
 }
 
 // Get the event type for styling purposes
-function getEventType(event) {
+function getEventType(event: any) {
+  if (!event) return 'default';
+  
   if (event._source === 'family') return 'family';
   if (event._source === 'health') return 'health';
   if (event._source === 'work' || event.event_type === 'work') return 'work';
@@ -306,82 +291,139 @@ function getEventType(event) {
 }
 
 // Handle month change in the calendar
-async function handleMonthChanged(data) {
+async function handleMonthChanged(data: any) {
+  // Check if we're already loading data - prevents recursive calls
+  if (isLoadingData.value) {
+    console.log('Already loading data, skipping duplicate request');
+    return;
+  }
+  
+  // Create a month identifier to check for duplicates
+  const monthId = `${data.year}-${data.month}`;
+  
+  // Skip if we just loaded this month (prevents reactivity loop)
+  if (monthId === lastLoadedMonth.value) {
+    console.log('Month already loaded, skipping duplicate request');
+    return;
+  }
+
+  // Set lock flags
+  isLoadingData.value = true;
   loading.value = true;
+  
+  // Remember this month so we don't reload it unnecessarily
+  lastLoadedMonth.value = monthId;
+  
   try {
     // Format dates for API requests
     const startDate = new Date(data.year, data.month, 1).toISOString();
     const endDate = new Date(data.year, data.month + 1, 0).toISOString();
     
-    // Load data in parallel
-    await Promise.all([
-      loadFamilyEvents(startDate, endDate),
-      loadPersonalEvents(startDate, endDate),
-      loadHealthEvents(startDate, endDate)
-    ]);
+    console.log('Loading data for date range:', { startDate, endDate });
+    
+    // Load events sequentially to prevent potential race conditions
+    await loadFamilyEvents(startDate, endDate);
+    
+    if (isPersonalEventsEnabled.value) {
+      await loadPersonalEvents(startDate, endDate);
+    } else {
+      personalEvents.value = [];
+    }
+    
+    if (isHealthTrackingEnabled.value) {
+      await loadHealthEvents(startDate, endDate);
+    } else {
+      healthEvents.value = [];
+    }
   } catch (error) {
     console.error('Error loading events:', error);
   } finally {
+    // Always release locks, even if there was an error
     loading.value = false;
+    isLoadingData.value = false;
   }
 }
 
 // Load family events (placeholder implementation)
-async function loadFamilyEvents(startDate, endDate) {
-  // This is a placeholder. In a real implementation, you would
-  // fetch family events from a service
-  familyEvents.value = [
-    {
-      _id: 'family-event-1',
-      title: 'Family Dinner',
-      start_time: new Date().toISOString(),
-      end_time: new Date(new Date().getTime() + 2 * 60 * 60 * 1000).toISOString(),
-      _source: 'family'
-    },
-    {
-      _id: 'family-event-2',
-      title: 'Movie Night',
-      start_time: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(),
-      end_time: new Date(new Date(new Date().setDate(new Date().getDate() + 3)).getTime() + 3 * 60 * 60 * 1000).toISOString(),
-      _source: 'family'
-    }
-  ];
+async function loadFamilyEvents(startDate: string, endDate: string) {
+  try {
+    // This is a placeholder. In a real implementation, you would
+    // fetch family events from a service
+    familyEvents.value = [
+      {
+        _id: 'family-event-1',
+        title: 'Family Dinner',
+        start_time: new Date().toISOString(),
+        end_time: new Date(new Date().getTime() + 2 * 60 * 60 * 1000).toISOString(),
+        _source: 'family'
+      },
+      {
+        _id: 'family-event-2',
+        title: 'Movie Night',
+        start_time: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(),
+        end_time: new Date(new Date(new Date().setDate(new Date().getDate() + 3)).getTime() + 3 * 60 * 60 * 1000).toISOString(),
+        _source: 'family'
+      }
+    ];
+    return familyEvents.value;
+  } catch (error) {
+    console.error('Error loading family events:', error);
+    familyEvents.value = [];
+    throw error;
+  }
 }
 
 // Load personal events
-async function loadPersonalEvents(startDate, endDate) {
+async function loadPersonalEvents(startDate: string, endDate: string) {
   if (!isPersonalEventsEnabled.value) {
     personalEvents.value = [];
-    return;
+    return [];
   }
   
   try {
+    console.log('Loading personal events for date range:', { startDate, endDate });
     const response = await personalEventService.getEventsForDateRange(startDate, endDate);
     
-    if (response.data) {
+    if (response.error) {
+      console.error('Error from personalEventService:', response.error);
+      throw response.error;
+    }
+    
+    if (Array.isArray(response.data)) {
       // Add source identifier
       personalEvents.value = response.data.map(event => ({
         ...event,
         _source: event.event_type === 'work' ? 'work' : 'personal'
       }));
+      return personalEvents.value;
+    } else {
+      console.warn('Unexpected response format from personalEventService:', response);
+      personalEvents.value = [];
+      return [];
     }
   } catch (error) {
     console.error('Error loading personal events:', error);
     personalEvents.value = [];
+    throw error;
   }
 }
 
 // Load health events
-async function loadHealthEvents(startDate, endDate) {
+async function loadHealthEvents(startDate: string, endDate: string) {
   if (!isHealthTrackingEnabled.value) {
     healthEvents.value = [];
-    return;
+    return [];
   }
   
   try {
     const response = await cycleTrackingService.getEntriesForDateRange(startDate, endDate);
     
-    if (response.data) {
+    if (response.error) {
+      console.error('Error from cycleTrackingService:', response.error);
+      throw response.error;
+    }
+    
+    if (Array.isArray(response.data)) {
       // Convert health entries to calendar-compatible format
       healthEvents.value = response.data.map(entry => {
         // Create start and end times
@@ -405,17 +447,48 @@ async function loadHealthEvents(startDate, endDate) {
           original: entry
         };
       });
+      return healthEvents.value;
+    } else {
+      console.warn('Unexpected response format from cycleTrackingService:', response);
+      healthEvents.value = [];
+      return [];
     }
   } catch (error) {
     console.error('Error loading health events:', error);
     healthEvents.value = [];
+    throw error;
   }
 }
 
+// Refresh calendar data based on current month
+function refreshCalendar() {
+  handleMonthChanged({
+    month: currentDate.value.getMonth(),
+    year: currentDate.value.getFullYear()
+  });
+}
+
 // Handle date selection
-function handleDateSelected(data) {
-  console.log('Date selected:', data.dateString);
-  // Pre-filling date in the appropriate form could be implemented here
+function handleDateSelected(data: any) {
+  if (data && data.dateString) {
+    // When user clicks on a date, create a new event pre-filled with that date
+    const selectedDate = new Date(data.dateString);
+    
+    selectedEvent.value = {
+      // Don't include an id field for new events
+      title: '',
+      event_type: 'personal',
+      start_time: new Date(selectedDate).toISOString(),
+      end_time: new Date(selectedDate).toISOString(),
+      location: '',
+      description: '',
+      is_all_day: false,
+      visibility: 'private',
+    };
+    
+    eventModalMode.value = 'create';
+    showEventModal.value = true;
+  }
 }
 
 // Navigate to today
@@ -423,61 +496,163 @@ function goToToday() {
   currentDate.value = new Date();
   handleMonthChanged({
     month: currentDate.value.getMonth(),
-    year: currentDate.value.getFullYear()
+    year: currentDate.value.getFullYear(),
+    date: currentDate.value
   });
 }
 
-// View event details
-function viewEvent(event) {
-  // Based on event type, navigate to the appropriate editor
-  switch (getEventType(event)) {
-    case 'family':
-      // Navigate to family event editor
-      console.log('View family event:', event);
-      break;
-    case 'personal':
-    case 'work':
-      // Navigate to personal event editor
-      console.log('View personal/work event:', event);
-      break;
-    case 'health':
-      // Navigate to health entry editor
-      console.log('View health entry:', event);
-      break;
+// Event Modal Functions
+
+// View an event
+function viewEvent(event: any) {
+  selectedEvent.value = { ...event };
+  eventModalMode.value = 'view';
+  showEventModal.value = true;
+}
+
+// Create a new event
+function createNewEvent() {
+  selectedEvent.value = {
+    // Don't include an id field for new events
+    title: '',
+    event_type: 'personal',
+    start_time: new Date().toISOString(),
+    end_time: new Date().toISOString(),
+    location: '',
+    description: '',
+    is_all_day: false,
+    visibility: 'private',
+  };
+  
+  eventModalMode.value = 'create';
+  showEventModal.value = true;
+}
+
+// Switch to edit mode
+function enterEditMode(event: any) {
+  selectedEvent.value = { ...event };
+  eventModalMode.value = 'edit';
+}
+
+// Close the event modal
+function closeEventModal() {
+  showEventModal.value = false;
+  selectedEvent.value = null;
+}
+
+// Open delete confirmation
+function openDeleteConfirmation(event: any) {
+  selectedEvent.value = event;
+  showDeleteConfirmation.value = true;
+}
+
+// Save event (create or update)
+async function saveEvent(eventData: any) {
+  saveInProgress.value = true;
+  
+  try {
+    // Handle family ID if needed
+    if (!eventData.family_id) {
+      eventData.family_id = '00000000-0000-0000-0000-000000000000'; // Add default family ID if needed
+    }
+    
+    // Create a copy of the event data to avoid mutating the original
+    const eventToSave = { ...eventData };
+    
+    // Determine if this is a create or update operation
+    const isCreateMode = eventModalMode.value === 'create';
+    let result;
+    
+    if (isCreateMode) {
+      // For new events, remove the ID field so PostgreSQL can generate a UUID
+      delete eventToSave.id;
+      
+      // Set the user_id field based on the current user
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        eventToSave.user_id = data.user.id;
+      }
+      
+      result = await personalEventService.createEvent(eventToSave);
+    } else {
+      // For updates, make sure we have a valid ID
+      if (!eventToSave.id) {
+        throw new Error('Missing event ID for update operation');
+      }
+      result = await personalEventService.updateEvent(eventToSave.id, eventToSave);
+    }
+    
+    if (result.error) {
+      console.error('Error saving event:', result.error);
+      throw result.error;
+    }
+    
+    // Close the modal and refresh data
+    showEventModal.value = false;
+    refreshCalendar();
+    
+  } catch (error) {
+    console.error('Error saving event:', error);
+  } finally {
+    saveInProgress.value = false;
   }
 }
 
-// Navigate to the appropriate event creator
-function goToEventCreator(type) {
-  showAddEventMenu.value = false;
+// Delete event
+async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any }) {
+  if (!deleteData.event || !deleteData.event.id) return;
   
-  switch (type) {
-    case 'family':
-      router.push('/calendar'); // Navigate to family calendar
-      break;
-    case 'personal':
-    case 'work':
-      router.push('/personal-events'); // Navigate to personal events
-      break;
-    case 'health':
-      router.push('/health/cycle-tracking'); // Navigate to health tracking
-      break;
+  deleteInProgress.value = true;
+  
+  try {
+    const result = await personalEventService.deleteEvent(
+      deleteData.event.id,
+      deleteData.deleteEntireSeries
+    );
+    
+    if (result.error) {
+      console.error('Error deleting event:', result.error);
+      throw result.error;
+    }
+    
+    // Close modals and refresh data
+    showDeleteConfirmation.value = false;
+    showEventModal.value = false;
+    refreshCalendar();
+    
+  } catch (error) {
+    console.error('Error deleting event:', error);
+  } finally {
+    deleteInProgress.value = false;
   }
 }
 
 // Initialize data on component mount
-onMounted(async () => {
-  await handleMonthChanged({
+onMounted(() => {
+  // Set a safety timeout to prevent infinite loading
+  const safetyTimeout = setTimeout(() => {
+    if (loading.value) {
+      console.warn('Safety timeout triggered - forcing loading state to false');
+      loading.value = false;
+      isLoadingData.value = false;
+    }
+  }, 10000);
+  
+  // Load initial data
+  handleMonthChanged({
     month: currentDate.value.getMonth(),
     year: currentDate.value.getFullYear()
+  }).finally(() => {
+    clearTimeout(safetyTimeout);
   });
 });
 
-// Watch for feature toggle changes
-watch([isHealthTrackingEnabled, isPersonalEventsEnabled], async () => {
-  await handleMonthChanged({
-    month: currentDate.value.getMonth(),
-    year: currentDate.value.getFullYear()
-  });
-});
+// Fixed watcher to prevent reactivity loop
+watch([isHealthTrackingEnabled, isPersonalEventsEnabled], () => {
+  // Only reload if not already loading and if we've loaded something before
+  if (!isLoadingData.value && lastLoadedMonth.value) {
+    const [year, month] = lastLoadedMonth.value.split('-').map(Number);
+    handleMonthChanged({ year, month });
+  }
+}, { immediate: false }); // IMPORTANT: immediate set to false
 </script>
