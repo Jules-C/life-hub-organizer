@@ -2,6 +2,7 @@
   <div 
     class="px-2 py-1 text-xs rounded-md truncate cursor-pointer"
     :class="[baseClass, customClass]"
+    :style="eventStyle"
     @click.stop="handleClick"
   >
     <div v-if="showTime && event.start_time" class="inline-block mr-1 font-medium">
@@ -13,19 +14,9 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { formatTime } from '@/utils/dateUtils';
+import type { CalendarEvent, EventVisibility } from '@/types/calendar';
 
-// Event object interface - common properties across different event types
-interface CalendarEvent {
-  id?: string;
-  title: string;
-  start_time?: string; // ISO format
-  end_time?: string; // ISO format
-  event_type?: string;
-  color?: string;
-  visibility?: string;
-  is_private?: boolean;
-  [key: string]: any; // Allow additional properties
-}
 
 interface Props {
   event: CalendarEvent;
@@ -46,9 +37,8 @@ const emit = defineEmits(['event-click']);
 const baseClass = computed(() => {
   // Use event.color if available, otherwise use event type
   if (props.event.color) {
-    // We can't dynamically generate Tailwind classes, so handle specific colors
-    // This is just a fallback - customClass should be passed for custom colors
-    return '';
+    // Return a basic class structure for custom colors
+    return `border`;
   }
 
   // Default styles based on event type
@@ -72,13 +62,17 @@ const baseClass = computed(() => {
   }
 });
 
-// Format time from ISO string to display format
-function formatTime(isoString: string): string {
-  if (!isoString) return '';
-  
-  const date = new Date(isoString);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
+// Add inline style for custom colors
+const eventStyle = computed(() => {
+  if (props.event.color) {
+    return {
+      backgroundColor: `${props.event.color}20`, // Add transparency
+      color: props.event.color,
+      borderColor: props.event.color
+    };
+  }
+  return {};
+});
 
 // Handle click on the event
 function handleClick() {

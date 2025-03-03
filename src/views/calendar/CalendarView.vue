@@ -158,9 +158,14 @@ import CalendarEvent from '@/components/calendar/CalendarEvent.vue';
 import EventModal from '@/components/calendar/EventModal.vue';
 import DeleteConfirmationModal from '@/components/calendar/DeleteConfirmationModal.vue';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
-import { personalEventService, type PersonalEvent } from '@/services/calendar/personalEvents';
+import { personalEventService} from '@/services/calendar/personalEvents';
+import type { CalendarEvent as CalendarEventType } from '@/types/calendar';
 import { cycleTrackingService, type CycleTrackingEntry } from '@/services/health/cycleTracking';
 import { supabase } from '@/services/supabase';
+import { getEventType } from '@/utils/calendarUtils';
+import { getFamilyContext } from '@/utils/familyUtils';
+import { handleApiError } from '@/utils/errorHandler';
+
 
 // State variables
 const router = useRouter();
@@ -181,7 +186,7 @@ const lastLoadedMonth = ref('');
 
 // Data stores
 const familyEvents = ref<any[]>([]);
-const personalEvents = ref<PersonalEvent[]>([]);
+const personalEvents = ref<CalendarEventType[]>([]);
 const healthEvents = ref<any[]>([]);
 
 // User preferences
@@ -279,16 +284,6 @@ function getEventsForDay(day: any) {
   });
 }
 
-// Get the event type for styling purposes
-function getEventType(event: any) {
-  if (!event) return 'default';
-  
-  if (event._source === 'family') return 'family';
-  if (event._source === 'health') return 'health';
-  if (event._source === 'work' || event.event_type === 'work') return 'work';
-  if (event._source === 'personal') return 'personal';
-  return 'default';
-}
 
 // Handle month change in the calendar
 async function handleMonthChanged(data: any) {
@@ -384,10 +379,7 @@ async function loadPersonalEvents(startDate: string, endDate: string) {
     console.log('Loading personal events for date range:', { startDate, endDate });
     const response = await personalEventService.getEventsForDateRange(startDate, endDate);
     
-    if (response.error) {
-      console.error('Error from personalEventService:', response.error);
-      throw response.error;
-    }
+    if (response.error) throw response.error;
     
     if (Array.isArray(response.data)) {
       // Add source identifier
@@ -402,9 +394,9 @@ async function loadPersonalEvents(startDate: string, endDate: string) {
       return [];
     }
   } catch (error) {
-    console.error('Error loading personal events:', error);
+    const errorDetails = handleApiError(error, 'loadPersonalEvents');
     personalEvents.value = [];
-    throw error;
+    return [];
   }
 }
 
@@ -418,10 +410,7 @@ async function loadHealthEvents(startDate: string, endDate: string) {
   try {
     const response = await cycleTrackingService.getEntriesForDateRange(startDate, endDate);
     
-    if (response.error) {
-      console.error('Error from cycleTrackingService:', response.error);
-      throw response.error;
-    }
+    if (response.error) throw response.error;
     
     if (Array.isArray(response.data)) {
       // Convert health entries to calendar-compatible format
@@ -454,9 +443,9 @@ async function loadHealthEvents(startDate: string, endDate: string) {
       return [];
     }
   } catch (error) {
-    console.error('Error loading health events:', error);
+    const errorDetails = handleApiError(error, 'loadHealthEvents');
     healthEvents.value = [];
-    throw error;
+    return [];
   }
 }
 
@@ -551,9 +540,17 @@ async function saveEvent(eventData: any) {
   saveInProgress.value = true;
   
   try {
-    // Handle family ID if needed
-    if (!eventData.family_id) {
-      eventData.family_id = '00000000-0000-0000-0000-000000000000'; // Add default family ID if needed
+    // Get family context
+    const { familyId, isPersonalOnly } = await getFamilyContext();
+    
+    // Set family ID only if user is part of a family
+    if (!isPersonalOnly && familyId) {
+      eventData.family_id = familyId;
+    }
+    
+    // For personal-only use, ensure visibility is private
+    if (isPersonalOnly) {
+      eventData.visibility = 'private';
     }
     
     // Create a copy of the event data to avoid mutating the original
@@ -582,17 +579,15 @@ async function saveEvent(eventData: any) {
       result = await personalEventService.updateEvent(eventToSave.id, eventToSave);
     }
     
-    if (result.error) {
-      console.error('Error saving event:', result.error);
-      throw result.error;
-    }
+    if (result.error) throw result.error;
     
     // Close the modal and refresh data
     showEventModal.value = false;
     refreshCalendar();
     
   } catch (error) {
-    console.error('Error saving event:', error);
+    const errorDetails = handleApiError(error, 'saveEvent');
+    // You could also add UI feedback here, like a toast notification
   } finally {
     saveInProgress.value = false;
   }
@@ -610,10 +605,7 @@ async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any
       deleteData.deleteEntireSeries
     );
     
-    if (result.error) {
-      console.error('Error deleting event:', result.error);
-      throw result.error;
-    }
+    if (result.error) throw result.error;
     
     // Close modals and refresh data
     showDeleteConfirmation.value = false;
@@ -621,7 +613,7 @@ async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any
     refreshCalendar();
     
   } catch (error) {
-    console.error('Error deleting event:', error);
+    const errorDetails = handleApiError(error, 'deleteEvent');
   } finally {
     deleteInProgress.value = false;
   }

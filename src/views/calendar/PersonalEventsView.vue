@@ -66,26 +66,7 @@
   
         <!-- Calendar View -->
         <div class="p-4">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center">
-              <button
-                @click="previousMonth"
-                class="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <h3 class="text-lg font-medium text-gray-900 mx-4">{{ currentMonthName }} {{ currentYear }}</h3>
-              <button
-                @click="nextMonth"
-                class="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+          <div class="flex justify-end mb-4">
             <div class="flex">
               <div class="flex items-center space-x-2 mr-4">
                 <span class="h-3 w-3 bg-blue-500 rounded-full"></span>
@@ -102,56 +83,41 @@
             </div>
           </div>
           
-          <!-- Calendar grid -->
-          <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
-            <!-- Day labels -->
-            <div 
-              v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" 
-              :key="day"
-              class="bg-gray-50 py-2 text-center text-sm font-medium text-gray-500"
-            >
-              {{ day }}
-            </div>
-            
-            <!-- Calendar cells -->
-            <div
-              v-for="(day, index) in calendarDays"
-              :key="index"
-              class="min-h-[120px] p-2 bg-white border-t border-gray-200"
-              :class="{ 
-                'bg-gray-50': !day.isCurrentMonth,
-                'bg-blue-50': day.isToday
-              }"
-              @click="day.isCurrentMonth && selectDate(day.date)"
-            >
-              <!-- Date number -->
-              <div class="flex items-center justify-between">
-                <span 
-                  class="text-sm font-medium"
-                  :class="{ 
-                    'text-gray-900': day.isCurrentMonth, 
-                    'text-gray-400': !day.isCurrentMonth,
-                    'text-blue-600': day.isToday
-                  }"
-                >
-                  {{ day.date }}
-                </span>
-              </div>
-              
-              <!-- Events -->
-              <div class="mt-2 space-y-1">
+          <!-- Calendar Grid Component -->
+          <CalendarGrid
+            :initialDate="currentDate"
+            @month-changed="handleMonthChanged"
+            @date-selected="selectDate"
+          >
+            <!-- Day indicators (dots for events) -->
+            <template #date-indicators="{ day }">
+              <div v-if="getEventsForDay(day).length > 0" class="flex space-x-1">
                 <div 
-                  v-for="event in getEventsForDay(day)"
-                  :key="event.id"
-                  class="px-2 py-1 text-xs rounded-md truncate cursor-pointer"
-                  :class="getEventClass(event)"
-                  @click.stop="viewEvent(event)"
-                >
-                  {{ formatTime(event.start_time) }} {{ event.title }}
-                </div>
+                  v-for="(eventType, index) in getEventTypes(getEventsForDay(day))" 
+                  :key="index"
+                  class="w-2 h-2 rounded-full"
+                  :class="{
+                    'bg-blue-500': eventType === 'personal',
+                    'bg-emerald-500': eventType === 'work',
+                    'bg-purple-500': eventType === 'shared'
+                  }"
+                ></div>
               </div>
-            </div>
-          </div>
+            </template>
+            
+            <!-- Day content (events) -->
+            <template #day-content="{ day }">
+              <div 
+                v-for="event in getEventsForDay(day)" 
+                :key="event.id"
+                class="px-2 py-1 text-xs rounded-md truncate cursor-pointer"
+                :class="getEventClass(event)"
+                @click.stop="viewEvent(event)"
+              >
+                {{ formatTime(event.start_time) }} {{ event.title }}
+              </div>
+            </template>
+          </CalendarGrid>
         </div>
         
         <!-- Upcoming Events -->
@@ -387,11 +353,14 @@
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
                       >
                         <option value="private">Private</option>
-                        <option value="family">Family</option>
-                        <option value="public">Public</option>
+                        <option v-if="!isPersonalOnly" value="family">Family</option>
+                        <option v-if="!isPersonalOnly" value="public">Public</option>
                       </select>
-                      <p class="mt-1 text-xs text-gray-500">
+                      <p class="mt-1 text-xs text-gray-500" v-if="!isPersonalOnly">
                         Choose who can see this event on the family calendar
+                      </p>
+                      <p class="mt-1 text-xs text-gray-500" v-else>
+                        Events are private in personal mode
                       </p>
                     </div>
                     
@@ -551,13 +520,17 @@
                         id="work-visibility" 
                         v-model="workSchedule.visibility"
                         class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+                        :disabled="isPersonalOnly"
                       >
                         <option value="private">Private</option>
-                        <option value="family">Family</option>
-                        <option value="public">Public</option>
+                        <option v-if="!isPersonalOnly" value="family">Family</option>
+                        <option v-if="!isPersonalOnly" value="public">Public</option>
                       </select>
-                      <p class="mt-1 text-xs text-gray-500">
+                      <p class="mt-1 text-xs text-gray-500" v-if="!isPersonalOnly">
                         Choose who can see your work schedule
+                      </p>
+                      <p class="mt-1 text-xs text-gray-500" v-else>
+                        Work schedule is private in personal mode
                       </p>
                     </div>
                     
@@ -651,20 +624,33 @@
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue';
   import AppLayout from '@/components/layout/AppLayout.vue';
-  import { personalEventService, type PersonalEvent } from '@/services/calendar/personalEvents';
+import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
+  import { personalEventService} from '@/services/calendar/personalEvents';
+  import type { CalendarEvent, EventVisibility } from '@/types/calendar';
   import { useAuthStore } from '@/stores/auth';
-  
+  import { formatDateTime, formatTime } from '@/utils/dateUtils';
+import { getFamilyContext } from '@/utils/familyUtils';
+  import { handleApiError } from '@/utils/errorHandler';
+
   const authStore = useAuthStore();
   const loading = ref(true);
   const activeTab = ref('all');
-  const events = ref<PersonalEvent[]>([]);
+  const events = ref<CalendarEvent[]>([]);
   const currentDate = ref(new Date());
   const showNewEventModal = ref(false);
   const showWorkScheduleModal = ref(false);
   const showDeleteModal = ref(false);
   const editingEvent = ref(false);
-  const eventToDelete = ref<PersonalEvent | null>(null);
+  const eventToDelete = ref<CalendarEvent | null>(null);
   const deleteEntireSeries = ref(false);
+  
+  // Detect if this is a personal-only user (no family sharing)
+  const isPersonalOnly = ref(true); // Default to true until we check
+  
+  async function checkFamilyContext() {
+    const { isPersonalOnly: solo } = await getFamilyContext();
+    isPersonalOnly.value = solo;
+  }
   
   // Calendar navigation
   const currentMonthName = computed(() => {
@@ -682,13 +668,13 @@
   const endTime = ref('10:00');
   const recurrenceRule = ref('');
   
-  const newEvent = ref<PersonalEvent>({
+  const newEvent = ref<CalendarEvent>({
     title: '',
     event_type: 'personal',
     start_time: '',
     end_time: '',
     is_all_day: false,
-    visibility: 'private',
+    visibility: 'private' as EventVisibility,
     color: '#3B82F6' // Default blue
   });
   
@@ -698,7 +684,7 @@
     startTime: '09:00',
     endTime: '17:00',
     location: '',
-    visibility: 'family',
+    visibility: 'family' as EventVisibility,
     useDateRange: false,
     startDate: new Date().toISOString().slice(0, 10),
     endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
@@ -724,60 +710,20 @@
     { value: '#F59E0B', class: 'bg-amber-500' },  // Amber
   ];
   
-  // Calendar days
-  const calendarDays = computed(() => {
-    const year = currentDate.value.getFullYear();
-    const month = currentDate.value.getMonth();
-    
-    // First day of the month
-    const firstDay = new Date(year, month, 1);
-    // Last day of the month
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Get the day of the week for the first day (0-6)
-    const firstDayOfWeek = firstDay.getDay();
-    
-    // Array to hold all calendar cells
-    const days = [];
-    
-    // Add days from previous month to fill the first row
-    const prevMonth = new Date(year, month, 0);
-    const prevMonthDays = prevMonth.getDate();
-    
-    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      days.push({
-        date: prevMonthDays - i,
-        isCurrentMonth: false,
-        isToday: false
-      });
-    }
-    
-    // Add days from current month
-    const today = new Date();
-    const isCurrentMonthAndYear = 
-      today.getMonth() === month && 
-      today.getFullYear() === year;
-    
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      days.push({
-        date: i,
-        isCurrentMonth: true,
-        isToday: isCurrentMonthAndYear && today.getDate() === i
-      });
-    }
-    
-    // Add days from next month to complete the grid (6 rows x 7 days = 42)
-    const nextMonthDays = 42 - days.length;
-    for (let i = 1; i <= nextMonthDays; i++) {
-      days.push({
-        date: i,
-        isCurrentMonth: false,
-        isToday: false
-      });
-    }
-    
-    return days;
-  });
+  // Function to get unique event types for indicators
+  function getEventTypes(events: any[]) {
+    const types = new Set();
+    events.forEach(event => {
+      if (event.event_type === 'work') {
+        types.add('work');
+      } else if (event.visibility !== 'private') {
+        types.add('shared');
+      } else {
+        types.add('personal');
+      }
+    });
+    return Array.from(types);
+  }
   
   // Get filtered events based on the active tab
   const filteredEvents = computed(() => {
@@ -804,10 +750,13 @@
   
   // Helper functions
   function getEventsForDay(day: any) {
-    if (!day.isCurrentMonth) return [];
+    if (!day || !day.isCurrentMonth) return [];
     
-    const date = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), day.date);
-    const dateStr = date.toISOString().slice(0, 10);
+    // For CalendarGrid component compatibility
+    const dateStr = day.dateString || (() => {
+      const date = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), day.date);
+      return date.toISOString().slice(0, 10);
+    })();
     
     return filteredEvents.value.filter(event => {
       const eventDate = event.start_time.slice(0, 10);
@@ -815,23 +764,8 @@
     });
   }
   
-  function formatTime(isoString: string) {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
   
-  function formatDateTime(isoString: string) {
-    const date = new Date(isoString);
-    return date.toLocaleDateString([], { 
-      weekday: 'short',
-      month: 'short', 
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  }
-  
-  function getEventClass(event: PersonalEvent) {
+  function getEventClass(event: CalendarEvent) {
     if (event.event_type === 'work') {
       return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
     } else if (event.visibility !== 'private') {
@@ -841,7 +775,7 @@
     }
   }
   
-  function getEventIndicatorClass(event: PersonalEvent) {
+  function getEventIndicatorClass(event: CalendarEvent) {
     if (event.event_type === 'work') {
       return 'bg-emerald-500';
     } else if (event.visibility !== 'private') {
@@ -851,34 +785,47 @@
     }
   }
   
-  function previousMonth() {
-    const newDate = new Date(currentDate.value);
-    newDate.setMonth(newDate.getMonth() - 1);
-    currentDate.value = newDate;
-  }
-  
-  function nextMonth() {
-    const newDate = new Date(currentDate.value);
-    newDate.setMonth(newDate.getMonth() + 1);
-    currentDate.value = newDate;
+  // Handle month change from CalendarGrid component
+  function handleMonthChanged(data: any) {
+    // Update the current date
+    if (data.date) {
+      currentDate.value = new Date(data.date);
+    } else {
+      currentDate.value = new Date(data.year, data.month);
+    }
+    
+    // Load events for this month
+    loadEvents();
   }
   
   // Event handling functions
-  function selectDate(date: number) {
+  function selectDate(data: any) {
     // Pre-fill the event form with the selected date
-    const selectedDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), date);
+    let selectedDate;
+    
+    if (data.dateString) {
+      // Format from CalendarGrid component
+      selectedDate = new Date(data.dateString);
+    } else if (typeof data === 'number') {
+      // Legacy format (just the day number)
+      selectedDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), data);
+    } else {
+      // Fallback to current date
+      selectedDate = new Date();
+    }
+    
     startDate.value = selectedDate.toISOString().slice(0, 10);
     endDate.value = selectedDate.toISOString().slice(0, 10);
     
     showNewEventModal.value = true;
   }
   
-  function viewEvent(event: PersonalEvent) {
+  function viewEvent(event: CalendarEvent) {
     // View the event details
     editEvent(event);
   }
   
-  function editEvent(event: PersonalEvent) {
+  function editEvent(event: CalendarEvent) {
     editingEvent.value = true;
     newEvent.value = { ...event };
     
@@ -896,7 +843,7 @@
     showNewEventModal.value = true;
   }
   
-  function confirmDeleteEvent(event: PersonalEvent) {
+  function confirmDeleteEvent(event: CalendarEvent) {
     eventToDelete.value = event;
     deleteEntireSeries.value = false;
     showDeleteModal.value = true;
@@ -931,9 +878,17 @@
     newEvent.value.end_time = end.toISOString();
     newEvent.value.recurrence_rule = recurrenceRule.value;
     
-    // Set family_id if not set
-    if (!newEvent.value.family_id) {
-      newEvent.value.family_id = '00000000-0000-0000-0000-000000000000';
+    // Get family context
+    const { familyId, isPersonalOnly } = await getFamilyContext();
+    
+    // Set family ID only if user is part of a family
+    if (!isPersonalOnly && familyId) {
+      newEvent.value.family_id = familyId;
+    }
+    
+    // For personal-only use, ensure visibility is private
+    if (isPersonalOnly) {
+      newEvent.value.visibility = 'private';
     }
     
     try {
@@ -961,63 +916,70 @@
   }
   
   async function saveWorkSchedule() {
-    // Generate recurring events for each selected day over the date range
-    try {
-      const byday = selectedWorkDays.value.join(',');
-      let recurrenceRule = `FREQ=WEEKLY;BYDAY=${byday}`;
-      
-      // Create start and end times for the work schedule
-      const startDateObj = workSchedule.value.useDateRange
-        ? new Date(workSchedule.value.startDate)
-        : new Date(); // Today if no date range
-      
-      const endDateObj = workSchedule.value.useDateRange
-        ? new Date(workSchedule.value.endDate)
-        : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // Default to one year from now
-      
-      // Set the time components
-      const [startHours, startMinutes] = workSchedule.value.startTime.split(':').map(Number);
-      const [endHours, endMinutes] = workSchedule.value.endTime.split(':').map(Number);
-      
-      startDateObj.setHours(startHours, startMinutes, 0);
-      endDateObj.setHours(endHours, endMinutes, 0);
-      
-      // If using date range, add UNTIL parameter to recurrence rule
-      if (workSchedule.value.useDateRange) {
-        const untilDate = new Date(workSchedule.value.endDate);
-        untilDate.setHours(23, 59, 59);
-        recurrenceRule += `;UNTIL=${untilDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`;
-      }
-      
-      // Create the work schedule event
-      const workEvent: PersonalEvent = {
-        title: workSchedule.value.title,
-        description: 'Work Schedule',
-        start_time: startDateObj.toISOString(),
-        end_time: new Date(startDateObj.getTime() + (endHours - startHours) * 60 * 60 * 1000 + (endMinutes - startMinutes) * 60 * 1000).toISOString(),
-        location: workSchedule.value.location,
-        is_all_day: false,
-        event_type: 'work',
-        recurrence_rule: recurrenceRule,
-        visibility: workSchedule.value.visibility,
-        color: '#10B981', // Emerald
-        family_id: '00000000-0000-0000-0000-000000000000' // Placeholder
-      };
-      
-      const result = await personalEventService.createEvent(workEvent);
-      
-      if (result.error) throw result.error;
-      
-      // Refresh the data
-      await loadEvents();
-      
-      // Reset and close the modal
-      resetWorkScheduleForm();
-      showWorkScheduleModal.value = false;
-    } catch (err) {
-      console.error('Failed to save work schedule:', err);
+  // Generate recurring events for each selected day over the date range
+  try {
+    const byday = selectedWorkDays.value.join(',');
+    let recurrenceRule = `FREQ=WEEKLY;BYDAY=${byday}`;
+    
+    // Create start and end times for the work schedule
+    const startDateObj = workSchedule.value.useDateRange
+      ? new Date(workSchedule.value.startDate)
+      : new Date(); // Today if no date range
+    
+    const endDateObj = workSchedule.value.useDateRange
+      ? new Date(workSchedule.value.endDate)
+      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // Default to one year from now
+    
+    // Set the time components
+    const [startHours, startMinutes] = workSchedule.value.startTime.split(':').map(Number);
+    const [endHours, endMinutes] = workSchedule.value.endTime.split(':').map(Number);
+    
+    startDateObj.setHours(startHours, startMinutes, 0);
+    endDateObj.setHours(endHours, endMinutes, 0);
+    
+    // If using date range, add UNTIL parameter to recurrence rule
+    if (workSchedule.value.useDateRange) {
+      const untilDate = new Date(workSchedule.value.endDate);
+      untilDate.setHours(23, 59, 59);
+      recurrenceRule += `;UNTIL=${untilDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z`;
     }
+    
+    // Get family context
+    const { familyId, isPersonalOnly } = await getFamilyContext();
+    
+    // Create the work schedule event
+    const workEvent: CalendarEvent = {
+      title: workSchedule.value.title,
+      description: 'Work Schedule',
+      start_time: startDateObj.toISOString(),
+      end_time: new Date(startDateObj.getTime() + (endHours - startHours) * 60 * 60 * 1000 + (endMinutes - startMinutes) * 60 * 1000).toISOString(),
+      location: workSchedule.value.location,
+      is_all_day: false,
+      event_type: 'work',
+      recurrence_rule: recurrenceRule,
+      visibility: isPersonalOnly ? 'private' as EventVisibility : workSchedule.value.visibility,
+      color: '#10B981' // Emerald
+    };
+    
+    // Set family ID only if user is part of a family
+    if (!isPersonalOnly && familyId) {
+      workEvent.family_id = familyId;
+    }
+    
+    const result = await personalEventService.createEvent(workEvent);
+    
+    if (result.error) throw result.error;
+    
+    // Refresh the data
+    await loadEvents();
+    
+    // Reset and close the modal
+    resetWorkScheduleForm();
+    showWorkScheduleModal.value = false;
+  } catch (error) {
+    const errorDetails = handleApiError(error, 'saveWorkSchedule');
   }
+}
   
   function toggleWorkDay(day: string) {
     const index = selectedWorkDays.value.indexOf(day);
@@ -1036,7 +998,7 @@
       start_time: '',
       end_time: '',
       is_all_day: false,
-      visibility: 'private',
+      visibility: 'private' as EventVisibility,
       color: '#3B82F6' // Default blue
     };
     
@@ -1053,7 +1015,7 @@
       startTime: '09:00',
       endTime: '17:00',
       location: '',
-      visibility: 'family',
+      visibility: 'family' as EventVisibility,
       useDateRange: false,
       startDate: new Date().toISOString().slice(0, 10),
       endDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
@@ -1063,35 +1025,36 @@
   
   // Data loading
   async function loadEvents() {
-    loading.value = true;
-    try {
-      // Get start and end of the current month
-      const year = currentDate.value.getFullYear();
-      const month = currentDate.value.getMonth();
-      const startDate = new Date(year, month, 1).toISOString();
-      const endDate = new Date(year, month + 1, 0).toISOString();
-      
-      const { data, error } = await personalEventService.getEventsForDateRange(startDate, endDate);
-      
-      if (error) throw error;
-      
-      if (data) {
-        events.value = data;
-      }
-    } catch (err) {
-      console.error('Failed to load events:', err);
-    } finally {
-      loading.value = false;
+  loading.value = true;
+  try {
+    // Get start and end of the current month
+    const year = currentDate.value.getFullYear();
+    const month = currentDate.value.getMonth();
+    const startDate = new Date(year, month, 1).toISOString();
+    const endDate = new Date(year, month + 1, 0).toISOString();
+    
+    const { data, error } = await personalEventService.getEventsForDateRange(startDate, endDate);
+    
+    if (error) throw error;
+    
+    if (data) {
+      events.value = data;
     }
+  } catch (error) {
+    const errorDetails = handleApiError(error, 'loadEvents');
+  } finally {
+    loading.value = false;
   }
+}
   
   // Watch for changes to the current month and reload events
   watch([currentDate, activeTab], async () => {
     await loadEvents();
   });
   
-  // Load initial data
+  // Initialize data and check family context
   onMounted(async () => {
+    await checkFamilyContext();
     await loadEvents();
   });
   </script>

@@ -78,6 +78,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
+import { isSameDay, formatDateString } from '@/utils/dateUtils';
+import { getCalendarDays } from '@/utils/calendarUtils';
+
 
 interface CalendarDay {
   date: number;
@@ -116,62 +119,7 @@ const currentYear = computed(() => {
 const calendarDays = computed(() => {
   const year = currentDate.value.getFullYear();
   const month = currentDate.value.getMonth();
-  
-  // Get first day of the month
-  const firstDay = new Date(year, month, 1);
-  // Get last day of the month
-  const lastDay = new Date(year, month + 1, 0);
-  
-  // Get the day of the week for the first day (0-6)
-  const firstDayOfWeek = firstDay.getDay();
-  
-  // Array to hold all calendar cells
-  const days: CalendarDay[] = [];
-  
-  // Add days from previous month to fill the first row
-  const prevMonth = new Date(year, month, 0);
-  const prevMonthDays = prevMonth.getDate();
-  
-  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-    const date = prevMonthDays - i;
-    const prevMonthDate = new Date(year, month - 1, date);
-    days.push({
-      date,
-      isCurrentMonth: false,
-      isToday: isSameDay(prevMonthDate, new Date()),
-      dateString: formatDateString(prevMonthDate)
-    });
-  }
-  
-  // Add days from current month
-  const today = new Date();
-  const isCurrentMonthAndYear = 
-    today.getMonth() === month && 
-    today.getFullYear() === year;
-  
-  for (let i = 1; i <= lastDay.getDate(); i++) {
-    const currentDayDate = new Date(year, month, i);
-    days.push({
-      date: i,
-      isCurrentMonth: true,
-      isToday: isCurrentMonthAndYear && today.getDate() === i,
-      dateString: formatDateString(currentDayDate)
-    });
-  }
-  
-  // Add days from next month to complete the grid (6 rows × 7 days = 42 cells)
-  const remainingCells = 42 - days.length;
-  for (let i = 1; i <= remainingCells; i++) {
-    const nextMonthDate = new Date(year, month + 1, i);
-    days.push({
-      date: i,
-      isCurrentMonth: false,
-      isToday: isSameDay(nextMonthDate, new Date()),
-      dateString: formatDateString(nextMonthDate)
-    });
-  }
-  
-  return days;
+  return getCalendarDays(year, month);
 });
 
 // Methods
@@ -208,16 +156,6 @@ function selectDate(day: CalendarDay) {
   }
 }
 
-// Utility functions
-function isSameDay(d1: Date, d2: Date): boolean {
-  return d1.getDate() === d2.getDate() &&
-         d1.getMonth() === d2.getMonth() &&
-         d1.getFullYear() === d2.getFullYear();
-}
-
-function formatDateString(date: Date): string {
-  return date.toISOString().split('T')[0]; // YYYY-MM-DD format
-}
 
 // Public methods accessible from parent components
 defineExpose({

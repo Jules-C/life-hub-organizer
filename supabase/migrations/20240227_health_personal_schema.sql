@@ -2,7 +2,7 @@
 CREATE TABLE cycle_tracking (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES auth.users(id),
-  family_id UUID REFERENCES families(id) ON DELETE CASCADE,
+  family_id UUID NULL REFERENCES families(id) ON DELETE CASCADE,
   start_date DATE NOT NULL,
   end_date DATE,
   flow_intensity INTEGER CHECK (flow_intensity BETWEEN 1 AND 5),
@@ -17,7 +17,7 @@ CREATE TABLE cycle_tracking (
 CREATE TABLE personal_events (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES auth.users(id),
-  family_id UUID REFERENCES families(id) ON DELETE CASCADE,
+  family_id UUID NULL REFERENCES families(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   description TEXT,
   start_time TIMESTAMPTZ NOT NULL,
@@ -81,6 +81,7 @@ CREATE POLICY "Users can view their own personal events"
 CREATE POLICY "Users can view family events with family visibility"
   ON personal_events FOR SELECT
   USING (
+    family_id IS NOT NULL AND
     family_id IN (
       SELECT family_id FROM family_members WHERE user_id = auth.uid()
     )

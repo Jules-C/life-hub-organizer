@@ -21,79 +21,34 @@
   
         <!-- Month View Calendar -->
         <div class="p-4 border-t border-gray-200">
-          <div class="flex items-center justify-between mb-4">
-            <button
-              @click="previousMonth"
-              class="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <h3 class="text-lg font-medium text-gray-900">{{ currentMonthName }} {{ currentYear }}</h3>
-            <button
-              @click="nextMonth"
-              class="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-            >
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-          
-          <!-- Calendar grid -->
-          <div class="grid grid-cols-7 gap-px bg-gray-200 rounded-lg overflow-hidden">
-            <!-- Day labels -->
-            <div 
-              v-for="day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" 
-              :key="day"
-              class="bg-gray-50 py-2 text-center text-sm font-medium text-gray-500"
-            >
-              {{ day }}
-            </div>
-            
-            <!-- Calendar cells -->
-            <div
-              v-for="(day, index) in calendarDays"
-              :key="index"
-              class="min-h-[80px] p-2 bg-white border-t border-gray-200"
-              :class="{ 
-                'bg-gray-50': !day.isCurrentMonth,
-                'bg-blue-50': day.isToday
-              }"
-            >
-              <!-- Date number -->
-              <div class="flex items-center justify-between">
-                <span 
-                  class="text-sm font-medium"
-                  :class="{ 
-                    'text-gray-900': day.isCurrentMonth, 
-                    'text-gray-400': !day.isCurrentMonth,
-                    'text-blue-600': day.isToday
-                  }"
-                >
-                  {{ day.date }}
-                </span>
-                
-                <!-- Cycle indicators -->
-                <div v-if="day.hasCycleData" class="flex space-x-1">
-                  <div 
-                    class="w-2 h-2 rounded-full"
-                    :class="getDotClass(day.cycleType)"
-                  ></div>
-                </div>
+          <!-- Calendar Grid Component -->
+          <CalendarGrid
+            :initialDate="currentDate"
+            @month-changed="handleMonthChanged"
+            @date-selected="handleDateSelected"
+          >
+            <!-- Date indicators -->
+            <template #date-indicators="{ day }">
+              <div v-if="isCycleActiveDay(day)" class="flex space-x-1">
+                <div 
+                  class="w-2 h-2 rounded-full bg-pink-500"
+                ></div>
               </div>
-              
+            </template>
+            
+            <!-- Day content -->
+            <template #day-content="{ day }">
               <!-- Period flow indicator (if applicable) -->
               <div 
-                v-if="day.hasCycleData && day.cycleType === 'active'"
+                v-if="isCycleActiveDay(day)"
                 class="mt-1 text-xs text-center py-1 rounded"
-                :class="getFlowClass(day.flowIntensity)"
+                :class="getFlowClassForDay(day)"
+                @click.stop="showCycleDetails(day)"
               >
-                {{ getFlowLabel(day.flowIntensity) }}
+                {{ getFlowLabelForDay(day) }}
               </div>
-            </div>
-          </div>
+            </template>
+          </CalendarGrid>
         </div>
         
         <!-- Stats and Predictions -->
@@ -305,7 +260,7 @@
                     </div>
                     
                     <!-- Privacy -->
-                    <div class="mb-4">
+                    <div class="mb-4" v-if="!isPersonalOnly">
                       <div class="flex items-center">
                         <input id="is_private" type="checkbox" v-model="newEntry.is_private" class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                         <label for="is_private" class="ml-2 block text-sm text-gray-900">Keep this entry private</label>
@@ -387,8 +342,10 @@
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue';
   import AppLayout from '@/components/layout/AppLayout.vue';
+import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
   import { cycleTrackingService, type CycleTrackingEntry } from '@/services/health/cycleTracking';
   import { useAuthStore } from '@/stores/auth';
+import { getFamilyContext } from '@/utils/familyUtils';
   
   const authStore = useAuthStore();
   const loading = ref(true);
@@ -400,6 +357,14 @@
   const showDeleteModal = ref(false);
   const editingEntry = ref(false);
   const ongoing = ref(false);
+  
+  // Detect if this is a personal-only user (no family sharing)
+  const isPersonalOnly = ref(true); // Default to true until we check
+  
+  async function checkFamilyContext() {
+    const { isPersonalOnly: solo } = await getFamilyContext();
+    isPersonalOnly.value = solo;
+  }
   const entryToDelete = ref<CycleTrackingEntry | null>(null);
   
   const newEntry = ref<CycleTrackingEntry>({
@@ -422,115 +387,82 @@
   
   const selectedSymptoms = ref<string[]>([]);
   
-  // Calendar computed properties
-  const currentMonthName = computed(() => {
-    return currentDate.value.toLocaleString('default', { month: 'long' });
-  });
-  
-  const currentYear = computed(() => {
-    return currentDate.value.getFullYear();
-  });
-  
-  const calendarDays = computed(() => {
-    const year = currentDate.value.getFullYear();
-    const month = currentDate.value.getMonth();
-    
-    // Get first day of the month
-    const firstDay = new Date(year, month, 1);
-    // Get last day of the month
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Get the day of the week for the first day (0-6)
-    const firstDayOfWeek = firstDay.getDay();
-    
-    // Array to hold all calendar cells
-    const days = [];
-    
-    // Add days from previous month to fill the first row
-    const prevMonth = new Date(year, month, 0);
-    const prevMonthDays = prevMonth.getDate();
-    
-    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-      days.push({
-        date: prevMonthDays - i,
-        isCurrentMonth: false,
-        isToday: false,
-        hasCycleData: false,
-        cycleType: null,
-        flowIntensity: null
-      });
+  // Calendar-related functions for the CalendarGrid component
+  function handleMonthChanged(data: any) {
+    if (data.date) {
+      currentDate.value = new Date(data.date);
+    } else {
+      currentDate.value = new Date(data.year, data.month);
     }
     
-    // Add days from current month
-    const today = new Date();
-    const isCurrentMonthAndYear = 
-      today.getMonth() === month && 
-      today.getFullYear() === year;
+    // This will trigger reloading of cycle data if needed
+    loadCycleData();
+  }
+  
+  function handleDateSelected(day: any) {
+    // Show entry form for the selected day
+    if (day && day.dateString) {
+      newEntry.value.start_date = day.dateString;
+      showNewEntryModal.value = true;
+    }
+  }
+  
+  function isCycleActiveDay(day: any) {
+    if (!day || !day.dateString || !day.isCurrentMonth) return false;
     
-    for (let i = 1; i <= lastDay.getDate(); i++) {
-      const currentDay = new Date(year, month, i);
-      const dateString = currentDay.toISOString().slice(0, 10);
+    const dateString = day.dateString;
+    
+    return cycleEntries.value.some(entry => {
+      const startDate = entry.start_date;
+      const endDate = entry.end_date;
       
-      // Check if this date has cycle data
-      const hasCycleData = cycleEntries.value.some(entry => {
-        const startDate = new Date(entry.start_date);
-        const endDate = entry.end_date ? new Date(entry.end_date) : null;
-        
-        // Check if current day is within a cycle period
-        if (endDate) {
-          return dateString >= entry.start_date && dateString <= entry.end_date;
-        } else {
-          return dateString >= entry.start_date;
-        }
-      });
-      
-      // Get cycle data if available
-      let cycleType = null;
-      let flowIntensity = null;
-      
-      if (hasCycleData) {
-        const entry = cycleEntries.value.find(entry => {
-          const startDate = new Date(entry.start_date);
-          const endDate = entry.end_date ? new Date(entry.end_date) : null;
-          
-          if (endDate) {
-            return dateString >= entry.start_date && dateString <= entry.end_date;
-          } else {
-            return dateString >= entry.start_date;
-          }
-        });
-        
-        if (entry) {
-          cycleType = 'active';
-          flowIntensity = entry.flow_intensity || 1;
-        }
+      if (endDate) {
+        return dateString >= startDate && dateString <= endDate;
+      } else {
+        return dateString >= startDate;
       }
+    });
+  }
+  
+  function getCycleEntryForDay(day: any) {
+    if (!day || !day.dateString) return null;
+    
+    const dateString = day.dateString;
+    
+    return cycleEntries.value.find(entry => {
+      const startDate = entry.start_date;
+      const endDate = entry.end_date;
       
-      days.push({
-        date: i,
-        isCurrentMonth: true,
-        isToday: isCurrentMonthAndYear && today.getDate() === i,
-        hasCycleData,
-        cycleType,
-        flowIntensity
-      });
-    }
+      if (endDate) {
+        return dateString >= startDate && dateString <= endDate;
+      } else {
+        return dateString >= startDate;
+      }
+    });
+  }
+  
+  function getFlowClassForDay(day: any) {
+    const entry = getCycleEntryForDay(day);
+    if (!entry) return '';
     
-    // Add days from next month to complete the grid (6 rows x 7 days = 42)
-    const nextMonthDays = 42 - days.length;
-    for (let i = 1; i <= nextMonthDays; i++) {
-      days.push({
-        date: i,
-        isCurrentMonth: false,
-        isToday: false,
-        hasCycleData: false,
-        cycleType: null,
-        flowIntensity: null
-      });
-    }
+    const intensity = entry.flow_intensity || 1;
+    return getFlowClass(intensity);
+  }
+  
+  function getFlowLabelForDay(day: any) {
+    const entry = getCycleEntryForDay(day);
+    if (!entry) return '';
     
-    return days;
-  });
+    const intensity = entry.flow_intensity || 1;
+    return getFlowLabel(intensity);
+  }
+  
+  function showCycleDetails(day: any) {
+    const entry = getCycleEntryForDay(day);
+    if (entry) {
+      editEntry(entry);
+    }
+  }
   
   // Get recent entries for the list
   const recentEntries = computed(() => {
@@ -556,18 +488,7 @@
     return symptomCount;
   });
   
-  // Navigation methods
-  function previousMonth() {
-    const newDate = new Date(currentDate.value);
-    newDate.setMonth(newDate.getMonth() - 1);
-    currentDate.value = newDate;
-  }
-  
-  function nextMonth() {
-    const newDate = new Date(currentDate.value);
-    newDate.setMonth(newDate.getMonth() + 1);
-    currentDate.value = newDate;
-  }
+  // Calendar methods are now handled by CalendarGrid component
   
   // Visual helpers
   function getDotClass(cycleType: string | null) {
@@ -702,11 +623,17 @@
       newEntry.value.end_date = undefined;
     }
     
-    // Set family_id if not set
-    if (!newEntry.value.family_id) {
-      // For demo purposes, use a placeholder ID
-      // In real app, this would come from the current selected family
-      newEntry.value.family_id = '00000000-0000-0000-0000-000000000000';
+    // Get family context
+    const { familyId, isPersonalOnly } = await getFamilyContext();
+    
+    // Set family ID only if user is part of a family
+    if (!isPersonalOnly && familyId) {
+      newEntry.value.family_id = familyId;
+    }
+    
+    // For personal-only use, ensure entry is private
+    if (isPersonalOnly) {
+      newEntry.value.is_private = true;
     }
     
     try {
@@ -754,6 +681,7 @@
   
   // Initialize data
   onMounted(async () => {
+    await checkFamilyContext();
     await loadCycleData();
   });
   </script>

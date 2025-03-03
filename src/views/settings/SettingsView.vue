@@ -1,4 +1,133 @@
-<template>
+<template>  <!-- Create Family Modal -->
+  <div v-if="showCreateFamilyModal" class="fixed inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showCreateFamilyModal = false"></div>
+
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+      <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <div>
+          <div class="mt-3 text-center sm:mt-0 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+              Create Family
+            </h3>
+            <div class="mt-4">
+              <form @submit.prevent="createFamily">
+                <div class="mb-4">
+                  <label for="family-name" class="block text-sm font-medium text-gray-700">Family Name</label>
+                  <input 
+                    type="text" 
+                    id="family-name" 
+                    v-model="newFamily.name"
+                    required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    placeholder="e.g. Smith Family"
+                  />
+                </div>
+                
+                <div class="mb-4">
+                  <label for="family-description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                  <textarea 
+                    id="family-description" 
+                    v-model="newFamily.description" 
+                    rows="3" 
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    placeholder="A brief description of your family"
+                  ></textarea>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                  <button
+                    type="submit"
+                    :disabled="saving"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:col-start-2 sm:text-sm"
+                  >
+                    <span v-if="saving">Creating...</span>
+                    <span v-else>Create Family</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                    @click="showCreateFamilyModal = false"
+                    :disabled="saving"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Invite Member Modal -->
+  <div v-if="showInviteMemberModal" class="fixed inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="showInviteMemberModal = false"></div>
+
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+      <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        <div>
+          <div class="mt-3 text-center sm:mt-0 sm:text-left">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+              Invite Family Member
+            </h3>
+            <div class="mt-4">
+              <form @submit.prevent="inviteMember">
+                <div class="mb-4">
+                  <label for="member-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                  <input 
+                    type="email" 
+                    id="member-email" 
+                    v-model="newMember.email"
+                    required
+                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    placeholder="email@example.com"
+                  />
+                </div>
+                
+                <div class="mb-4">
+                  <label for="member-role" class="block text-sm font-medium text-gray-700">Role</label>
+                  <select 
+                    id="member-role" 
+                    v-model="newMember.role"
+                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
+                  >
+                    <option value="member">Member</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                  <button
+                    type="submit"
+                    :disabled="saving"
+                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:col-start-2 sm:text-sm"
+                  >
+                    <span v-if="saving">Sending...</span>
+                    <span v-else>Send Invitation</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm"
+                    @click="showInviteMemberModal = false"
+                    :disabled="saving"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><template>
   <AppLayout>
     <div class="bg-white shadow rounded-lg">
       <div class="px-4 py-5 sm:px-6">
@@ -152,11 +281,49 @@
           </div>
           
           <div v-else class="space-y-6">
+            <!-- Personal or Family Mode -->
+            <div>
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Usage Mode</h3>
+              </div>
+              
+              <div v-if="isPersonalOnly" class="mt-5 bg-white shadow overflow-hidden rounded-md">
+                <div class="px-4 py-5 sm:p-6">
+                  <h4 class="text-base font-medium text-gray-900">You're using LifeHubOrganizer in Personal Mode</h4>
+                  <p class="mt-1 text-sm text-gray-500">
+                    In Personal Mode, all your data is private to you. You can create a family to share events, documents, and more.
+                  </p>
+                  
+                  <div class="mt-5">
+                    <button
+                      type="button"
+                      @click="showCreateFamilyModal = true"
+                      class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                    >
+                      Create a Family
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div v-else class="mt-5 bg-white shadow overflow-hidden rounded-md">
+                <div class="px-4 py-5 sm:p-6">
+                  <h4 class="text-base font-medium text-gray-900">You're using LifeHubOrganizer in Family Mode</h4>
+                  <p class="mt-1 text-sm text-gray-500">
+                    You can share events, documents, and more with your family members.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Family Members Section -->
             <div>
               <div class="flex items-center justify-between">
                 <h3 class="text-lg font-medium leading-6 text-gray-900">Family Members</h3>
                 <button
+                  v-if="!isPersonalOnly"
                   type="button"
+                  @click="showInviteMemberModal = true"
                   class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
                 >
                   <svg class="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -165,27 +332,32 @@
                   Add Family Member
                 </button>
               </div>
-              <p class="mt-1 text-sm text-gray-500">
+              <p v-if="isPersonalOnly" class="mt-1 text-sm text-gray-500">
+                Create a family to start adding members.
+              </p>
+              <p v-else-if="familyMembers.length === 0" class="mt-1 text-sm text-gray-500">
                 You haven't added any family members yet.
               </p>
-            </div>
-            
-            <div>
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-medium leading-6 text-gray-900">Family Groups</h3>
-                <button
-                  type="button"
-                  class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                >
-                  <svg class="-ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  Create Family
-                </button>
-              </div>
-              <p class="mt-1 text-sm text-gray-500">
-                Create a family group to start organizing documents and schedules.
-              </p>
+              
+              <!-- Family member list -->
+              <ul v-if="!isPersonalOnly && familyMembers.length > 0" class="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <li v-for="member in familyMembers" :key="member.id" class="col-span-1 flex shadow-sm rounded-md">
+                  <div class="flex-shrink-0 flex items-center justify-center w-16 bg-primary-600 text-white text-sm font-medium rounded-l-md">
+                    {{ member.initials }}
+                  </div>
+                  <div class="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
+                    <div class="flex-1 px-4 py-2 text-sm truncate">
+                      <p class="text-gray-900 font-medium">{{ member.name }}</p>
+                      <p class="text-gray-500">{{ member.email }}</p>
+                    </div>
+                    <div class="flex-shrink-0 pr-2">
+                      <span v-if="member.role === 'admin'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Admin
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -542,6 +714,7 @@ import { ref, onMounted } from 'vue';
 import AppLayout from '@/components/layout/AppLayout.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
+import { getFamilyContext } from '@/utils/familyUtils';
 
 const authStore = useAuthStore();
 const activeTab = ref('profile');
@@ -549,6 +722,10 @@ const loading = ref(true);
 const saving = ref(false);
 const userPreferencesStore = useUserPreferencesStore();
 const features = ref({...userPreferencesStore.features});
+const isPersonalOnly = ref(true); // Default to personal mode until we check
+const familyMembers = ref([]);
+const showCreateFamilyModal = ref(false);
+const showInviteMemberModal = ref(false);
 
 const profile = ref({
   firstName: '',
@@ -587,6 +764,9 @@ async function saveFeatures() {
 
 onMounted(async () => {
   loading.value = true;
+  
+  // Check family context
+  await checkFamilyContext();
   
   // Initialize user preferences
   await userPreferencesStore.initialize();

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { userPreferencesService } from '@/services/userPreferences';
 
 export interface FeatureToggles {
   healthTracking: boolean;
@@ -49,15 +50,14 @@ export const useUserPreferencesStore = defineStore('userPreferences', () => {
   async function initialize() {
     loading.value = true;
     try {
-      // In a real implementation, we would fetch from the backend here
-      // For now, we're just using local state
-
-      // If we were loading from an API, it would look something like this:
-      // const response = await api.getUserPreferences();
-      // features.value = response.features;
-      // notifications.value = response.notifications;
+      // Get preferences from backend
+      const prefs = await userPreferencesService.getUserPreferences();
       
-      console.log('User preferences initialized with defaults:', features.value);
+      // Update the local state
+      features.value = prefs.features;
+      notifications.value = prefs.notifications;
+      
+      console.log('User preferences initialized:', features.value);
       loading.value = false;
       return { success: true };
     } catch (error: any) {
@@ -67,29 +67,41 @@ export const useUserPreferencesStore = defineStore('userPreferences', () => {
     }
   }
   
-  function updateFeatures(newFeatures: Partial<FeatureToggles>) {
-    features.value = {
-      ...features.value,
-      ...newFeatures
-    };
-    
-    // Log the updated features for debugging
-    console.log('Features updated:', features.value);
-    
-    // TODO: When we implement the API service, we'll save preferences here
-    // For example: await api.updateUserPreferences({ features: features.value });
-    
-    return { success: true };
+  
+  async function updateFeatures(newFeatures: Partial<FeatureToggles>) {
+    try {
+      // Update local state
+      features.value = {
+        ...features.value,
+        ...newFeatures
+      };
+      
+      // Save to backend
+      await userPreferencesService.updateFeatureToggles(newFeatures);
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Failed to update features:', error);
+      return { success: false, error: error.message };
+    }
   }
   
-  function updateNotifications(newNotifications: Partial<NotificationPreferences>) {
-    notifications.value = {
-      ...notifications.value,
-      ...newNotifications
-    };
-    
-    // TODO: When we implement the API service, we'll save preferences here
-    return { success: true };
+  async function updateNotifications(newNotifications: Partial<NotificationPreferences>) {
+    try {
+      // Update local state
+      notifications.value = {
+        ...notifications.value,
+        ...newNotifications
+      };
+      
+      // Save to backend
+      await userPreferencesService.updateNotificationPreferences(newNotifications);
+      
+      return { success: true };
+    } catch (error: any) {
+      console.error('Failed to update notifications:', error);
+      return { success: false, error: error.message };
+    }
   }
   
   return {

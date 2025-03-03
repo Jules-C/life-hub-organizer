@@ -1,22 +1,8 @@
 import { supabase } from '../supabase';
 import type { PostgrestError } from '@supabase/supabase-js';
 
-export interface PersonalEvent {
-  id?: string;
-  user_id?: string;
-  family_id?: string;
-  title: string;
-  description?: string;
-  start_time: string; // ISO datetime format
-  end_time: string; // ISO datetime format
-  location?: string;
-  is_all_day: boolean;
-  recurrence_rule?: string; // iCal format for repeating events
-  event_type: string; // 'work', 'personal', 'health', etc.
-  color?: string;
-  visibility: 'private' | 'family' | 'public';
-}
-
+// In src/services/calendar/personalEvents.ts
+import type { CalendarEvent } from '@/types/calendar';
 export interface EventSharing {
   id?: string;
   event_id: string;
@@ -26,7 +12,7 @@ export interface EventSharing {
 }
 
 export interface EventResponse {
-  data: PersonalEvent[] | null;
+  data: CalendarEvent[] | null;
   error: PostgrestError | null;
 }
 
@@ -34,7 +20,7 @@ export const personalEventService = {
   /**
    * Create a new personal event
    */
-  async createEvent(event: PersonalEvent): Promise<{ data: PersonalEvent | null; error: PostgrestError | null }> {
+  async createEvent(event: CalendarEvent): Promise<{ data: CalendarEvent | null; error: PostgrestError | null }> {
     const { data, error } = await supabase
       .from('personal_events')
       .insert(event)
@@ -47,7 +33,7 @@ export const personalEventService = {
   /**
    * Update an existing event
    */
-  async updateEvent(id: string, updates: Partial<PersonalEvent>): Promise<{ data: PersonalEvent | null; error: PostgrestError | null }> {
+  async updateEvent(id: string, updates: Partial<CalendarEvent>): Promise<{ data: CalendarEvent | null; error: PostgrestError | null }> {
     const { data, error } = await supabase
       .from('personal_events')
       .update(updates)

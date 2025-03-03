@@ -53,7 +53,7 @@
               
               <div v-if="event.visibility" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Visibility</h4>
-                <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
                   :class="getVisibilityClass(event.visibility)">
                   {{ getFormattedVisibility(event.visibility) }}
                 </p>
