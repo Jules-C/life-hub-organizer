@@ -28,49 +28,62 @@ export interface UserPreferences {
 
 export const userPreferencesService = {
   async getUserPreferences() {
-    // First try to get existing preferences
-    const { data, error } = await supabase
-      .from('user_preferences')
-      .select('*')
-      .single();
-    
-    // If there's an error other than "not found", throw it
-    if (error && error.code !== 'PGRST116') {
+    try {
+      // First try to get existing preferences
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .single();
+      
+      // If there's an error other than "not found", throw it
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+      
+      // If preferences were found, return them
+      if (data) {
+        return data;
+      }
+      
+      // Get the current authenticated user
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !userData.user) {
+        throw new Error('Authentication required to initialize preferences');
+      }
+      
+      // If no preferences exist, create default ones WITH user_id
+      const defaultPreferences = {
+        user_id: userData.user.id, // This is the missing piece!
+        features: {
+          healthTracking: true,
+          healthPrivacy: false,
+          personalEvents: true,
+          workSchedule: true
+        },
+        notifications: {
+          email: true,
+          browser: true,
+          documents: true,
+          calendar: true,
+          tasks: true,
+          quietHoursStart: '22:00',
+          quietHoursEnd: '08:00'
+        }
+      };
+      
+      // Insert and return the default preferences
+      const { data: newData, error: insertError } = await supabase
+        .from('user_preferences')
+        .insert([defaultPreferences])
+        .select();
+      
+      if (insertError) throw insertError;
+      return newData[0];
+    } catch (error) {
+      console.error('Failed to initialize user preferences:', error);
       throw error;
     }
-    
-    // If preferences were found, return them
-    if (data) {
-      return data;
-    }
-    
-    // If no preferences exist, create default ones
-    const defaultPreferences = {
-      features: {
-        healthTracking: true,
-        healthPrivacy: false,
-        personalEvents: true,
-        workSchedule: true
-      },
-      notifications: {
-        email: true,
-        browser: true,
-        documents: true,
-        calendar: true,
-        tasks: true,
-        quietHoursStart: '22:00',
-        quietHoursEnd: '08:00'
-      }
-    };
-    
-    // Insert and return the default preferences
-    const { data: newData, error: insertError } = await supabase
-      .from('user_preferences')
-      .insert([defaultPreferences])
-      .select();
-    
-    if (insertError) throw insertError;
-    return newData[0];
   },
   
   async updateFeatureToggles(features: Partial<FeatureToggles>) {

@@ -192,7 +192,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import AppLayout from '@/components/layout/AppLayout.vue';
+import AppLayout from '@/components/layouts/AppLayout.vue';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
 
 const loading = ref(true);
