@@ -623,13 +623,13 @@
   
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue';
-  import AppLayout from '@/components/layout/AppLayout.vue';
-import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
+  import AppLayout from '@/components/layouts/AppLayout.vue';
+  import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
   import { personalEventService} from '@/services/calendar/personalEvents';
   import type { CalendarEvent, EventVisibility } from '@/types/calendar';
   import { useAuthStore } from '@/stores/auth';
   import { formatDateTime, formatTime } from '@/utils/dateUtils';
-import { getFamilyContext } from '@/utils/familyUtils';
+  import { getFamilyContext } from '@/utils/familyUtils';
   import { handleApiError } from '@/utils/errorHandler';
 
   const authStore = useAuthStore();

@@ -1,6 +1,28 @@
+// src/router/index.ts
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
+import type { Features } from '@/types/router';
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
+// Configure NProgress
+NProgress.configure({ showSpinner: false });
+
+// Feature guard factory
+function featureGuard(feature: keyof Features) {
+  return async (to: any, from: any, next: any) => {
+    const userPreferencesStore = useUserPreferencesStore();
+    await userPreferencesStore.initialize();
+    
+    if (!userPreferencesStore.features[feature]) {
+      console.warn(`Feature ${feature} is disabled. Enable it in Settings > Features.`);
+      next({ name: 'home' });
+      return;
+    }
+    next();
+  };
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +30,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/views/dashboard/DashboardView.vue'),
+      component: () => ({
+        component: import('@/views/dashboard/DashboardView.vue'),
+        loading: () => import('@/components/common/LoadingView.vue'),
+        error: () => import('@/views/ErrorView.vue'),
+        timeout: 20000
+      }),
       meta: { requiresAuth: true }
     },
     {
@@ -23,12 +50,12 @@ const router = createRouter({
       component: () => import('@/views/auth/RegisterView.vue'),
       meta: { requiresGuest: true }
     },
-      {
-        path: '/onboarding',
-        name: 'onboarding',
-        component: () => import('@/views/auth/FamilyOnboardingView.vue'),
-        meta: { requiresAuth: true }
-      },
+    {
+      path: '/onboarding',
+      name: 'onboarding',
+      component: () => import('@/views/auth/FamilyOnboardingView.vue'),
+      meta: { requiresAuth: true }
+    },
     {
       path: '/documents',
       name: 'documents',
@@ -45,50 +72,81 @@ const router = createRouter({
       path: '/personal-events',
       name: 'personal-events',
       component: () => import('@/views/calendar/PersonalEventsView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      beforeEnter: featureGuard('personalEvents')
     },
     {
       path: '/health/cycle-tracking',
       name: 'cycle-tracking',
       component: () => import('@/views/health/CycleTrackingView.vue'),
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true },
+      beforeEnter: featureGuard('healthTracking')
     },
     {
       path: '/settings',
       name: 'settings',
       component: () => import('@/views/settings/SettingsView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: () => import('@/views/ErrorView.vue')
+    },
+    // Catch-all 404 route
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue')
     }
   ]
 });
 
 router.beforeEach(async (to, from, next) => {
+  // Start progress bar
+  NProgress.start();
+
   const authStore = useAuthStore();
   const userPreferencesStore = useUserPreferencesStore();
   
-  // Wait for auth to initialize on first navigation
-  if (!from.name) {
-    await authStore.initialize();
-    await userPreferencesStore.initialize();
-  }
-  
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    // Redirect to login if trying to access protected route
-    next({ name: 'login' });
-  } else if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    // Redirect to home if trying to access guest route while logged in
-    next({ name: 'home' });
-  } else if (to.name === 'cycle-tracking' && !userPreferencesStore.isHealthTrackingEnabled) {
-    // Redirect to home if health tracking is disabled
-    console.warn('Health tracking feature is disabled. Enable it in Settings > Features.');
-    next({ name: 'home' });
-  } else if (to.name === 'personal-events' && !userPreferencesStore.isPersonalEventsEnabled) {
-    // Redirect to home if personal events is disabled
-    console.warn('Personal events feature is disabled. Enable it in Settings > Features.');
-    next({ name: 'home' });
-  } else {
+  try {
+    // Initialize stores on first navigation
+    if (!from.name) {
+      await Promise.all([
+        authStore.initialize(),
+        userPreferencesStore.initialize()
+      ]);
+    }
+
+    // Handle auth requirements
+    if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+      // Save intended destination
+      authStore.setRedirectPath(to.fullPath);
+      next({ name: 'login' });
+      return;
+    }
+
+    if (to.meta.requiresGuest && authStore.isAuthenticated) {
+      next({ name: 'home' });
+      return;
+    }
+
     next();
+  } catch (error) {
+    console.error('Navigation guard error:', error);
+    next({
+      name: 'error',
+      query: {
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+        from: to.fullPath
+      }
+    });
   }
+});
+
+router.afterEach(() => {
+  // Complete progress bar
+  NProgress.done();
 });
 
 export default router;

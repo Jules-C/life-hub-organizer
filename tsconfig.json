@@ -2,12 +2,13 @@
   "extends": ["@tsconfig/node18/tsconfig.json"],
   "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
   "compilerOptions": {
+    
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "types": ["vite/client", "vue"],
+    "types": ["vite/client", "vue", "vitest/globals"],
     "moduleResolution": "bundler",
     "module": "ESNext",
     "target": "ESNext",

@@ -1,27 +1,46 @@
-import { supabase } from './supabase.js';
-import type { User } from '@supabase/supabase-js';
+// src/services/auth.ts
+import { supabase } from './supabase';
+import type { User, Session, AuthError } from '@supabase/supabase-js';
 
-export type AuthResponse = {
+// Interface for authentication response
+export interface AuthResponse {
   user: User | null;
-  error: Error | null;
-};
+  session?: Session | null;
+  error: AuthError | null;
+}
+
+// Interface for sign-up request
+export interface SignUpRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+// Interface for profile update request
+export interface ProfileUpdateRequest {
+  firstName?: string;
+  lastName?: string;
+  avatarUrl?: string;
+}
 
 export const authService = {
-  async signUp(email: string, password: string, firstName: string, lastName: string): Promise<AuthResponse> {
+  async signUp(request: SignUpRequest): Promise<AuthResponse> {
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: request.email,
+      password: request.password,
       options: {
         data: {
-          first_name: firstName,
-          last_name: lastName
+          first_name: request.firstName,
+          last_name: request.lastName
         }
       }
     });
     
     return {
       user: data.user,
-      error: error
+      session: data.session,
+      error
     };
   },
   
@@ -33,24 +52,30 @@ export const authService = {
     
     return {
       user: data.user,
-      error: error
+      session: data.session,
+      error
     };
   },
   
   async signOut(): Promise<void> {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   },
   
   async getSession() {
     return await supabase.auth.getSession();
   },
   
-  async getCurrentUser() {
-    const { data } = await supabase.auth.getUser();
+  async getCurrentUser(): Promise<User> {
+    const { data, error } = await supabase.auth.getUser();
+    
+    if (error) throw error;
+    if (!data.user) throw new Error('User not found');
+    
     return data.user;
   },
   
-  async updateProfile(userId: string, updates: { firstName?: string; lastName?: string; avatarUrl?: string }) {
+  async updateProfile(updates: ProfileUpdateRequest): Promise<AuthResponse> {
     const { data, error } = await supabase.auth.updateUser({
       data: {
         first_name: updates.firstName,

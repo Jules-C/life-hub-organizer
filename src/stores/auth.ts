@@ -2,11 +2,23 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { authService } from '@/services/auth';
 import type { User } from '@supabase/supabase-js';
+import type { SignUpRequest, ProfileUpdateRequest } from '@/services/auth';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null);
   const loading = ref(true);
+  const redirectPath = ref<string | null>(null);
   const isAuthenticated = computed(() => !!user.value);
+  
+  function setRedirectPath(path: string) {
+    redirectPath.value = path;
+  }
+
+  function getRedirectPath() {
+    const path = redirectPath.value;
+    redirectPath.value = null;
+    return path || '/';
+  }
   
   async function initialize() {
     loading.value = true;
@@ -36,7 +48,14 @@ export const useAuthStore = defineStore('auth', () => {
   async function register(email: string, password: string, firstName: string, lastName: string) {
     loading.value = true;
     try {
-      const { user: authUser, error } = await authService.signUp(email, password, firstName, lastName);
+      const signupRequest: SignUpRequest = {
+        email,
+        password,
+        firstName,
+        lastName
+      };
+      
+      const { user: authUser, error } = await authService.signUp(signupRequest);
       if (error) throw error;
       user.value = authUser;
       return { success: true };
@@ -58,14 +77,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
-  async function updateProfile(updates: { firstName?: string; lastName?: string; avatarUrl?: string }) {
+  async function updateProfile(updates: ProfileUpdateRequest) {
     if (!user.value) return { success: false, error: 'Not authenticated' };
     
     try {
-      const { user: updatedUser, error } = await authService.updateProfile(
-        user.value.id,
-        updates
-      );
+      const { user: updatedUser, error } = await authService.updateProfile(updates);
       
       if (error) throw error;
       user.value = updatedUser;
@@ -78,11 +94,14 @@ export const useAuthStore = defineStore('auth', () => {
   return {
     user,
     loading,
+    redirectPath,
     isAuthenticated,
     initialize,
     login,
     register,
     logout,
-    updateProfile
+    updateProfile,
+    setRedirectPath,
+    getRedirectPath
   };
 });

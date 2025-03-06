@@ -152,7 +152,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import AppLayout from '@/components/layout/AppLayout.vue';
+import AppLayout from '@/components/layouts/AppLayout.vue';
 import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
 import CalendarEvent from '@/components/calendar/CalendarEvent.vue';
 import EventModal from '@/components/calendar/EventModal.vue';

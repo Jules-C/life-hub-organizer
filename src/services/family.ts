@@ -14,6 +14,7 @@ export interface FamilyMember {
   family_id: string
   user_id: string
   role: string
+  status?: 'active' | 'invited' | 'declined'
   joined_at?: string
 }
 
@@ -23,6 +24,7 @@ export interface FamilyMemberWithUser {
   family_id: string
   role: string
   user_id: string
+  status?: 'active' | 'invited' | 'declined'
   joined_at?: string
   users: {
     // This should be a single object, not an array
@@ -68,6 +70,39 @@ export const familyService = {
   },
 
   /**
+   * Get the current user's family
+   */
+  async getCurrentUserFamily(): Promise<{ data: FamilyData | null; error: PostgrestError | null }> {
+    try {
+      // First get the user data
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData.user) {
+        return { data: null, error: { message: 'User not authenticated', code: 'AUTH_ERROR' } as PostgrestError };
+      }
+
+      // Get the family member record for this user
+      const { data: memberData, error: memberError } = await supabase
+        .from('family_members')
+        .select('family_id')
+        .eq('user_id', userData.user.id)
+        .eq('status', 'active')
+        .single();
+
+      if (memberError || !memberData) {
+        // Not an error, user might not be in a family
+        return { data: null, error: null };
+      }
+
+      // Get the family details
+      return await this.getFamily(memberData.family_id);
+    } catch (error) {
+      console.error('Error getting current user family:', error);
+      return { data: null, error: error as PostgrestError };
+    }
+  },
+
+  /**
    * Add a member to a family
    */
   async addFamilyMember(member: Partial<FamilyMember>): Promise<{ data: FamilyMember | null; error: PostgrestError | null }> {
@@ -88,6 +123,7 @@ export const familyService = {
         family_id,
         role,
         user_id,
+        status,
         joined_at,
         users:user_id (
           email,
@@ -115,6 +151,61 @@ export const familyService = {
     const { data, error } = await supabase.from('family_members').select('role').eq('family_id', familyId).eq('user_id', userId).single()
 
     return { role: data?.role || null, error }
+  },
+
+  /**
+   * Get pending invitations for a family
+   */
+  async getPendingInvitations(familyId: string): Promise<{ data: any[] | null; error: PostgrestError | null }> {
+    const { data, error } = await supabase
+      .from('invitations')
+      .select('*')
+      .eq('family_id', familyId)
+      .eq('status', 'pending');
+
+    return { data, error };
+  },
+
+  /**
+   * Leave a family
+   */
+  async leaveFamily(familyId: string): Promise<{ error: PostgrestError | null }> {
+    try {
+      // Get the current user
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !userData.user) {
+        return { error: { message: 'User not authenticated', code: 'AUTH_ERROR' } as PostgrestError };
+      }
+
+      // Check if the user is the only admin
+      const { data: adminData, error: adminError } = await supabase
+        .from('family_members')
+        .select('*')
+        .eq('family_id', familyId)
+        .eq('role', 'admin');
+
+      if (adminError) {
+        return { error: adminError };
+      }
+
+      // If only one admin and it's this user, don't allow leaving
+      if (adminData.length === 1 && adminData[0].user_id === userData.user.id) {
+        return { error: { message: 'Cannot leave family: you are the only admin', code: 'ONLY_ADMIN' } as PostgrestError };
+      }
+
+      // Remove the user from the family
+      const { error: deleteError } = await supabase
+        .from('family_members')
+        .delete()
+        .eq('family_id', familyId)
+        .eq('user_id', userData.user.id);
+
+      return { error: deleteError };
+    } catch (error) {
+      console.error('Error leaving family:', error);
+      return { error: error as PostgrestError };
+    }
   },
 
   /**

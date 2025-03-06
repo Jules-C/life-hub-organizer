@@ -1,0 +1,66 @@
+
+> lifehuborganizer@0.1.0 type-check
+> vue-tsc --noEmit
+
+Found 26 errors in 6 files.
+
+Errors  Files
+     5  src/router/__tests__/router.test.ts:73
+    10  src/services/__tests__/auth.test.ts:69
+     8  src/services/calendar/__tests__/personalEvents.test.ts:83
+     1  src/stores/__tests__/family.test.ts:343
+     1  src/test-utils/response-adapters.ts:35
+     1  src/views/calendar/__tests__/PersonalEventsView.test.ts:142
+
+src/router/__tests__/router.test.ts(73,23): error TS2554: Expected 1 arguments, but got 3.
+src/router/__tests__/router.test.ts(107,23): error TS2554: Expected 1 arguments, but got 3.
+src/router/__tests__/router.test.ts(150,17): error TS2684: The 'this' context of type 'void' is not assignable to method's 'this' of type 'undefined'.
+src/router/__tests__/router.test.ts(193,17): error TS2684: The 'this' context of type 'void' is not assignable to method's 'this' of type 'undefined'.
+src/router/__tests__/router.test.ts(230,23): error TS2554: Expected 1 arguments, but got 3.
+src/services/__tests__/auth.test.ts(69,69): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").AuthTokenResponsePassword' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").AuthTokenResponsePassword'.
+  Type 'AuthTokenResponsePassword' is not assignable to type '{ data: { user: null; session: null; weakPassword?: null | undefined; }; error: AuthError; }'.
+    The types of 'data.user' are incompatible between these types.
+      Type 'User | null' is not assignable to type 'null'.
+        Type 'User' is not assignable to type 'null'.
+src/services/__tests__/auth.test.ts(88,69): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").AuthTokenResponsePassword' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").AuthTokenResponsePassword'.
+src/services/__tests__/auth.test.ts(112,57): error TS2345: Argument of type 'AuthTokenResponsePassword' is not assignable to parameter of type 'AuthResponse'.
+  Type 'AuthTokenResponsePassword' is not assignable to type '{ data: { user: null; session: null; }; error: AuthError; }'.
+    The types of 'data.user' are incompatible between these types.
+      Type 'User | null' is not assignable to type 'null'.
+        Type 'User' is not assignable to type 'null'.
+src/services/__tests__/auth.test.ts(142,57): error TS2345: Argument of type 'AuthTokenResponsePassword' is not assignable to parameter of type 'AuthResponse'.
+src/services/__tests__/auth.test.ts(171,58): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").UserResponse' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").UserResponse'.
+  Type 'UserResponse' is not assignable to type '{ data: { user: null; }; error: AuthError; }'.
+    The types of 'data.user' are incompatible between these types.
+      Type 'User | null' is not assignable to type 'null'.
+        Type 'User' is not assignable to type 'null'.
+src/services/__tests__/auth.test.ts(186,58): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").UserResponse' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").UserResponse'.
+src/services/__tests__/auth.test.ts(207,61): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").UserResponse' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").UserResponse'.
+src/services/__tests__/auth.test.ts(231,61): error TS2345: Argument of type 'import("/Users/juliecook/claude/LifeHubOrganizer/src/types/auth").UserResponse' is not assignable to parameter of type 'import("/Users/juliecook/claude/LifeHubOrganizer/node_modules/@supabase/auth-js/dist/module/lib/types").UserResponse'.
+src/services/__tests__/auth.test.ts(264,61): error TS2345: Argument of type 'SessionResponse' is not assignable to parameter of type '{ data: { session: Session; }; error: null; } | { data: { session: null; }; error: AuthError; } | { data: { session: null; }; error: null; }'.
+  Type 'SessionResponse' is not assignable to type '{ data: { session: null; }; error: null; }'.
+    The types of 'data.session' are incompatible between these types.
+      Type 'Session | null' is not assignable to type 'null'.
+        Type 'Session' is not assignable to type 'null'.
+src/services/__tests__/auth.test.ts(277,61): error TS2345: Argument of type 'SessionResponse' is not assignable to parameter of type '{ data: { session: Session; }; error: null; } | { data: { session: null; }; error: AuthError; } | { data: { session: null; }; error: null; }'.
+src/services/calendar/__tests__/personalEvents.test.ts(83,48): error TS2345: Argument of type 'MockSupabaseFrom' is not assignable to parameter of type 'PostgrestQueryBuilder<any, any, string, unknown>'.
+  Type 'MockSupabaseFrom' is missing the following properties from type 'PostgrestQueryBuilder<any, any, string, unknown>': url, headers, upsert
+src/services/calendar/__tests__/personalEvents.test.ts(95,13): error TS2741: Property 'name' is missing in type '{ message: string; details: string; hint: string; code: string; }' but required in type 'PostgrestError'.
+src/services/calendar/__tests__/personalEvents.test.ts(106,48): error TS2345: Argument of type 'MockSupabaseFrom' is not assignable to parameter of type 'PostgrestQueryBuilder<any, any, string, unknown>'.
+src/services/calendar/__tests__/personalEvents.test.ts(127,48): error TS2345: Argument of type 'MockSupabaseFrom' is not assignable to parameter of type 'PostgrestQueryBuilder<any, any, string, unknown>'.
+src/services/calendar/__tests__/personalEvents.test.ts(144,58): error TS2345: Argument of type 'AuthUserResponse' is not assignable to parameter of type 'UserResponse'.
+  Type 'AuthUserResponse' is not assignable to type '{ data: { user: null; }; error: AuthError; }'.
+    The types of 'data.user' are incompatible between these types.
+      Type '{ id: string; email: string; } | null' is not assignable to type 'null'.
+        Type '{ id: string; email: string; }' is not assignable to type 'null'.
+src/services/calendar/__tests__/personalEvents.test.ts(155,48): error TS2345: Argument of type 'MockSupabaseFrom' is not assignable to parameter of type 'PostgrestQueryBuilder<any, any, string, unknown>'.
+src/services/calendar/__tests__/personalEvents.test.ts(170,58): error TS2345: Argument of type 'AuthUserResponse' is not assignable to parameter of type 'UserResponse'.
+src/services/calendar/__tests__/personalEvents.test.ts(187,48): error TS2345: Argument of type 'MockSupabaseFrom' is not assignable to parameter of type 'PostgrestQueryBuilder<any, any, string, unknown>'.
+src/stores/__tests__/family.test.ts(343,15): error TS2322: Type 'Promise<unknown>' is not assignable to type 'Promise<{ data: FamilyData | null; error: PostgrestError | null; }> | Promise<Promise<{ data: FamilyData | null; error: PostgrestError | null; }>>'.
+  Type 'Promise<unknown>' is not assignable to type 'Promise<{ data: FamilyData | null; error: PostgrestError | null; }>'.
+    Type 'unknown' is not assignable to type '{ data: FamilyData | null; error: PostgrestError | null; }'.
+src/test-utils/response-adapters.ts(35,3): error TS2322: Type '{ users: { id: string; email: string; first_name: string; last_name: string; avatar_url: string | undefined; }; id: string; family_id: string; user_id: string; role: "admin" | "member"; status: "active" | ... 1 more ... | "declined"; joined_at?: string | undefined; user_details?: { ...; } | undefined; }[]' is not assignable to type 'FamilyMemberWithUser[]'.
+  Type '{ users: { id: string; email: string; first_name: string; last_name: string; avatar_url: string | undefined; }; id: string; family_id: string; user_id: string; role: "admin" | "member"; status: "active" | ... 1 more ... | "declined"; joined_at?: string | undefined; user_details?: { ...; } | undefined; }' is not assignable to type 'FamilyMemberWithUser'.
+    Types of property 'users' are incompatible.
+      Property 'user_metadata' is missing in type '{ id: string; email: string; first_name: string; last_name: string; avatar_url: string | undefined; }' but required in type '{ email: string; user_metadata: any; id?: string | undefined; first_name?: string | undefined; last_name?: string | undefined; avatar_url?: string | undefined; }'.
+src/views/calendar/__tests__/PersonalEventsView.test.ts(142,24): error TS2339: Property 'submitForm' does not exist on type 'ComponentPublicInstance<NonNullable<Partial<{}> & Omit<{} & VNodeProps & AllowedComponentProps & ComponentCustomProps, never>>, { ...; } & ... 6 more ... & Omit<...>>'.
