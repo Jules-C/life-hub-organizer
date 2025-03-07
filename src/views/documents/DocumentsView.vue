@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import AppLayout from '@/components/layout/AppLayout.vue';
+import AppLayout from '@/components/layouts/AppLayout.vue';
 
 const loading = ref(true);
 
