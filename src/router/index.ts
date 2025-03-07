@@ -30,12 +30,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => ({
-        component: import('@/views/dashboard/DashboardView.vue'),
-        loading: () => import('@/components/common/LoadingView.vue'),
-        error: () => import('@/views/ErrorView.vue'),
-        timeout: 20000
-      }),
+      component: () => import('@/views/dashboard/DashboardView.vue'),
       meta: { requiresAuth: true }
     },
     {
