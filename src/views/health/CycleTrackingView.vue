@@ -341,7 +341,7 @@
   
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue';
-  import AppLayout from '@/components/layout/AppLayout.vue';
+  import AppLayout from '@/components/layouts/AppLayout.vue';
 import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
   import { cycleTrackingService, type CycleTrackingEntry } from '@/services/health/cycleTracking';
   import { useAuthStore } from '@/stores/auth';

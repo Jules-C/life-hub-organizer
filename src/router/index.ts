@@ -64,6 +64,13 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/health',
+      name: 'cycle-tracking',
+      component: () => import('@/views/health/CycleTrackingView.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: featureGuard('healthTracking')
+    },
+    {
       path: '/personal-events',
       name: 'personal-events',
       component: () => import('@/views/calendar/PersonalEventsView.vue'),
