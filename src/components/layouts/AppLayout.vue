@@ -7,7 +7,10 @@
           <div class="flex">
             <!-- Logo -->
             <div class="flex-shrink-0 flex items-center">
-              <h1 class="text-xl font-bold text-primary-600">LifeHubOrganizer</h1>
+              <router-link to="/" class="flex items-center space-x-2 focus:outline-none">
+                <img src="/src/public/android-chrome-512x512.png" alt="LifeHubOrganizer Logo" class="h-8 w-8 rounded-full" />
+                <h1 class="text-xl font-bold text-primary-600">LifeHubOrganizer</h1>
+              </router-link>
             </div>
 
             <!-- Navigation links -->

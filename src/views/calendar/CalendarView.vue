@@ -343,7 +343,7 @@ function toggleFilter(type: EventType) {
   filters.value[type as keyof typeof filters.value] = !filters.value[type as keyof typeof filters.value];
   
   // Update URL query parameter to reflect current filter state
-  const router = useRouter();
+  //const router = useRouter();
   
   // If only one filter is active, add it as a query parameter
   const activeFilters = Object.entries(filters.value)
