@@ -83,3 +83,19 @@ CREATE TRIGGER events_defaults_trigger
 BEFORE INSERT ON events
 FOR EACH ROW
 EXECUTE FUNCTION set_event_defaults();
+
+-- Drop the problematic policy
+DROP POLICY IF EXISTS "Users can see family members if they belong to the family" ON family_members;
+
+-- Create two separate policies to avoid recursion
+-- 1. Family creators can see all members
+CREATE POLICY "Family creators can see members" 
+  ON family_members FOR SELECT
+  USING (family_id IN (
+    SELECT id FROM families WHERE created_by = auth.uid()
+  ));
+
+-- 2. Allow users to see their own memberships
+CREATE POLICY "Users can see their own family memberships"
+  ON family_members FOR SELECT
+  USING (user_id = auth.uid());

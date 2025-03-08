@@ -366,7 +366,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   show: false,
   mode: 'view',
-  event: () => ({}),
+  event: () => ({
+    title: '',
+    event_type: 'personal',
+    start_time: '',
+    end_time: '',
+    is_all_day: false,
+    visibility: 'private'
+  }),
   processing: false
 });
 

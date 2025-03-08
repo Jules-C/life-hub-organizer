@@ -727,20 +727,21 @@ onMounted(async () => {
   isPersonalOnly.value = context.isPersonalOnly;
   
   // Handle initial filter from URL
-  const route = useRoute();
-  if (route.query.filter) {
-    const filterType = route.query.filter as string;
-    
-    // Reset all filters first
-    Object.keys(filters.value).forEach(key => {
-      filters.value[key as keyof typeof filters.value] = false;
-    });
-    
-    // Enable only the requested filter
-    if (filterType in filters.value) {
-      filters.value[filterType as keyof typeof filters.value] = true;
-    }
+  // Handle initial filter from URL - add checks
+const route = useRoute();
+if (route && route.query && route.query.filter) {
+  const filterType = route.query.filter as string;
+  
+  // Reset all filters first
+  Object.keys(filters.value).forEach(key => {
+    filters.value[key as keyof typeof filters.value] = false;
+  });
+  
+  // Enable only the requested filter
+  if (filterType in filters.value) {
+    filters.value[filterType as keyof typeof filters.value] = true;
   }
+}
   
   // Set a safety timeout to prevent infinite loading
   const safetyTimeout = setTimeout(() => {

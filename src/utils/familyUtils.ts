@@ -15,12 +15,11 @@ export async function getFamilyContext(): Promise<{familyId: string | null, isPe
       return { familyId: null, isPersonalOnly: true };
     }
     
-    // Check if user is part of a family
+    // Since you fixed the RLS policy, we can query family_members directly again
     const { data: familyMembers, error: familyError } = await supabase
       .from('family_members')
       .select('family_id, role')
       .eq('user_id', user.id)
-      .eq('status', 'active')
       .limit(1);
     
     if (familyError) {
@@ -35,7 +34,7 @@ export async function getFamilyContext(): Promise<{familyId: string | null, isPe
       };
     }
     
-    // User is not part of a family
+    // User is not part of a family - perfectly fine for solo users
     return { familyId: null, isPersonalOnly: true };
   } catch (error) {
     console.error('Unexpected error in getFamilyContext:', error);
