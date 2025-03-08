@@ -63,26 +63,25 @@ const router = createRouter({
       component: () => import('@/views/calendar/CalendarView.vue'),
       meta: { requiresAuth: true }
     },
-    {
-      path: '/health',
-      name: 'cycle-tracking',
-      component: () => import('@/views/health/CycleTrackingView.vue'),
-      meta: { requiresAuth: true },
-      beforeEnter: featureGuard('healthTracking')
-    },
+    // Redirect legacy routes to unified calendar
     {
       path: '/personal-events',
-      name: 'personal-events',
-      component: () => import('@/views/calendar/PersonalEventsView.vue'),
-      meta: { requiresAuth: true },
-      beforeEnter: featureGuard('personalEvents')
+      redirect: to => {
+        // Use query params to set initial filter
+        return {
+          path: '/calendar',
+          query: { filter: 'personal' }
+        };
+      }
     },
     {
       path: '/health/cycle-tracking',
-      name: 'cycle-tracking',
-      component: () => import('@/views/health/CycleTrackingView.vue'),
-      meta: { requiresAuth: true },
-      beforeEnter: featureGuard('healthTracking')
+      redirect: to => {
+        return {
+          path: '/calendar',
+          query: { filter: 'health' }
+        };
+      }
     },
     {
       path: '/settings',
@@ -131,6 +130,12 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresGuest && authStore.isAuthenticated) {
       next({ name: 'home' });
       return;
+    }
+
+    // Handle query parameters for calendar filters
+    if (to.path === '/calendar' && to.query.filter) {
+      // This will be handled in the calendar component
+      // to activate the corresponding filter
     }
 
     next();

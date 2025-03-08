@@ -24,7 +24,7 @@
         <div class="flex flex-wrap gap-2">
           <!-- Family Events Toggle -->
           <button
-            @click="toggleFilter('family')"
+            @click="toggleFilter('family' as EventType)"
             class="px-3 py-1.5 text-sm font-medium rounded-md"
             :class="filters.family ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
           >
@@ -49,7 +49,7 @@
           
           <!-- Work Schedule Toggle -->
           <button
-            v-if="isPersonalEventsEnabled"
+            v-if="isWorkScheduleEnabled"
             @click="toggleFilter('work')"
             class="px-3 py-1.5 text-sm font-medium rounded-md"
             :class="filters.work ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
@@ -72,6 +72,21 @@
             </svg>
             Health Events
           </button>
+
+          <!-- Visibility Filter -->
+          <div class="ml-auto flex items-center">
+            <span class="text-sm text-gray-600 mr-2">Show:</span>
+            <select 
+              v-model="visibilityFilter"
+              class="text-sm border-gray-300 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+              @change="loadEvents"
+            >
+              <option value="all">All Events</option>
+              <option value="private">My Private Events</option>
+              <option value="family">Family Shared Events</option>
+              <option value="public">Public Events</option>
+            </select>
+          </div>
         </div>
       </div>
       
@@ -115,10 +130,10 @@
           
           <!-- Day content (events) -->
           <template #day-content="{ day }">
-            <template v-for="event in getEventsForDay(day)" :key="event.id || event._id">
+            <template v-for="event in getEventsForDay(day)" :key="event.id">
               <CalendarEvent 
                 :event="event" 
-                :eventType="getEventType(event)"
+                :eventType="event.event_type"
                 @event-click="viewEvent(event)"
               />
             </template>
@@ -126,11 +141,79 @@
         </CalendarGrid>
       </div>
       
+      <!-- Upcoming Events Section -->
+      <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
+        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Upcoming Events</h3>
+        
+        <div v-if="loading" class="py-4 flex justify-center">
+          <svg class="animate-spin h-5 w-5 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        
+        <div v-else-if="upcomingEvents.length === 0" class="py-4 text-center">
+          <p class="text-gray-500">No upcoming events based on your current filters.</p>
+        </div>
+        
+        <div v-else class="space-y-4">
+          <div v-for="event in upcomingEvents" :key="event.id" 
+            class="border border-gray-200 rounded-md p-4 hover:bg-gray-50 cursor-pointer"
+            @click="viewEvent(event)"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="text-sm font-medium text-gray-900 flex items-center">
+                  <span 
+                    class="w-3 h-3 rounded-full mr-2"
+                    :class="getEventDotClass(event)"
+                  ></span>
+                  {{ event.title }}
+                </h4>
+                <p class="mt-1 text-sm text-gray-500">
+                  {{ formatDateTime(event.start_time) }}
+                  <span v-if="!event.is_all_day">- {{ formatTime(event.end_time) }}</span>
+                </p>
+                <p v-if="event.location" class="mt-1 text-sm text-gray-500">
+                  {{ event.location }}
+                </p>
+                
+                <!-- Event type badge -->
+                <div class="mt-2">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getEventBadgeClass(event)">
+                    {{ getEventTypeName(event.event_type) }}
+                  </span>
+                  
+                  <!-- Visibility badge if not private -->
+                  <span v-if="event.visibility !== 'private'" 
+                    class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    :class="getVisibilityBadgeClass(event.visibility)">
+                    {{ getVisibilityName(event.visibility) }}
+                  </span>
+                </div>
+                
+                <!-- Health event specific display -->
+                <div v-if="event.event_type === 'health' && event.metadata && event.metadata.symptoms" class="mt-2">
+                  <div v-if="hasSymptoms(event.metadata.symptoms)" class="flex flex-wrap gap-1">
+                    <span v-for="(value, symptom) in event.metadata.symptoms" :key="symptom" 
+                      v-show="value"
+                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                      {{ symptom }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       <!-- Event Modal Components -->
       <EventModal
         :show="showEventModal"
         :mode="eventModalMode"
-        :event="selectedEvent"
+        :event="eventForModal"
         :processing="saveInProgress"
         @close="closeEventModal"
         @save="saveEvent"
@@ -151,48 +234,46 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import AppLayout from '@/components/layouts/AppLayout.vue';
 import CalendarGrid from '@/components/calendar/CalendarGrid.vue';
 import CalendarEvent from '@/components/calendar/CalendarEvent.vue';
 import EventModal from '@/components/calendar/EventModal.vue';
 import DeleteConfirmationModal from '@/components/calendar/DeleteConfirmationModal.vue';
 import { useUserPreferencesStore } from '@/stores/userPreferences';
-import { personalEventService} from '@/services/calendar/personalEvents';
-import type { CalendarEvent as CalendarEventType } from '@/types/calendar';
-import { cycleTrackingService, type CycleTrackingEntry } from '@/services/health/cycleTracking';
-import { supabase } from '@/services/supabase';
-import { getEventType } from '@/utils/calendarUtils';
+import { eventService, type EventFilters } from '@/services/events';
+import type { CalendarEvent as CalendarEventType, EventType, EventVisibility } from '@/types/calendar';
+import { formatDateTime, formatTime } from '@/utils/dateUtils';
 import { getFamilyContext } from '@/utils/familyUtils';
 import { handleApiError } from '@/utils/errorHandler';
 
+// Router and store
+const router = useRouter();
+const userPreferencesStore = useUserPreferencesStore();
 
 // State variables
-const router = useRouter();
 const currentDate = ref(new Date());
 const loading = ref(true);
+const events = ref<CalendarEventType[]>([]);
+const familyId = ref<string | null>(null);
+const isPersonalOnly = ref(true);
 
 // Event modal state
 const showEventModal = ref(false);
 const eventModalMode = ref<'create' | 'edit' | 'view'>('view');
-const selectedEvent = ref<any>(null);
-const showDeleteConfirmation = ref(false);
+const selectedEvent = ref<CalendarEventType | undefined>(undefined);
 const saveInProgress = ref(false);
+const showDeleteConfirmation = ref(false);
 const deleteInProgress = ref(false);
 
 // Important: Add these lock variables to prevent recursive data loading
 const isLoadingData = ref(false);
 const lastLoadedMonth = ref('');
 
-// Data stores
-const familyEvents = ref<any[]>([]);
-const personalEvents = ref<CalendarEventType[]>([]);
-const healthEvents = ref<any[]>([]);
-
 // User preferences
-const userPreferencesStore = useUserPreferencesStore();
 const isHealthTrackingEnabled = computed(() => userPreferencesStore.isHealthTrackingEnabled);
 const isPersonalEventsEnabled = computed(() => userPreferencesStore.isPersonalEventsEnabled);
+const isWorkScheduleEnabled = computed(() => userPreferencesStore.isWorkScheduleEnabled);
 
 // Filter settings
 const filters = ref({
@@ -202,9 +283,83 @@ const filters = ref({
   health: true
 });
 
+const visibilityFilter = ref('all');
+
+// Computed properties
+const activeEventTypes = computed((): EventType[] => {
+  const types: EventType[] = [];
+  if (filters.value.family) types.push('family');
+  if (filters.value.personal) types.push('personal');
+  if (filters.value.work) types.push('work');
+  if (filters.value.health) types.push('health');
+  return types;
+});
+
+const activeVisibilityTypes = computed((): EventVisibility[] | undefined => {
+  if (visibilityFilter.value === 'all') return undefined;
+  if (visibilityFilter.value === 'private') return ['private'];
+  if (visibilityFilter.value === 'family') return ['family'];
+  if (visibilityFilter.value === 'public') return ['public'];
+  return undefined;
+});
+
+const eventForModal = computed(() => selectedEvent.value || { 
+  title: '',
+  event_type: 'personal' as EventType,
+  start_time: '',
+  end_time: '',
+  is_all_day: false,
+  visibility: 'private' as EventVisibility
+});
+
+// Get filtered events
+const filteredEvents = computed(() => {
+  return events.value.filter(event => {
+    // Filter by event type
+    if (!activeEventTypes.value.includes(event.event_type)) {
+      return false;
+    }
+    
+    // Filter by visibility
+    if (activeVisibilityTypes.value && !activeVisibilityTypes.value.includes(event.visibility)) {
+      return false;
+    }
+    
+    return true;
+  });
+});
+
+// Get upcoming events
+const upcomingEvents = computed(() => {
+  const now = new Date();
+  return filteredEvents.value
+    .filter(event => new Date(event.start_time) >= now)
+    .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+    .slice(0, 5);
+});
+
 // Functions to handle filter toggling
-function toggleFilter(type: string) {
+function toggleFilter(type: EventType) {
   filters.value[type as keyof typeof filters.value] = !filters.value[type as keyof typeof filters.value];
+  
+  // Update URL query parameter to reflect current filter state
+  const router = useRouter();
+  
+  // If only one filter is active, add it as a query parameter
+  const activeFilters = Object.entries(filters.value)
+    .filter(([_, isActive]) => isActive)
+    .map(([filterName]) => filterName);
+  
+  if (activeFilters.length === 1) {
+    router.replace({ 
+      query: { ...router.currentRoute.value.query, filter: activeFilters[0] }
+    });
+  } else {
+    // If multiple or no filters are active, remove the filter parameter
+    const query = { ...router.currentRoute.value.query };
+    delete query.filter;
+    router.replace({ query });
+  }
 }
 
 // Get event indicators for a specific day
@@ -217,22 +372,22 @@ function getEventIndicators(day: any) {
   const eventsForDay = getEventsForDay(day);
   
   // Check for family events
-  if (eventsForDay.some(event => event._source === 'family')) {
+  if (eventsForDay.some(event => event.event_type === 'family')) {
     indicators.push({ type: 'family', class: 'bg-purple-500' });
   }
   
   // Check for personal events
-  if (eventsForDay.some(event => event._source === 'personal')) {
+  if (eventsForDay.some(event => event.event_type === 'personal')) {
     indicators.push({ type: 'personal', class: 'bg-blue-500' });
   }
   
   // Check for work events
-  if (eventsForDay.some(event => event._source === 'work' || event.event_type === 'work')) {
+  if (eventsForDay.some(event => event.event_type === 'work')) {
     indicators.push({ type: 'work', class: 'bg-emerald-500' });
   }
   
   // Check for health events
-  if (eventsForDay.some(event => event._source === 'health')) {
+  if (eventsForDay.some(event => event.event_type === 'health')) {
     indicators.push({ type: 'health', class: 'bg-pink-500' });
   }
   
@@ -245,31 +400,10 @@ function getEventsForDay(day: any) {
     return [];
   }
 
-  // Get all visible events based on filters
-  const allEvents = [];
-  
-  if (filters.value.family) {
-    allEvents.push(...familyEvents.value);
-  }
-  
-  if (filters.value.personal && isPersonalEventsEnabled.value) {
-    allEvents.push(...personalEvents.value.filter(e => e.event_type !== 'work'));
-  }
-  
-  if (filters.value.work && isPersonalEventsEnabled.value) {
-    allEvents.push(...personalEvents.value.filter(e => e.event_type === 'work'));
-  }
-  
-  if (filters.value.health && isHealthTrackingEnabled.value) {
-    allEvents.push(...healthEvents.value);
-  }
-  
   // Filter to only events on this day
-  return allEvents.filter(event => {
-    if (!event || !event.start_time) return false;
-    
+  return filteredEvents.value.filter(event => {
     const eventStart = new Date(event.start_time);
-    const eventEnd = event.end_time ? new Date(event.end_time) : new Date(event.start_time);
+    const eventEnd = new Date(event.end_time);
     const dayDate = new Date(day.dateString);
     
     // Set time to 00:00:00 for date comparison
@@ -283,7 +417,6 @@ function getEventsForDay(day: any) {
     return eventStart <= dateEnd && eventEnd >= dateStart;
   });
 }
-
 
 // Handle month change in the calendar
 async function handleMonthChanged(data: any) {
@@ -309,152 +442,57 @@ async function handleMonthChanged(data: any) {
   // Remember this month so we don't reload it unnecessarily
   lastLoadedMonth.value = monthId;
   
+  // Update current date
+  if (data.date) {
+    currentDate.value = new Date(data.date);
+  } else {
+    currentDate.value = new Date(data.year, data.month);
+  }
+  
+  await loadEvents();
+  
+  // Release locks
+  loading.value = false;
+  isLoadingData.value = false;
+}
+
+// Load events with current filters
+async function loadEvents() {
   try {
     // Format dates for API requests
-    const startDate = new Date(data.year, data.month, 1).toISOString();
-    const endDate = new Date(data.year, data.month + 1, 0).toISOString();
+    const startDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth(), 1).toISOString();
+    const endDate = new Date(currentDate.value.getFullYear(), currentDate.value.getMonth() + 1, 0).toISOString();
     
     console.log('Loading data for date range:', { startDate, endDate });
     
-    // Load events sequentially to prevent potential race conditions
-    await loadFamilyEvents(startDate, endDate);
+    // Create filter object
+    const filterOptions: EventFilters = {
+      eventTypes: activeEventTypes.value,
+      startDate,
+      endDate,
+      visibility: activeVisibilityTypes.value
+    };
     
-    if (isPersonalEventsEnabled.value) {
-      await loadPersonalEvents(startDate, endDate);
-    } else {
-      personalEvents.value = [];
-    }
+    // Load events
+    const response = await eventService.getEventsForDateRange(startDate, endDate, filterOptions);
     
-    if (isHealthTrackingEnabled.value) {
-      await loadHealthEvents(startDate, endDate);
-    } else {
-      healthEvents.value = [];
+    if (response.error) throw response.error;
+    
+    events.value = response.data || [];
+    
+    // If we need shared events from family members too
+    if (!isPersonalOnly.value && familyId.value) {
+      const sharedResponse = await eventService.getSharedEvents(startDate, endDate);
+      if (!sharedResponse.error && sharedResponse.data) {
+        // Combine with our personal events
+        events.value = [...events.value, ...sharedResponse.data];
+      }
     }
   } catch (error) {
     console.error('Error loading events:', error);
-  } finally {
-    // Always release locks, even if there was an error
-    loading.value = false;
-    isLoadingData.value = false;
+    const errorDetails = handleApiError(error, 'loadEvents');
+    events.value = [];
   }
-}
-
-// Load family events (placeholder implementation)
-async function loadFamilyEvents(startDate: string, endDate: string) {
-  try {
-    // This is a placeholder. In a real implementation, you would
-    // fetch family events from a service
-    familyEvents.value = [
-      {
-        _id: 'family-event-1',
-        title: 'Family Dinner',
-        start_time: new Date().toISOString(),
-        end_time: new Date(new Date().getTime() + 2 * 60 * 60 * 1000).toISOString(),
-        _source: 'family'
-      },
-      {
-        _id: 'family-event-2',
-        title: 'Movie Night',
-        start_time: new Date(new Date().setDate(new Date().getDate() + 3)).toISOString(),
-        end_time: new Date(new Date(new Date().setDate(new Date().getDate() + 3)).getTime() + 3 * 60 * 60 * 1000).toISOString(),
-        _source: 'family'
-      }
-    ];
-    return familyEvents.value;
-  } catch (error) {
-    console.error('Error loading family events:', error);
-    familyEvents.value = [];
-    throw error;
-  }
-}
-
-// Load personal events
-async function loadPersonalEvents(startDate: string, endDate: string) {
-  if (!isPersonalEventsEnabled.value) {
-    personalEvents.value = [];
-    return [];
-  }
-  
-  try {
-    console.log('Loading personal events for date range:', { startDate, endDate });
-    const response = await personalEventService.getEventsForDateRange(startDate, endDate);
-    
-    if (response.error) throw response.error;
-    
-    if (Array.isArray(response.data)) {
-      // Add source identifier
-      personalEvents.value = response.data.map(event => ({
-        ...event,
-        _source: event.event_type === 'work' ? 'work' : 'personal'
-      }));
-      return personalEvents.value;
-    } else {
-      console.warn('Unexpected response format from personalEventService:', response);
-      personalEvents.value = [];
-      return [];
-    }
-  } catch (error) {
-    const errorDetails = handleApiError(error, 'loadPersonalEvents');
-    personalEvents.value = [];
-    return [];
-  }
-}
-
-// Load health events
-async function loadHealthEvents(startDate: string, endDate: string) {
-  if (!isHealthTrackingEnabled.value) {
-    healthEvents.value = [];
-    return [];
-  }
-  
-  try {
-    const response = await cycleTrackingService.getEntriesForDateRange(startDate, endDate);
-    
-    if (response.error) throw response.error;
-    
-    if (Array.isArray(response.data)) {
-      // Convert health entries to calendar-compatible format
-      healthEvents.value = response.data.map(entry => {
-        // Create start and end times
-        const startDate = new Date(entry.start_date);
-        const endDate = entry.end_date ? new Date(entry.end_date) : new Date(startDate);
-        
-        if (!entry.end_date) {
-          endDate.setHours(23, 59, 59);
-        }
-        
-        return {
-          _id: entry.id,
-          title: 'Cycle Entry',
-          description: entry.notes || 'Health tracking entry',
-          start_time: startDate.toISOString(),
-          end_time: endDate.toISOString(),
-          is_all_day: true,
-          is_private: entry.is_private,
-          _source: 'health',
-          // Preserve original data
-          original: entry
-        };
-      });
-      return healthEvents.value;
-    } else {
-      console.warn('Unexpected response format from cycleTrackingService:', response);
-      healthEvents.value = [];
-      return [];
-    }
-  } catch (error) {
-    const errorDetails = handleApiError(error, 'loadHealthEvents');
-    healthEvents.value = [];
-    return [];
-  }
-}
-
-// Refresh calendar data based on current month
-function refreshCalendar() {
-  handleMonthChanged({
-    month: currentDate.value.getMonth(),
-    year: currentDate.value.getFullYear()
-  });
 }
 
 // Handle date selection
@@ -463,12 +501,19 @@ function handleDateSelected(data: any) {
     // When user clicks on a date, create a new event pre-filled with that date
     const selectedDate = new Date(data.dateString);
     
+    // Create start time at 9 AM
+    const startTime = new Date(selectedDate);
+    startTime.setHours(9, 0, 0, 0);
+    
+    // Create end time at 10 AM
+    const endTime = new Date(selectedDate);
+    endTime.setHours(10, 0, 0, 0);
+    
     selectedEvent.value = {
-      // Don't include an id field for new events
       title: '',
       event_type: 'personal',
-      start_time: new Date(selectedDate).toISOString(),
-      end_time: new Date(selectedDate).toISOString(),
+      start_time: startTime.toISOString(),
+      end_time: endTime.toISOString(),
       location: '',
       description: '',
       is_all_day: false,
@@ -493,7 +538,7 @@ function goToToday() {
 // Event Modal Functions
 
 // View an event
-function viewEvent(event: any) {
+function viewEvent(event: CalendarEventType) {
   selectedEvent.value = { ...event };
   eventModalMode.value = 'view';
   showEventModal.value = true;
@@ -501,12 +546,19 @@ function viewEvent(event: any) {
 
 // Create a new event
 function createNewEvent() {
+  // Create start time at 9 AM today
+  const startTime = new Date();
+  startTime.setHours(9, 0, 0, 0);
+  
+  // Create end time at 10 AM today
+  const endTime = new Date();
+  endTime.setHours(10, 0, 0, 0);
+  
   selectedEvent.value = {
-    // Don't include an id field for new events
     title: '',
     event_type: 'personal',
-    start_time: new Date().toISOString(),
-    end_time: new Date().toISOString(),
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString(),
     location: '',
     description: '',
     is_all_day: false,
@@ -518,7 +570,7 @@ function createNewEvent() {
 }
 
 // Switch to edit mode
-function enterEditMode(event: any) {
+function enterEditMode(event: CalendarEventType) {
   selectedEvent.value = { ...event };
   eventModalMode.value = 'edit';
 }
@@ -526,30 +578,32 @@ function enterEditMode(event: any) {
 // Close the event modal
 function closeEventModal() {
   showEventModal.value = false;
-  selectedEvent.value = null;
+  selectedEvent.value = undefined;
 }
 
 // Open delete confirmation
-function openDeleteConfirmation(event: any) {
+function openDeleteConfirmation(event: CalendarEventType) {
   selectedEvent.value = event;
   showDeleteConfirmation.value = true;
 }
 
 // Save event (create or update)
-async function saveEvent(eventData: any) {
+async function saveEvent(eventData: CalendarEventType) {
   saveInProgress.value = true;
   
   try {
     // Get family context
-    const { familyId, isPersonalOnly } = await getFamilyContext();
+    const { familyId: fid, isPersonalOnly: personal } = await getFamilyContext();
+    familyId.value = fid;
+    isPersonalOnly.value = personal;
     
     // Set family ID only if user is part of a family
-    if (!isPersonalOnly && familyId) {
-      eventData.family_id = familyId;
+    if (!isPersonalOnly.value && familyId.value) {
+      eventData.family_id = familyId.value;
     }
     
     // For personal-only use, ensure visibility is private
-    if (isPersonalOnly) {
+    if (isPersonalOnly.value) {
       eventData.visibility = 'private';
     }
     
@@ -561,29 +615,23 @@ async function saveEvent(eventData: any) {
     let result;
     
     if (isCreateMode) {
-      // For new events, remove the ID field so PostgreSQL can generate a UUID
+      // For new events, remove the ID field
       delete eventToSave.id;
       
-      // Set the user_id field based on the current user
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        eventToSave.user_id = data.user.id;
-      }
-      
-      result = await personalEventService.createEvent(eventToSave);
+      result = await eventService.createEvent(eventToSave);
     } else {
       // For updates, make sure we have a valid ID
       if (!eventToSave.id) {
         throw new Error('Missing event ID for update operation');
       }
-      result = await personalEventService.updateEvent(eventToSave.id, eventToSave);
+      result = await eventService.updateEvent(eventToSave.id, eventToSave);
     }
     
     if (result.error) throw result.error;
     
     // Close the modal and refresh data
     showEventModal.value = false;
-    refreshCalendar();
+    await loadEvents();
     
   } catch (error) {
     const errorDetails = handleApiError(error, 'saveEvent');
@@ -594,13 +642,13 @@ async function saveEvent(eventData: any) {
 }
 
 // Delete event
-async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any }) {
+async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: CalendarEventType }) {
   if (!deleteData.event || !deleteData.event.id) return;
   
   deleteInProgress.value = true;
   
   try {
-    const result = await personalEventService.deleteEvent(
+    const result = await eventService.deleteEvent(
       deleteData.event.id,
       deleteData.deleteEntireSeries
     );
@@ -610,7 +658,7 @@ async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any
     // Close modals and refresh data
     showDeleteConfirmation.value = false;
     showEventModal.value = false;
-    refreshCalendar();
+    await loadEvents();
     
   } catch (error) {
     const errorDetails = handleApiError(error, 'deleteEvent');
@@ -619,8 +667,81 @@ async function deleteEvent(deleteData: { deleteEntireSeries: boolean; event: any
   }
 }
 
+// Helper functions
+function getEventDotClass(event: CalendarEventType): string {
+  switch (event.event_type) {
+    case 'personal': return 'bg-blue-500';
+    case 'family': return 'bg-purple-500';
+    case 'health': return 'bg-pink-500';
+    case 'work': return 'bg-emerald-500';
+    default: return 'bg-gray-500';
+  }
+}
+
+function getEventBadgeClass(event: CalendarEventType): string {
+  switch (event.event_type) {
+    case 'personal': return 'bg-blue-100 text-blue-800';
+    case 'family': return 'bg-purple-100 text-purple-800';
+    case 'health': return 'bg-pink-100 text-pink-800';
+    case 'work': return 'bg-emerald-100 text-emerald-800';
+    default: return 'bg-gray-100 text-gray-800';
+  }
+}
+
+function getVisibilityBadgeClass(visibility: string): string {
+  switch (visibility) {
+    case 'family': return 'bg-purple-50 text-purple-700';
+    case 'public': return 'bg-indigo-50 text-indigo-700';
+    default: return 'bg-gray-50 text-gray-700';
+  }
+}
+
+function getEventTypeName(type: EventType): string {
+  switch (type) {
+    case 'personal': return 'Personal';
+    case 'family': return 'Family';
+    case 'health': return 'Health';
+    case 'work': return 'Work';
+    default: return 'Event';
+  }
+}
+
+function getVisibilityName(visibility: string): string {
+  switch (visibility) {
+    case 'family': return 'Shared with Family';
+    case 'public': return 'Public';
+    default: return 'Private';
+  }
+}
+
+function hasSymptoms(symptoms: Record<string, boolean> | undefined): boolean {
+  if (!symptoms) return false;
+  return Object.values(symptoms).some(value => value);
+}
+
 // Initialize data on component mount
-onMounted(() => {
+onMounted(async () => {
+  // Check family context
+  const context = await getFamilyContext();
+  familyId.value = context.familyId;
+  isPersonalOnly.value = context.isPersonalOnly;
+  
+  // Handle initial filter from URL
+  const route = useRoute();
+  if (route.query.filter) {
+    const filterType = route.query.filter as string;
+    
+    // Reset all filters first
+    Object.keys(filters.value).forEach(key => {
+      filters.value[key as keyof typeof filters.value] = false;
+    });
+    
+    // Enable only the requested filter
+    if (filterType in filters.value) {
+      filters.value[filterType as keyof typeof filters.value] = true;
+    }
+  }
+  
   // Set a safety timeout to prevent infinite loading
   const safetyTimeout = setTimeout(() => {
     if (loading.value) {
@@ -631,20 +752,25 @@ onMounted(() => {
   }, 10000);
   
   // Load initial data
-  handleMonthChanged({
+  await handleMonthChanged({
     month: currentDate.value.getMonth(),
     year: currentDate.value.getFullYear()
-  }).finally(() => {
-    clearTimeout(safetyTimeout);
   });
+  
+  clearTimeout(safetyTimeout);
 });
 
-// Fixed watcher to prevent reactivity loop
-watch([isHealthTrackingEnabled, isPersonalEventsEnabled], () => {
+// Watch for feature flag changes
+watch([isHealthTrackingEnabled, isPersonalEventsEnabled, isWorkScheduleEnabled], () => {
   // Only reload if not already loading and if we've loaded something before
   if (!isLoadingData.value && lastLoadedMonth.value) {
-    const [year, month] = lastLoadedMonth.value.split('-').map(Number);
-    handleMonthChanged({ year, month });
+    loadEvents();
   }
-}, { immediate: false }); // IMPORTANT: immediate set to false
+}, { immediate: false });
+
+// Watch for filter changes
+watch([activeEventTypes, activeVisibilityTypes], () => {
+  // No need to reload data from the server, just filter the existing data
+  console.log('Filters changed, applying new filters');
+}, { immediate: false });
 </script>

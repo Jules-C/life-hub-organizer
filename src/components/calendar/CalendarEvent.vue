@@ -5,7 +5,7 @@
     :style="eventStyle"
     @click.stop="handleClick"
   >
-    <div v-if="showTime && event.start_time" class="inline-block mr-1 font-medium">
+    <div v-if="showTime && event.start_time && !event.is_all_day" class="inline-block mr-1 font-medium">
       {{ formatTime(event.start_time) }}
     </div>
     <span :class="{'font-medium': showTime && event.start_time}">{{ event.title }}</span>
@@ -15,12 +15,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { formatTime } from '@/utils/dateUtils';
-import type { CalendarEvent, EventVisibility } from '@/types/calendar';
-
+import type { CalendarEvent, EventType } from '@/types/calendar';
 
 interface Props {
   event: CalendarEvent;
-  eventType?: 'default' | 'personal' | 'family' | 'health' | 'work'; // Type of event for styling
+  eventType?: EventType | 'default'; // Type of event for styling
   customClass?: string; // Additional custom CSS classes
   showTime?: boolean; // Whether to show the start time
 }
@@ -41,8 +40,11 @@ const baseClass = computed(() => {
     return `border`;
   }
 
+  // Get event type, prioritizing the prop if available
+  const type = props.eventType !== 'default' ? props.eventType as EventType : props.event.event_type;
+
   // Default styles based on event type
-  switch (props.eventType) {
+  switch (type) {
     case 'personal':
       return 'bg-blue-100 text-blue-800 border border-blue-200';
     case 'family':
@@ -52,12 +54,6 @@ const baseClass = computed(() => {
     case 'work':
       return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
     default:
-      // Check event.event_type as a fallback
-      if (props.event.event_type === 'work') {
-        return 'bg-emerald-100 text-emerald-800 border border-emerald-200';
-      } else if (props.event.event_type === 'health') {
-        return 'bg-pink-100 text-pink-800 border border-pink-200';
-      }
       return 'bg-gray-100 text-gray-800 border border-gray-200';
   }
 });

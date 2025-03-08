@@ -19,9 +19,9 @@
                 <div class="mt-1 flex items-center">
                   <span 
                     class="inline-block w-3 h-3 rounded-full mr-2"
-                    :class="getEventTypeClass(event)"
+                    :class="getEventTypeClass(event.event_type)"
                   ></span>
-                  <p class="text-sm font-medium text-gray-900">{{ getFormattedEventType(event) }}</p>
+                  <p class="text-sm font-medium text-gray-900">{{ getFormattedEventType(event.event_type) }}</p>
                 </div>
               </div>
               
@@ -51,6 +51,29 @@
                 <p class="mt-1 text-sm text-gray-900">{{ event.description }}</p>
               </div>
               
+              <!-- Health-specific fields -->
+              <div v-if="event.event_type === 'health' && event.metadata">
+                <div v-if="event.metadata.flow_intensity" class="mb-4">
+                  <h4 class="text-sm font-medium text-gray-500">Flow Intensity</h4>
+                  <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
+                    :class="getFlowIntensityClass(event.metadata.flow_intensity)">
+                    {{ getFlowIntensityLabel(event.metadata.flow_intensity) }}
+                  </p>
+                </div>
+                
+                <div v-if="event.metadata.symptoms && hasSymptoms(event.metadata.symptoms)" class="mb-4">
+                  <h4 class="text-sm font-medium text-gray-500">Symptoms</h4>
+                  <div class="mt-1 flex flex-wrap gap-1">
+                    <span v-for="(value, symptom) in event.metadata.symptoms" :key="symptom" 
+                      v-show="value"
+                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                      {{ symptom }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              
               <div v-if="event.visibility" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Visibility</h4>
                 <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
@@ -75,7 +98,6 @@
                     <option value="work">Work</option>
                     <option value="health">Health</option>
                     <option value="family">Family</option>
-                    <option value="other">Other</option>
                   </select>
                 </div>
                 
@@ -172,7 +194,43 @@
                   ></textarea>
                 </div>
                 
-                <!-- Recurrence for work events -->
+                <!-- Health-specific fields -->
+                <div v-if="formData.event_type === 'health'" class="health-fields">
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">Flow Intensity</label>
+                    <div class="mt-2 grid grid-cols-5 gap-2">
+                      <button 
+                        v-for="i in 5" 
+                        :key="i"
+                        type="button"
+                        @click="setFlowIntensity(i)"
+                        class="py-2 px-3 border rounded-md font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                        :class="getFlowIntensityValue() === i ? 'bg-primary-600 text-white border-transparent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
+                      >
+                        {{ i }}
+                      </button>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">1 = Very Light, 5 = Very Heavy</p>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <span class="block text-sm font-medium text-gray-700">Symptoms</span>
+                    <div class="mt-2 grid grid-cols-2 gap-2">
+                      <div v-for="symptom in availableSymptoms" :key="symptom" class="flex items-center">
+                        <input 
+                          :id="symptom.toLowerCase().replace(' ', '-')"
+                          type="checkbox"
+                          v-model="selectedSymptoms"
+                          :value="symptom"
+                          class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                        />
+                        <label :for="symptom.toLowerCase().replace(' ', '-')" class="ml-2 block text-sm text-gray-900">{{ symptom }}</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Work-specific recurrence fields -->
                 <div v-if="formData.event_type === 'work'" class="mb-4">
                   <label for="recurrence" class="block text-sm font-medium text-gray-700">Recurrence</label>
                   <select 
@@ -209,14 +267,26 @@
                   <select 
                     id="visibility" 
                     v-model="formData.visibility"
+                    @change="userChangedVisibility = true"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md"
                   >
                     <option value="private">Private</option>
                     <option value="family">Family</option>
                     <option value="public">Public</option>
                   </select>
-                  <p class="mt-1 text-xs text-gray-500">
-                    Choose who can see this event on the family calendar
+                  <p class="mt-1 text-xs" :class="formData.event_type === 'family' ? 'text-purple-600' : 'text-gray-500'">
+                    <span v-if="formData.event_type === 'family'">
+                      <strong>Family events</strong> are typically shared with your family
+                    </span>
+                    <span v-else-if="formData.event_type === 'health'">
+                      <strong>Health entries</strong> are private by default for your privacy
+                    </span>
+                    <span v-else-if="formData.event_type === 'work'">
+                      You can share your <strong>work schedule</strong> with family members
+                    </span>
+                    <span v-else>
+                      Choose who can see this event on the calendar
+                    </span>
                   </p>
                 </div>
                 
@@ -283,11 +353,13 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue';
+import { formatDateTime } from '@/utils/dateUtils';
+import type { CalendarEvent, EventType, EventVisibility } from '@/types/calendar';
 
 interface Props {
   show: boolean;
   mode: 'create' | 'edit' | 'view';
-  event?: any;
+  event?: CalendarEvent;
   processing?: boolean;
 }
 
@@ -301,7 +373,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(['close', 'save', 'edit', 'delete']);
 
 // Initialize form data
-const formData = ref({
+const formData = ref<CalendarEvent>({
   id: '',
   title: '',
   event_type: 'personal',
@@ -313,14 +385,21 @@ const formData = ref({
   recurrence_rule: '',
   color: '#3B82F6', // Default blue
   visibility: 'private',
-  // Additional fields as needed
+  metadata: {}
 });
 
-// Date and time form controls
-const startDate = ref('');
-const startTime = ref('09:00');
-const endDate = ref('');
-const endTime = ref('10:00');
+// Health-specific fields
+const selectedSymptoms = ref<string[]>([]);
+const availableSymptoms = [
+  'Cramps',
+  'Headache',
+  'Bloating',
+  'Fatigue',
+  'Mood Swings',
+  'Nausea',
+  'Breast Tenderness',
+  'Back Pain'
+];
 
 // Available colors for color picker
 const availableColors = [
@@ -330,6 +409,12 @@ const availableColors = [
   { value: '#EF4444', class: 'bg-red-500' },    // Red
   { value: '#F59E0B', class: 'bg-amber-500' },  // Amber
 ];
+
+// Date and time form controls
+const startDate = ref('');
+const startTime = ref('09:00');
+const endDate = ref('');
+const endTime = ref('10:00');
 
 // Computed values
 const modalTitle = computed(() => {
@@ -345,11 +430,66 @@ const saveButtonText = computed(() => {
   return props.mode === 'create' ? 'Create' : 'Save';
 });
 
+// Track if user has explicitly changed visibility
+const userChangedVisibility = ref(false);
+
+// Helper methods for health events
+function hasSymptoms(symptoms: Record<string, boolean>): boolean {
+  return Object.values(symptoms).some(value => value);
+}
+
+function getFlowIntensityValue(): number {
+  return formData.value.metadata?.flow_intensity || 0;
+}
+
+function setFlowIntensity(intensity: number): void {
+  if (!formData.value.metadata) {
+    formData.value.metadata = {};
+  }
+  formData.value.metadata.flow_intensity = intensity;
+}
+
+function getFlowIntensityClass(intensity: number): string {
+  const classes = {
+    1: 'bg-pink-100 text-pink-800',
+    2: 'bg-pink-200 text-pink-800',
+    3: 'bg-pink-300 text-pink-800',
+    4: 'bg-pink-400 text-white',
+    5: 'bg-pink-500 text-white'
+  };
+  
+  return classes[intensity as keyof typeof classes] || 'bg-pink-200 text-pink-800';
+}
+
+function getFlowIntensityLabel(intensity: number): string {
+  const labels = {
+    1: 'Very Light',
+    2: 'Light',
+    3: 'Medium',
+    4: 'Heavy',
+    5: 'Very Heavy'
+  };
+  
+  return labels[intensity as keyof typeof labels] || 'Unknown';
+}
+
 // Watchers
 watch(() => props.event, (newEvent) => {
   if (newEvent && (props.mode === 'edit' || props.mode === 'view')) {
     // Update form data when event changes
     formData.value = { ...newEvent };
+    
+    // Handle health-specific fields
+    if (newEvent.event_type === 'health' && newEvent.metadata) {
+      selectedSymptoms.value = [];
+      if (newEvent.metadata.symptoms) {
+        Object.entries(newEvent.metadata.symptoms).forEach(([symptom, present]) => {
+          if (present) {
+            selectedSymptoms.value.push(symptom);
+          }
+        });
+      }
+    }
     
     // Parse dates and times for form controls
     if (newEvent.start_time) {
@@ -363,6 +503,9 @@ watch(() => props.event, (newEvent) => {
       endDate.value = endDateTime.toISOString().split('T')[0];
       endTime.value = endDateTime.toTimeString().slice(0, 5);
     }
+    
+    // Reset the user changed visibility flag when loading an existing event
+    userChangedVisibility.value = false;
   }
 }, { immediate: true, deep: true });
 
@@ -370,6 +513,32 @@ watch(() => props.mode, (newMode) => {
   if (newMode === 'create') {
     // Reset form for create mode
     resetForm();
+    // Reset the user changed visibility flag
+    userChangedVisibility.value = false;
+  }
+});
+
+// Watch for event type changes to update visibility default
+watch(() => formData.value.event_type, (newType) => {
+  // Only update visibility if we're in create mode and the user hasn't explicitly changed it
+  if (props.mode === 'create' && !userChangedVisibility.value) {
+    // Set appropriate defaults based on event type
+    switch (newType) {
+      case 'family':
+        formData.value.visibility = 'family';
+        break;
+      case 'health':
+        formData.value.visibility = 'private';
+        break;
+      case 'work':
+        // You can decide if work events should default to family or private
+        formData.value.visibility = 'private'; 
+        break;
+      case 'personal':
+      default:
+        formData.value.visibility = 'private';
+        break;
+    }
   }
 });
 
@@ -394,7 +563,10 @@ function resetForm() {
     recurrence_rule: '',
     color: '#3B82F6',
     visibility: 'private',
+    metadata: {}
   };
+  
+  selectedSymptoms.value = [];
   
   // Set default date/time values
   const now = new Date();
@@ -407,6 +579,21 @@ function resetForm() {
 }
 
 function saveHandler() {
+  // Update metadata for health events
+  if (formData.value.event_type === 'health') {
+    if (!formData.value.metadata) {
+      formData.value.metadata = {};
+    }
+    
+    // Update symptoms based on selected symptoms
+    const symptomsObject: Record<string, boolean> = {};
+    availableSymptoms.forEach(symptom => {
+      symptomsObject[symptom] = selectedSymptoms.value.includes(symptom);
+    });
+    
+    formData.value.metadata.symptoms = symptomsObject;
+  }
+  
   // Combine date and time values into ISO strings
   const startDateTime = new Date(`${startDate.value}T${startTime.value}`);
   const endDateTime = new Date(`${endDate.value}T${endTime.value}`);
@@ -428,46 +615,33 @@ function editHandler() {
 }
 
 // Helper methods
-function formatDateTime(isoString: string) {
-  if (!isoString) return '';
-  
-  const date = new Date(isoString);
-  return date.toLocaleString([], { 
-    weekday: 'short',
-    month: 'short', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+function getEventTypeClass(eventType: EventType): string {
+  switch (eventType) {
+    case 'personal': return 'bg-blue-500';
+    case 'family': return 'bg-purple-500';
+    case 'health': return 'bg-pink-500';
+    case 'work': return 'bg-emerald-500';
+    default: return 'bg-gray-500';
+  }
 }
 
-function getFormattedEventType(event: any) {
-  if (!event) return '';
-  
-  if (event._source === 'family') return 'Family Event';
-  if (event._source === 'health') return 'Health Entry';
-  if (event._source === 'work' || event.event_type === 'work') return 'Work Schedule';
-  if (event._source === 'personal') return 'Personal Event';
-  return event.event_type ? event.event_type.charAt(0).toUpperCase() + event.event_type.slice(1) : 'Event';
+function getFormattedEventType(eventType: EventType): string {
+  switch (eventType) {
+    case 'personal': return 'Personal Event';
+    case 'family': return 'Family Event';
+    case 'health': return 'Health Entry';
+    case 'work': return 'Work Schedule';
+    default: return 'Event';
+  }
 }
 
-function getEventTypeClass(event: any) {
-  if (!event) return '';
-  
-  if (event._source === 'family') return 'bg-purple-500';
-  if (event._source === 'health') return 'bg-pink-500';
-  if (event._source === 'work' || event.event_type === 'work') return 'bg-emerald-500';
-  if (event._source === 'personal') return 'bg-blue-500';
-  return 'bg-gray-500';
-}
-
-function getFormattedVisibility(visibility: string) {
+function getFormattedVisibility(visibility: EventVisibility): string {
   if (visibility === 'family') return 'Shared with Family';
   if (visibility === 'public') return 'Public';
   return 'Private';
 }
 
-function getVisibilityClass(visibility: string) {
+function getVisibilityClass(visibility: EventVisibility): string {
   if (visibility === 'family') return 'bg-purple-100 text-purple-800';
   if (visibility === 'public') return 'bg-indigo-100 text-indigo-800';
   return 'bg-gray-100 text-gray-800';
