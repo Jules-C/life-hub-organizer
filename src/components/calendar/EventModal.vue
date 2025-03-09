@@ -1,95 +1,100 @@
 <template>
   <div v-if="show" class="fixed inset-0 overflow-y-auto z-10" aria-labelledby="modal-title" role="dialog"
-    aria-modal="true">
+    aria-modal="true" data-test="event-modal">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="cancelHandler">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" @click="cancelHandler"
+        data-test="modal-backdrop">
       </div>
 
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
       <div
-        class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+        data-test="modal-content">
         <div>
           <div class="mt-3 text-center sm:mt-0 sm:text-left">
-            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title" data-test="modal-title">
               {{ modalTitle }}
             </h3>
 
             <!-- View Mode -->
-            <div v-if="mode === 'view'" class="mt-4">
+            <div v-if="mode === 'view'" class="mt-4" data-test="view-mode-container">
               <div class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Event Type</h4>
                 <div class="mt-1 flex items-center">
                   <span class="inline-block w-3 h-3 rounded-full mr-2"
                     :class="getEventTypeClass(event.event_type)"></span>
-                  <p class="text-sm font-medium text-gray-900">{{ getFormattedEventType(event.event_type) }}</p>
+                  <p class="text-sm font-medium text-gray-900" data-test="event-type-display">{{
+                    getFormattedEventType(event.event_type) }}</p>
                 </div>
               </div>
 
               <div class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Title</h4>
-                <p class="mt-1 text-sm text-gray-900">{{ event.title }}</p>
+                <p class="mt-1 text-sm text-gray-900" data-test="event-title-display">{{ event.title }}</p>
               </div>
 
               <div class="mb-4 grid grid-cols-2 gap-4">
                 <div>
                   <h4 class="text-sm font-medium text-gray-500">Start</h4>
-                  <p class="mt-1 text-sm text-gray-900">{{ formatDateTime(event.start_time) }}</p>
+                  <p class="mt-1 text-sm text-gray-900" data-test="event-start-display">{{
+                    formatDateTime(event.start_time) }}</p>
                 </div>
                 <div>
                   <h4 class="text-sm font-medium text-gray-500">End</h4>
-                  <p class="mt-1 text-sm text-gray-900">{{ formatDateTime(event.end_time) }}</p>
+                  <p class="mt-1 text-sm text-gray-900" data-test="event-end-display">{{ formatDateTime(event.end_time)
+                    }}</p>
                 </div>
               </div>
 
               <div v-if="event.location" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Location</h4>
-                <p class="mt-1 text-sm text-gray-900">{{ event.location }}</p>
+                <p class="mt-1 text-sm text-gray-900" data-test="event-location-display">{{ event.location }}</p>
               </div>
 
               <div v-if="event.description" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Description</h4>
-                <p class="mt-1 text-sm text-gray-900">{{ event.description }}</p>
+                <p class="mt-1 text-sm text-gray-900" data-test="event-description-display">{{ event.description }}</p>
               </div>
 
               <!-- Health-specific fields -->
-              <div v-if="event.event_type === 'health' && event.metadata">
+              <div v-if="event.event_type === 'health' && event.metadata" data-test="health-fields-display">
                 <div v-if="event.metadata.flow_intensity" class="mb-4">
                   <h4 class="text-sm font-medium text-gray-500">Flow Intensity</h4>
                   <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
-                    :class="getFlowIntensityClass(event.metadata.flow_intensity)">
+                    :class="getFlowIntensityClass(event.metadata.flow_intensity)" data-test="flow-intensity-display">
                     {{ getFlowIntensityLabel(event.metadata.flow_intensity) }}
                   </p>
                 </div>
 
                 <div v-if="event.metadata.symptoms && hasSymptoms(event.metadata.symptoms)" class="mb-4">
                   <h4 class="text-sm font-medium text-gray-500">Symptoms</h4>
-                  <div class="mt-1 flex flex-wrap gap-1">
+                  <div class="mt-1 flex flex-wrap gap-1" data-test="symptoms-display">
                     <span v-for="(value, symptom) in event.metadata.symptoms" :key="symptom" v-show="value"
-                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
+                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800"
+                      :data-test="`symptom-${String(symptom).toLowerCase().replace(' ', '-')}`">
                       {{ symptom }}
                     </span>
                   </div>
                 </div>
               </div>
 
-
               <div v-if="event.visibility" class="mb-4">
                 <h4 class="text-sm font-medium text-gray-500">Visibility</h4>
                 <p class="mt-1 text-sm inline-flex items-center px-2.5 py-0.5 rounded-full font-medium"
-                  :class="getVisibilityClass(event.visibility)">
+                  :class="getVisibilityClass(event.visibility)" data-test="visibility-display">
                   {{ getFormattedVisibility(event.visibility) }}
                 </p>
               </div>
             </div>
 
             <!-- Edit or Create Mode -->
-            <div v-else class="mt-4">
-              <form @submit.prevent="saveHandler">
+            <div v-else class="mt-4" data-test="edit-mode-container">
+              <form @submit.prevent="saveHandler" data-test="event-form">
                 <!-- Event Type - Only shown in Create mode -->
                 <div v-if="mode === 'create'" class="mb-4">
                   <label for="event-type" class="block text-sm font-medium text-gray-700">Event Type</label>
-                  <select id="event-type" v-model="formData.event_type"
+                  <select id="event-type" v-model="formData.event_type" data-test="event-type-select"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md">
                     <option value="personal">Personal</option>
                     <option value="work">Work</option>
@@ -101,7 +106,7 @@
                 <!-- Title -->
                 <div class="mb-4">
                   <label for="event-title" class="block text-sm font-medium text-gray-700">Event Title</label>
-                  <input type="text" id="event-title" v-model="formData.title" required
+                  <input type="text" id="event-title" data-test="title-input" v-model="formData.title" required
                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" />
                 </div>
 
@@ -109,12 +114,13 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <label for="start-date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                    <input type="date" id="start-date" v-model="startDate" required
+                    <input type="date" id="start-date" data-test="start-date-input" v-model="startDate" required
                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" />
                   </div>
                   <div>
                     <label for="start-time" class="block text-sm font-medium text-gray-700">Start Time</label>
-                    <input type="time" id="start-time" v-model="startTime" required :disabled="formData.is_all_day"
+                    <input type="time" id="start-time" data-test="start-time-input" v-model="startTime" required
+                      :disabled="formData.is_all_day"
                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" />
                   </div>
                 </div>
@@ -122,19 +128,21 @@
                 <div class="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <label for="end-date" class="block text-sm font-medium text-gray-700">End Date</label>
-                    <input type="date" id="end-date" v-model="endDate" required :min="startDate"
+                    <input type="date" id="end-date" data-test="end-date-input" v-model="endDate" required
+                      :min="startDate"
                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" />
                   </div>
                   <div>
                     <label for="end-time" class="block text-sm font-medium text-gray-700">End Time</label>
-                    <input type="time" id="end-time" v-model="endTime" required :disabled="formData.is_all_day"
+                    <input type="time" id="end-time" data-test="end-time-input" v-model="endTime" required
+                      :disabled="formData.is_all_day"
                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm" />
                   </div>
                 </div>
 
                 <div class="mb-4">
                   <div class="flex items-center">
-                    <input id="all-day" type="checkbox" v-model="formData.is_all_day"
+                    <input id="all-day" type="checkbox" data-test="all-day-checkbox" v-model="formData.is_all_day"
                       class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                     <label for="all-day" class="ml-2 block text-sm text-gray-900">All day event</label>
                   </div>
@@ -143,7 +151,7 @@
                 <!-- Location -->
                 <div class="mb-4">
                   <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-                  <input type="text" id="location" v-model="formData.location"
+                  <input type="text" id="location" data-test="location-input" v-model="formData.location"
                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                     placeholder="e.g. Office, Home, etc." />
                 </div>
@@ -151,19 +159,20 @@
                 <!-- Description -->
                 <div class="mb-4">
                   <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea id="description" v-model="formData.description" rows="3"
+                  <textarea id="description" data-test="description-input" v-model="formData.description" rows="3"
                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                     placeholder="Add details about your event..."></textarea>
                 </div>
 
                 <!-- Health-specific fields -->
-                <div v-if="formData.event_type === 'health'" class="health-fields">
+                <div v-if="formData.event_type === 'health'" class="health-fields" data-test="health-fields-form">
                   <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700">Flow Intensity</label>
-                    <div class="mt-2 grid grid-cols-5 gap-2">
+                    <div class="mt-2 grid grid-cols-5 gap-2" data-test="flow-intensity-buttons">
                       <button v-for="i in 5" :key="i" type="button" @click="setFlowIntensity(i)"
                         class="py-2 px-3 border rounded-md font-medium text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                        :class="getFlowIntensityValue() === i ? 'bg-primary-600 text-white border-transparent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'">
+                        :class="getFlowIntensityValue() === i ? 'bg-primary-600 text-white border-transparent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
+                        :data-test="`flow-intensity-${i}`">
                         {{ i }}
                       </button>
                     </div>
@@ -172,10 +181,10 @@
 
                   <div class="mb-4">
                     <span class="block text-sm font-medium text-gray-700">Symptoms</span>
-                    <div class="mt-2 grid grid-cols-2 gap-2">
+                    <div class="mt-2 grid grid-cols-2 gap-2" data-test="symptoms-checkboxes">
                       <div v-for="symptom in availableSymptoms" :key="symptom" class="flex items-center">
                         <input :id="symptom.toLowerCase().replace(' ', '-')" type="checkbox" v-model="selectedSymptoms"
-                          :value="symptom"
+                          :value="symptom" :data-test="`symptom-${symptom.toLowerCase().replace(' ', '-')}-checkbox`"
                           class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded" />
                         <label :for="symptom.toLowerCase().replace(' ', '-')"
                           class="ml-2 block text-sm text-gray-900">{{ symptom }}</label>
@@ -187,7 +196,7 @@
                 <!-- Work-specific recurrence fields -->
                 <div v-if="formData.event_type === 'work'" class="mb-4">
                   <label for="recurrence" class="block text-sm font-medium text-gray-700">Recurrence</label>
-                  <select id="recurrence" v-model="formData.recurrence_rule"
+                  <select id="recurrence" data-test="recurrence-select" v-model="formData.recurrence_rule"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md">
                     <option value="">One time</option>
                     <option value="FREQ=DAILY">Daily</option>
@@ -197,25 +206,11 @@
                   </select>
                 </div>
 
-                <!-- Color picker -->
-                <!-- <div class="mb-4">
-                  <label for="color" class="block text-sm font-medium text-gray-700">Color</label>
-                  <div class="mt-1 grid grid-cols-5 gap-2">
-                    <button 
-                      v-for="color in availableColors" 
-                      :key="color.value"
-                      type="button"
-                      @click="formData.color = color.value"
-                      class="w-6 h-6 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                      :class="[color.class, formData.color === color.value ? 'ring-2 ring-offset-2 ring-gray-500' : '']"
-                    ></button>
-                  </div>
-                </div> -->
-
                 <!-- Visibility -->
                 <div class="mb-4">
                   <label for="visibility" class="block text-sm font-medium text-gray-700">Visibility</label>
-                  <select id="visibility" v-model="formData.visibility" @change="userChangedVisibility = true"
+                  <select id="visibility" data-test="visibility-select" v-model="formData.visibility"
+                    @change="userChangedVisibility = true"
                     class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm rounded-md">
                     <option value="private">Private</option>
                     <option value="family">Family</option>
@@ -240,14 +235,14 @@
 
                 <!-- Submit buttons -->
                 <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
-                  <button type="submit"
+                  <button type="submit" data-test="save-button"
                     class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary-600 text-base font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:col-start-2 sm:text-sm"
                     :disabled="processing">
-                    <span v-if="processing"
+                    <span v-if="processing" data-test="loading-spinner"
                       class="inline-block animate-spin h-4 w-4 mr-2 border-t-2 border-white rounded-full"></span>
                     {{ saveButtonText }}
                   </button>
-                  <button type="button"
+                  <button type="button" data-test="cancel-button"
                     class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm"
                     @click="cancelHandler" :disabled="processing">
                     Cancel
@@ -259,9 +254,9 @@
         </div>
 
         <!-- Action Buttons for View Mode -->
-        <div v-if="mode === 'view'" class="mt-5 sm:mt-6 flex justify-between">
+        <div v-if="mode === 'view'" class="mt-5 sm:mt-6 flex justify-between" data-test="view-mode-actions">
           <div class="flex space-x-2">
-            <button type="button"
+            <button type="button" data-test="edit-button"
               class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
               @click="editHandler">
               <svg class="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -271,7 +266,7 @@
               </svg>
               Edit
             </button>
-            <button type="button"
+            <button type="button" data-test="delete-button"
               class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
               @click="$emit('delete', event)">
               <svg class="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -282,7 +277,7 @@
               Delete
             </button>
           </div>
-          <button type="button"
+          <button type="button" data-test="close-button"
             class="inline-flex justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
             @click="cancelHandler">
             Close

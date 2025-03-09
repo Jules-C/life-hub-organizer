@@ -1,6 +1,26 @@
 
  RUN  v0.34.6 /Users/juliecook/claude/LifeHubOrganizer
 
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show loading state when loading
+ × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show personal mode message when isPersonalOnly is true
+   → 'button:contains("Create a Family")' is not a valid selector
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show family mode content when isPersonalOnly is false
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should render family members list correctly
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show admin badge for admin members
+ × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit create-family event when clicking create family button
+   → 'button:contains("Create a Family")' is not a valid selector
+ × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit invite-member event when clicking invite member button
+   → 'button:contains("Add Family Member")' is not a valid selector
+ × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should disable invite button when saving
+   → 'button:contains("Add Family Member")' is not a valid selector
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Empty States > should show no members message when family members list is empty
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Empty States > should handle undefined familyMembers prop
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should show member initials in avatar
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should format member roles correctly
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should handle members without initials
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle members with missing email
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle members with missing name
+ ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle missing familyId
 stderr | src/stores/__tests__/family.test.ts > Family Store > initialization > should handle initialization errors
 Error loading family data: {
   code: [32m'ERROR'[39m,
@@ -62,48 +82,44 @@ Error loading family data: Error: Service unavailable
  ✓ src/stores/__tests__/family.test.ts > Family Store > error handling > should handle missing family ID
  ✓ src/stores/__tests__/family.test.ts > Family Store > error handling > should handle service unavailability
  ✓ src/stores/__tests__/family.test.ts > Family Store > state management > should clear state when resetting
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show loading state when loading
- × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show personal mode message when isPersonalOnly is true
-   → 'button:contains("Create a Family")' is not a valid selector
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show family mode content when isPersonalOnly is false
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should render family members list correctly
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show admin badge for admin members
- × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit create-family event when clicking create family button
-   → 'button:contains("Create a Family")' is not a valid selector
- × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit invite-member event when clicking invite member button
-   → 'button:contains("Add Family Member")' is not a valid selector
- × src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should disable invite button when saving
-   → 'button:contains("Add Family Member")' is not a valid selector
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Empty States > should show no members message when family members list is empty
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Empty States > should handle undefined familyMembers prop
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should show member initials in avatar
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should format member roles correctly
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Member Display > should handle members without initials
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle members with missing email
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle members with missing name
- ✓ src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Edge Cases > should handle missing familyId
  ✓ src/stores/__tests__/family.test.ts > Family Store > state management > should maintain loading state during async operations
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Rendering > should render modal when show is true
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Rendering > should not render modal when show is false
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Rendering > should render custom title and message
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Rendering > should render custom button text
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Recurring Event Options > should show recurring options for recurring events
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Recurring Event Options > should not show recurring options for non-recurring events
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Recurring Event Options > should not show recurring options when showRecurringOptions is false
- × src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should emit cancel event when clicking cancel button
-   → 'button:contains("Cancel")' is not a valid selector
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should emit cancel event when clicking backdrop
- × src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should emit confirm event with correct data when confirming
-   → 'button:contains("Delete")' is not a valid selector
- × src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should include deleteEntireSeries in confirm event when selected
-   → 'button:contains("Delete")' is not a valid selector
- × src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Processing State > should disable buttons when processing
-   → 'button:contains("Delete")' is not a valid selector
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Processing State > should not emit cancel when clicking backdrop while processing
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Processing State > should show loading state in confirm button when processing
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Edge Cases > should handle missing event prop
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Edge Cases > should handle undefined recurrence_rule
- ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Edge Cases > should handle empty strings in title and message
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > displays event details correctly in view mode
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > shows edit and delete buttons in view mode
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Edit Mode > populates form fields correctly in edit mode
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Edit Mode > emits save event with updated data
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Create Mode > shows empty form in create mode
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Create Mode > emits save event with new event data
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Modal Controls > closes modal when clicking cancel
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Modal Controls > disables form submission while processing
+ × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > shows work schedule options for work events
+   → expected false to be true // Object.is equality
+ ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > handles all-day event toggle correctly
+ × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > validates required fields before submission
+   → expected [ [ { id: '', title: '', …(10) } ] ] to be falsy
+ ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Visibility > should render when show is true
+ ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Visibility > should not render when show is false
+ ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Content > should display correct title and message
+ ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Interactions > should emit cancel event when cancel button is clicked
+ ✓ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Interactions > should emit confirm event with expected data when confirm button is clicked
+ × src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Processing State > should disable buttons and show spinner when processing
+   → expected false to be true // Object.is equality
+ × src/router/__tests__/router.test.ts > Router Guards > Authentication > should redirect unauthenticated users to login
+   → expected "spy" to be called with arguments: [ ObjectContaining{ …(3) } ]
+
+Received: 
+
+  1st spy call:
+
+  Array [
+-   ObjectContaining {
+-     "name": "login",
+-   },
++   "/home",
+  ]
+
+
+Number of calls: 1
+
  × src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > renders correct number of days
    → expected [ DOMWrapper{ …(2) }, …(17) ] to have a length of 7 but got 18
  × src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > emits month-changed event when navigating
@@ -118,162 +134,6 @@ Error loading family data: Error: Service unavailable
  × src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > handles date changes through props
    → expected { month: 2, year: 2025, …(1) } to deeply equal { month: 3, year: 2025, …(1) }
  ✓ src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > exposes correct public methods
- × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > displays event details correctly in view mode
-   → expected '​Event DetailsEvent TypePersonalTitle…' to include 'March 5, 2025 9:00 AM'
- × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > shows edit and delete buttons in view mode
-   → 'button:has(svg + span:contains("Edit"))' is not a valid selector
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Edit Mode > populates form fields correctly in edit mode
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Edit Mode > emits save event with updated data
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Create Mode > shows empty form in create mode
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Create Mode > emits save event with new event data
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Modal Controls > closes modal when clicking cancel
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Modal Controls > disables form submission while processing
- × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > shows work schedule options for work events
-   → expected false to be true // Object.is equality
- ✓ src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > handles all-day event toggle correctly
- × src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > validates required fields before submission
-   → expected [ [ { id: '', title: '', …(9) } ] ] to be falsy
-stdout | src/views/calendar/__tests__/CalendarView.test.ts > CalendarView > Initialization > loads events on mount
-Loading data for date range: {
-  startDate: [32m'2025-03-01T05:00:00.000Z'[39m,
-  endDate: [32m'2025-03-31T04:00:00.000Z'[39m
-}
-Loading personal events for date range: {
-  startDate: [32m'2025-03-01T05:00:00.000Z'[39m,
-  endDate: [32m'2025-03-31T04:00:00.000Z'[39m
-}
-
-stderr | src/views/calendar/__tests__/CalendarView.test.ts > CalendarView > Initialization > loads events on mount
-[Vue warn]: injection "Symbol(router)" not found. 
-  at <CalendarView ref="VTU_COMPONENT" > 
-  at <VTUROOT>
-Error in loadHealthEvents: TypeError: Cannot read properties of undefined (reading 'error')
-    at loadHealthEvents [90m(/Users/juliecook/claude/LifeHubOrganizer/[39msrc/views/calendar/CalendarView.vue:413:18[90m)[39m
-    at handleMonthChanged [90m(/Users/juliecook/claude/LifeHubOrganizer/[39msrc/views/calendar/CalendarView.vue:329:7[90m)[39m
-
- × src/views/calendar/__tests__/CalendarView.test.ts > CalendarView > Initialization > loads events on mount
-   → expected false to be true // Object.is equality
-stderr | src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Error Handling > should show error messages when service fails
-Error in loadEvents: Error: Failed to load events
-    at [90m/Users/juliecook/claude/LifeHubOrganizer/[39msrc/views/calendar/__tests__/PersonalEventsView.test.ts:170:25
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:135:14
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:58:26
-    at runTest [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:663:17[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runFiles [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:834:5[90m)[39m
-    at startTests [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:843:3[90m)[39m
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:103:7
-
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Initialization > should load events on mount
-   → expected 0 to be greater than 0
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Tab Navigation > should have tab buttons
-   → expected 0 to be greater than 0
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Tab Navigation > should switch tabs when clicked
-   → Cannot call trigger on an empty DOMWrapper.
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Event Creation > should show add event button
-   → expected false to be true // Object.is equality
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Event Creation > should call create event service when form submitted
-   → Cannot call trigger on an empty DOMWrapper.
- × src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Error Handling > should show error messages when service fails
-   → expected false to be true // Object.is equality
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > addEntry > should successfully add a new entry
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > addEntry > should handle errors when adding entry
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > updateEntry > should successfully update an existing entry
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > getEntriesForDateRange > should return entries within date range
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > predictNextCycle > should calculate prediction based on historical data
- ✓ src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > predictNextCycle > should handle insufficient data for prediction
- × src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > deleteEntry > should successfully delete an entry
-   → supabase.from(...).delete(...).eq is not a function
- × src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > deleteEntry > should handle errors when deleting entry
-   → supabase.from(...).delete(...).eq is not a function
- × src/services/__tests__/auth.test.js > Auth Service > signUp > should successfully register a new user
-   → expected "spy" to be called with arguments: [ { email: 'test@example.com', …(2) } ]
-
-Received: 
-
-  1st spy call:
-
-  Array [
-    Object {
--     "email": "test@example.com",
-+     "email": undefined,
-      "options": Object {
-        "data": Object {
--         "first_name": "John",
--         "last_name": "Doe",
-+         "first_name": undefined,
-+         "last_name": undefined,
-        },
-      },
--     "password": "password123",
-+     "password": undefined,
-    },
-  ]
-
-
-Number of calls: 1
-
- ✓ src/services/__tests__/auth.test.js > Auth Service > signUp > should handle registration errors
- ✓ src/services/__tests__/auth.test.js > Auth Service > signIn > should successfully sign in user
- ✓ src/services/__tests__/auth.test.js > Auth Service > signIn > should handle invalid credentials
- ✓ src/services/__tests__/auth.test.js > Auth Service > signOut > should successfully sign out user
- ✓ src/services/__tests__/auth.test.js > Auth Service > getCurrentUser > should return current user
- × src/services/__tests__/auth.test.js > Auth Service > getCurrentUser > should handle get user errors
-   → Session expired
- ✓ src/services/__tests__/auth.test.js > Auth Service > updateProfile > should successfully update user profile
-stderr | src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should handle errors gracefully
-Error loading health stats: {
-  message: [32m'Failed to load entries'[39m,
-  details: [32m''[39m,
-  hint: [32m''[39m,
-  code: [32m'ERROR'[39m,
-  name: [32m'PostgrestError'[39m
-}
-
- ✓ src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should load entries on mount
- × src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should display loading state
-   → expected false to be true // Object.is equality
- × src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should calculate average cycle length correctly
-   → expected '' to include '28'
- × src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should predict next cycle start date
-   → expected '' to include 'April'
- ✓ src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should handle date range props
- × src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should handle errors gracefully
-   → expected false to be true // Object.is equality
-stderr | src/router/__tests__/router.test.ts > Router Guards > Feature Guards > should prevent access to health tracking if feature is disabled
-Feature healthTracking is disabled. Enable it in Settings > Features.
-
- × src/router/__tests__/router.test.ts > Router Guards > Authentication Guard > should redirect to login if accessing protected route while not authenticated
-   → expected "spy" to be called with arguments: [ '/home' ]
-
-Received: 
-
-
-
-Number of calls: 0
-
- × src/router/__tests__/router.test.ts > Router Guards > Authentication Guard > should redirect to home if accessing guest route while authenticated
-   → expected "spy" to be called with arguments: [ { name: 'home' } ]
-
-Received: 
-
-
-
-Number of calls: 0
-
- ✓ src/router/__tests__/router.test.ts > Router Guards > Feature Guards > should prevent access to health tracking if feature is disabled
- ✓ src/router/__tests__/router.test.ts > Router Guards > Feature Guards > should allow access to health tracking if feature is enabled
- × src/router/__tests__/router.test.ts > Router Guards > Error Handling > should redirect to error page on initialization failure
-   → expected "spy" to be called with arguments: [ { name: 'error', query: { …(2) } } ]
-
-Received: 
-
-
-
-Number of calls: 0
-
  ✓ node_modules/cssstyle/lib/CSSStyleDeclaration.test.js > CSSStyleDeclaration > has only valid properties implemented
  ✓ node_modules/cssstyle/lib/CSSStyleDeclaration.test.js > CSSStyleDeclaration > has all properties
  ✓ node_modules/cssstyle/lib/CSSStyleDeclaration.test.js > CSSStyleDeclaration > has dashed properties
@@ -327,16 +187,81 @@ Number of calls: 0
  ✓ src/components/calendar/__tests__/CalendarEvent.test.ts > CalendarEvent.vue > should emit event-click when clicked
  ✓ src/components/calendar/__tests__/CalendarEvent.test.ts > CalendarEvent.vue > should display time when showTime is true
  ✓ src/components/calendar/__tests__/CalendarEvent.test.ts > CalendarEvent.vue > should not display time when showTime is false
- ✓ node_modules/camel-case/dist/index.spec.js > camel case >  -> 
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > test -> test
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > test string -> testString
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > Test String -> testString
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > TestV2 -> testV2
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > _foo_bar_ -> fooBar
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.2.10 -> version_1_2_10
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.21.0 -> version_1_21_0
- ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.2.10 -> version1210
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signIn > should sign in a user successfully
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signIn > should handle sign in errors
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signUp > should register a new user successfully
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signUp > should handle registration errors
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > getCurrentUser > should return the current user
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > getCurrentUser > should handle errors when getting current user
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > updateProfile > should update user profile successfully
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > updateProfile > should handle profile update errors
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signOut > should sign out successfully
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > signOut > should handle sign out errors
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > getSession > should get the current session
+ ✓ src/services/__tests__/auth.test.ts > Auth Service > getSession > should handle errors when getting session
+stderr | src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should handle non-admin invitation attempts
+Error inviting family member: Error: Only family admins can send invitations
+    at Object.inviteFamilyMember [90m(/Users/juliecook/claude/LifeHubOrganizer/[39msrc/services/family.ts:227:15[90m)[39m
+    at [90m/Users/juliecook/claude/LifeHubOrganizer/[39msrc/services/__tests__/family.test.ts:225:22
+    at runTest [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:663:11[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runFiles [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:834:5[90m)[39m
+    at startTests [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:843:3[90m)[39m
+    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:103:7
+    at withEnv [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:73:5[90m)[39m
 
+stderr | src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should handle invitation acceptance errors
+Error accepting invitation: { message: [32m'Invalid token'[39m, details: [32m''[39m, hint: [32m''[39m, code: [32m''[39m }
+
+ ✓ src/services/__tests__/family.test.ts > Family Service > createFamily > should successfully create a new family
+ ✓ src/services/__tests__/family.test.ts > Family Service > createFamily > should handle errors when creating family
+ ✓ src/services/__tests__/family.test.ts > Family Service > getFamily > should return family by ID
+ ✓ src/services/__tests__/family.test.ts > Family Service > getFamilyMembers > should return family members with user data
+ ✓ src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should successfully send invitation
+ ✓ src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should handle non-admin invitation attempts
+ ✓ src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should successfully accept invitation
+ ✓ src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should handle invitation acceptance errors
+stderr | src/stores/__tests__/auth.test.ts > Auth Store > initialize > should handle initialization error gracefully
+Failed to initialize auth: Error: Failed to get user
+    at [90m/Users/juliecook/claude/LifeHubOrganizer/[39msrc/stores/__tests__/auth.test.ts:64:63
+    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:135:14
+    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:58:26
+    at runTest [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:663:17[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
+    at runFiles [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:834:5[90m)[39m
+    at startTests [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:843:3[90m)[39m
+    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:103:7
+
+stderr | src/stores/__tests__/auth.test.ts > Auth Store > logout > should handle logout failure
+Failed to logout: { message: [32m'Invalid credentials'[39m, status: [33m400[39m }
+
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > initialize > should set user if getCurrentUser returns a user
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > initialize > should handle initialization error gracefully
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > login > should successfully log in user
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > login > should handle login failure
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > logout > should successfully log out user
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > logout > should handle logout failure
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > register > should successfully register new user
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > register > should handle registration failure
+ ✓ src/stores/__tests__/auth.test.ts > Auth Store > updateProfile > should successfully update user profile
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for red
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for #nnnnnn
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgb(n, n, n)
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgb(p, p, p)
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(n, n, n, n)
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(n, n, n, n) with decimal alpha
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(p, p, p, n)
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(p, p, p, n) with decimal alpha
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns length for 100ch
+ ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns calc from calc(100px * 2)
+ ✓ node_modules/cssstyle/lib/parsers.test.js > parseColor > should convert hsl to rgb values
+ ✓ node_modules/cssstyle/lib/parsers.test.js > parseColor > should convert hsla to rgba values
+
+ ✓ node_modules/progress-webpack-plugin/test/index.spec.js > Progress Plugin > should output correctly
 [2K[1A[2K[G[1%] setup test (before run)
 [2K[1A[2K[G[1%] setup test (before run NodeEnvironmentPlugin)
 [2K[1A[2K[G[1%] setup test (before run)
@@ -416,56 +341,6 @@ Number of calls: 0
 [2K[1A[2K[G[9%] setup test (compilation)
 [2K[1A[2K[G[10%] building test 
 [2K[1A[2K[G[10%] building test (0/0 modules)
- ✓ node_modules/progress-webpack-plugin/test/index.spec.js > Progress Plugin > should output correctly
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > initialize > should set user if getCurrentUser returns a user
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > initialize > should handle initialization error gracefully
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > login > should successfully log in user
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > login > should handle login failure
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > logout > should successfully log out user
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > logout > should handle logout failure
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > register > should successfully register new user
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > register > should handle registration failure
- ✓ src/stores/__tests__/auth.test.ts > Auth Store > updateProfile > should successfully update user profile
-stderr | src/stores/__tests__/auth.test.ts > Auth Store > initialize > should handle initialization error gracefully
-Failed to initialize auth: Error: Failed to get user
-    at [90m/Users/juliecook/claude/LifeHubOrganizer/[39msrc/stores/__tests__/auth.test.ts:64:63
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:135:14
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:58:26
-    at runTest [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:663:17[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runFiles [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:834:5[90m)[39m
-    at startTests [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:843:3[90m)[39m
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:103:7
-
-stderr | src/stores/__tests__/auth.test.ts > Auth Store > logout > should handle logout failure
-Failed to logout: { message: [32m'Invalid credentials'[39m, status: [33m400[39m }
-
- ✓ src/services/__tests__/family.test.ts > Family Service > createFamily > should successfully create a new family
- ✓ src/services/__tests__/family.test.ts > Family Service > createFamily > should handle errors when creating family
- ✓ src/services/__tests__/family.test.ts > Family Service > getFamily > should return family by ID
- ✓ src/services/__tests__/family.test.ts > Family Service > getFamilyMembers > should return family members with user data
- ✓ src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should successfully send invitation
- ✓ src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should handle non-admin invitation attempts
- ✓ src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should successfully accept invitation
- ✓ src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should handle invitation acceptance errors
-stderr | src/services/__tests__/family.test.ts > Family Service > inviteFamilyMember > should handle non-admin invitation attempts
-Error inviting family member: Error: Only family admins can send invitations
-    at Object.inviteFamilyMember [90m(/Users/juliecook/claude/LifeHubOrganizer/[39msrc/services/family.ts:227:15[90m)[39m
-    at [90m/Users/juliecook/claude/LifeHubOrganizer/[39msrc/services/__tests__/family.test.ts:225:22
-    at runTest [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:663:11[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runSuite [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:782:15[90m)[39m
-    at runFiles [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:834:5[90m)[39m
-    at startTests [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4m@vitest[24m/runner/dist/index.js:843:3[90m)[39m
-    at [90mfile:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:103:7
-    at withEnv [90m(file:///Users/juliecook/claude/LifeHubOrganizer/[39mnode_modules/[4mvitest[24m/dist/entry.js:73:5[90m)[39m
-
-stderr | src/services/__tests__/family.test.ts > Family Service > acceptInvitation > should handle invitation acceptance errors
-Error accepting invitation: { message: [32m'Invalid token'[39m, details: [32m''[39m, hint: [32m''[39m, code: [32m''[39m }
-
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
@@ -476,12 +351,6 @@ Error accepting invitation: { message: [32m'Invalid token'[39m, details: [32m
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
  ✓ node_modules/css-minimizer-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ node_modules/lower-case/dist/index.spec.js > lower case >  -> 
- ✓ node_modules/lower-case/dist/index.spec.js > lower case > test -> test
- ✓ node_modules/lower-case/dist/index.spec.js > lower case > TEST -> test
- ✓ node_modules/lower-case/dist/index.spec.js > lower case > test string -> test string
- ✓ node_modules/lower-case/dist/index.spec.js > lower case > TEST STRING -> test string
- ✓ node_modules/lower-case/dist/index.spec.js > locale lower case > tr: STRING -> strıng
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
@@ -492,15 +361,6 @@ Error accepting invitation: { message: [32m'Invalid token'[39m, details: [32m
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
  ✓ node_modules/webpack-dev-server/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > createEvent > should successfully create a new event
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > createEvent > should handle errors when creating an event
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > updateEvent > should successfully update an existing event
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > getEventsForDateRange > should return events within date range
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > getEventsForDateRange > should handle authentication errors
- ✓ src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > deleteEvent > should successfully delete an event
-stderr | src/services/calendar/__tests__/personalEvents.test.ts > personalEventService > getEventsForDateRange > should handle authentication errors
-Authentication error: { message: [32m'Not authenticated'[39m }
-
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
@@ -511,40 +371,23 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
  ✓ node_modules/ajv-formats/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signIn > should sign in a user successfully
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signIn > should handle sign in errors
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signUp > should register a new user successfully
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signUp > should handle registration errors
- ✓ src/services/__tests__/auth.test.ts > Auth Service > getCurrentUser > should return the current user
- ✓ src/services/__tests__/auth.test.ts > Auth Service > getCurrentUser > should handle errors when getting current user
- ✓ src/services/__tests__/auth.test.ts > Auth Service > updateProfile > should update user profile successfully
- ✓ src/services/__tests__/auth.test.ts > Auth Service > updateProfile > should handle profile update errors
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signOut > should sign out successfully
- ✓ src/services/__tests__/auth.test.ts > Auth Service > signOut > should handle sign out errors
- ✓ src/services/__tests__/auth.test.ts > Auth Service > getSession > should get the current session
- ✓ src/services/__tests__/auth.test.ts > Auth Service > getSession > should handle errors when getting session
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for red
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for #nnnnnn
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgb(n, n, n)
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgb(p, p, p)
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(n, n, n, n)
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(n, n, n, n) with decimal alpha
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(p, p, p, n)
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns color for rgba(p, p, p, n) with decimal alpha
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns length for 100ch
- ✓ node_modules/cssstyle/lib/parsers.test.js > valueType > returns calc from calc(100px * 2)
- ✓ node_modules/cssstyle/lib/parsers.test.js > parseColor > should convert hsl to rgb values
- ✓ node_modules/cssstyle/lib/parsers.test.js > parseColor > should convert hsla to rgba values
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
- ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
+ ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case >  -> 
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > test -> test
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > test string -> test-string
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > Test String -> test-string
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > TestV2 -> test-v2
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > version 1.2.10 -> version-1-2-10
+ ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > version 1.21.0 -> version-1-21-0
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
@@ -555,47 +398,6 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
  ✓ node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ node_modules/no-case/dist/index.spec.js > no case > test -> test
- ✓ node_modules/no-case/dist/index.spec.js > no case > TEST -> test
- ✓ node_modules/no-case/dist/index.spec.js > no case > testString -> test string
- ✓ node_modules/no-case/dist/index.spec.js > no case > testString123 -> test string123
- ✓ node_modules/no-case/dist/index.spec.js > no case > testString_1_2_3 -> test string 1 2 3
- ✓ node_modules/no-case/dist/index.spec.js > no case > x_256 -> x 256
- ✓ node_modules/no-case/dist/index.spec.js > no case > anHTMLTag -> an html tag
- ✓ node_modules/no-case/dist/index.spec.js > no case > ID123String -> id123 string
- ✓ node_modules/no-case/dist/index.spec.js > no case > Id123String -> id123 string
- ✓ node_modules/no-case/dist/index.spec.js > no case > foo bar123 -> foo bar123
- ✓ node_modules/no-case/dist/index.spec.js > no case > a1bStar -> a1b star
- ✓ node_modules/no-case/dist/index.spec.js > no case > CONSTANT_CASE  -> constant case
- ✓ node_modules/no-case/dist/index.spec.js > no case > CONST123_FOO -> const123 foo
- ✓ node_modules/no-case/dist/index.spec.js > no case > FOO_bar -> foo bar
- ✓ node_modules/no-case/dist/index.spec.js > no case > XMLHttpRequest -> xml http request
- ✓ node_modules/no-case/dist/index.spec.js > no case > IQueryAArgs -> i query a args
- ✓ node_modules/no-case/dist/index.spec.js > no case > dot.case -> dot case
- ✓ node_modules/no-case/dist/index.spec.js > no case > path/case -> path case
- ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case -> snake case
- ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case123 -> snake case123
- ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case_123 -> snake case 123
- ✓ node_modules/no-case/dist/index.spec.js > no case > "quotes" -> quotes
- ✓ node_modules/no-case/dist/index.spec.js > no case > version 0.45.0 -> version 0 45 0
- ✓ node_modules/no-case/dist/index.spec.js > no case > version 0..78..9 -> version 0 78 9
- ✓ node_modules/no-case/dist/index.spec.js > no case > version 4_99/4 -> version 4 99 4
- ✓ node_modules/no-case/dist/index.spec.js > no case >   test   -> test
- ✓ node_modules/no-case/dist/index.spec.js > no case > something_2014_other -> something 2014 other
- ✓ node_modules/no-case/dist/index.spec.js > no case > amazon s3 data -> amazon s3 data
- ✓ node_modules/no-case/dist/index.spec.js > no case > foo_13_bar -> foo 13 bar
- ✓ node_modules/no-case/dist/index.spec.js > no case > camel2019 -> camel 2019
- ✓ node_modules/no-case/dist/index.spec.js > no case > minifyURLs -> minify urls
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
- ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > test -> test
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > TEST -> test
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > testString -> test string
@@ -627,6 +429,16 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > foo_13_bar -> foo 13 bar
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > camel2019 -> camel 2019
  ✓ node_modules/no-case/dist.es2015/index.spec.js > no case > minifyURLs -> minify urls
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
+ ✓ node_modules/mini-css-extract-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
@@ -637,25 +449,16 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
  ✓ node_modules/terser-webpack-plugin/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
- ✓ node_modules/webpack/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case >  -> 
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > test -> test
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > test string -> testString
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > Test String -> testString
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > TestV2 -> testV2
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > _foo_bar_ -> fooBar
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.2.10 -> version_1_2_10
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.21.0 -> version_1_21_0
- ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.2.10 -> version1210
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > should traverse all keywords containing schemas recursively
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should traverse all keywords containing schemas recursively
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > Legacy v0.3.1 API > should work when an options object is provided
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should traverse objects with allKeys: true option
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects with allKeys: false option
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT traverse objects without allKeys option
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > allKeys option > should NOT travers objects in standard keywords which value is not a schema
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre-order
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in post-order
+ ✓ node_modules/webpack-dev-middleware/node_modules/json-schema-traverse/spec/index.spec.js > json-schema-traverse > pre and post > should traverse schema in pre- and post-order at the same time
  ✓ node_modules/dot-case/dist/index.spec.js > dot case >  -> 
  ✓ node_modules/dot-case/dist/index.spec.js > dot case > test -> test
  ✓ node_modules/dot-case/dist/index.spec.js > dot case > test string -> test.string
@@ -665,21 +468,46 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/dot-case/dist/index.spec.js > dot case > TestV2 -> test.v2
  ✓ node_modules/dot-case/dist/index.spec.js > dot case > version 1.2.10 -> version.1.2.10
  ✓ node_modules/dot-case/dist/index.spec.js > dot case > version 1.21.0 -> version.1.21.0
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case >  -> 
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > test -> test
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > test string -> test-string
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > Test String -> test-string
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > TestV2 -> test-v2
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > version 1.2.10 -> version-1-2-10
- ✓ node_modules/param-case/dist.es2015/index.spec.js > param case > version 1.21.0 -> version-1-21-0
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case >  -> 
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > test -> Test
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > test string -> TestString
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > Test String -> TestString
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > TestV2 -> TestV2
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.2.10 -> Version_1_2_10
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.21.0 -> Version_1_21_0
- ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.21.0 -> Version1210
+ ✓ node_modules/no-case/dist/index.spec.js > no case > test -> test
+ ✓ node_modules/no-case/dist/index.spec.js > no case > TEST -> test
+ ✓ node_modules/no-case/dist/index.spec.js > no case > testString -> test string
+ ✓ node_modules/no-case/dist/index.spec.js > no case > testString123 -> test string123
+ ✓ node_modules/no-case/dist/index.spec.js > no case > testString_1_2_3 -> test string 1 2 3
+ ✓ node_modules/no-case/dist/index.spec.js > no case > x_256 -> x 256
+ ✓ node_modules/no-case/dist/index.spec.js > no case > anHTMLTag -> an html tag
+ ✓ node_modules/no-case/dist/index.spec.js > no case > ID123String -> id123 string
+ ✓ node_modules/no-case/dist/index.spec.js > no case > Id123String -> id123 string
+ ✓ node_modules/no-case/dist/index.spec.js > no case > foo bar123 -> foo bar123
+ ✓ node_modules/no-case/dist/index.spec.js > no case > a1bStar -> a1b star
+ ✓ node_modules/no-case/dist/index.spec.js > no case > CONSTANT_CASE  -> constant case
+ ✓ node_modules/no-case/dist/index.spec.js > no case > CONST123_FOO -> const123 foo
+ ✓ node_modules/no-case/dist/index.spec.js > no case > FOO_bar -> foo bar
+ ✓ node_modules/no-case/dist/index.spec.js > no case > XMLHttpRequest -> xml http request
+ ✓ node_modules/no-case/dist/index.spec.js > no case > IQueryAArgs -> i query a args
+ ✓ node_modules/no-case/dist/index.spec.js > no case > dot.case -> dot case
+ ✓ node_modules/no-case/dist/index.spec.js > no case > path/case -> path case
+ ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case -> snake case
+ ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case123 -> snake case123
+ ✓ node_modules/no-case/dist/index.spec.js > no case > snake_case_123 -> snake case 123
+ ✓ node_modules/no-case/dist/index.spec.js > no case > "quotes" -> quotes
+ ✓ node_modules/no-case/dist/index.spec.js > no case > version 0.45.0 -> version 0 45 0
+ ✓ node_modules/no-case/dist/index.spec.js > no case > version 0..78..9 -> version 0 78 9
+ ✓ node_modules/no-case/dist/index.spec.js > no case > version 4_99/4 -> version 4 99 4
+ ✓ node_modules/no-case/dist/index.spec.js > no case >   test   -> test
+ ✓ node_modules/no-case/dist/index.spec.js > no case > something_2014_other -> something 2014 other
+ ✓ node_modules/no-case/dist/index.spec.js > no case > amazon s3 data -> amazon s3 data
+ ✓ node_modules/no-case/dist/index.spec.js > no case > foo_13_bar -> foo 13 bar
+ ✓ node_modules/no-case/dist/index.spec.js > no case > camel2019 -> camel 2019
+ ✓ node_modules/no-case/dist/index.spec.js > no case > minifyURLs -> minify urls
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case >  -> 
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > test -> test
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > test string -> testString
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > Test String -> testString
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > TestV2 -> testV2
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > _foo_bar_ -> fooBar
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.2.10 -> version_1_2_10
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.21.0 -> version_1_21_0
+ ✓ node_modules/camel-case/dist/index.spec.js > camel case > version 1.2.10 -> version1210
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case >  -> 
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case > test -> Test
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case > test string -> TestString
@@ -688,6 +516,35 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case > version 1.2.10 -> Version_1_2_10
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case > version 1.21.0 -> Version_1_21_0
  ✓ node_modules/pascal-case/dist.es2015/index.spec.js > pascal case > version 1.21.0 -> Version1210
+ ✓ node_modules/lower-case/dist/index.spec.js > lower case >  -> 
+ ✓ node_modules/lower-case/dist/index.spec.js > lower case > test -> test
+ ✓ node_modules/lower-case/dist/index.spec.js > lower case > TEST -> test
+ ✓ node_modules/lower-case/dist/index.spec.js > lower case > test string -> test string
+ ✓ node_modules/lower-case/dist/index.spec.js > lower case > TEST STRING -> test string
+ ✓ node_modules/lower-case/dist/index.spec.js > locale lower case > tr: STRING -> strıng
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case >  -> 
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > test -> test
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > TEST -> test
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > test string -> test string
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > TEST STRING -> test string
+ ✓ node_modules/lower-case/dist.es2015/index.spec.js > locale lower case > tr: STRING -> strıng
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case >  -> 
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > test -> test
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > test string -> testString
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > Test String -> testString
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > TestV2 -> testV2
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > _foo_bar_ -> fooBar
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.2.10 -> version_1_2_10
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.21.0 -> version_1_21_0
+ ✓ node_modules/camel-case/dist.es2015/index.spec.js > camel case > version 1.2.10 -> version1210
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case >  -> 
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > test -> Test
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > test string -> TestString
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > Test String -> TestString
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > TestV2 -> TestV2
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.2.10 -> Version_1_2_10
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.21.0 -> Version_1_21_0
+ ✓ node_modules/pascal-case/dist/index.spec.js > pascal case > version 1.21.0 -> Version1210
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case >  -> 
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case > test -> test
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case > test string -> test.string
@@ -697,12 +554,6 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case > TestV2 -> test.v2
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case > version 1.2.10 -> version.1.2.10
  ✓ node_modules/dot-case/dist.es2015/index.spec.js > dot case > version 1.21.0 -> version.1.21.0
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case >  -> 
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > test -> test
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > TEST -> test
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > test string -> test string
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > lower case > TEST STRING -> test string
- ✓ node_modules/lower-case/dist.es2015/index.spec.js > locale lower case > tr: STRING -> strıng
  ✓ node_modules/param-case/dist/index.spec.js > param case >  -> 
  ✓ node_modules/param-case/dist/index.spec.js > param case > test -> test
  ✓ node_modules/param-case/dist/index.spec.js > param case > test string -> test-string
@@ -711,27 +562,53 @@ Authentication error: { message: [32m'Not authenticated'[39m }
  ✓ node_modules/param-case/dist/index.spec.js > param case > version 1.2.10 -> version-1-2-10
  ✓ node_modules/param-case/dist/index.spec.js > param case > version 1.21.0 -> version-1-21-0
 
-⎯⎯⎯⎯⎯⎯ Failed Suites 23 ⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯ Failed Suites 22 ⎯⎯⎯⎯⎯⎯
 
  FAIL  src/stores/__tests__/userPreferences.test.ts [ src/stores/__tests__/userPreferences.test.ts ]
 Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/stores/__tests__/userPreferences.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/37]⎯
 
  FAIL  src/utils/__tests__/calendarUtils.test.ts [ src/utils/__tests__/calendarUtils.test.ts ]
 Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/utils/__tests__/calendarUtils.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/37]⎯
 
  FAIL  src/utils/__tests__/dateUtils.test.ts [ src/utils/__tests__/dateUtils.test.ts ]
 Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/utils/__tests__/dateUtils.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/37]⎯
 
  FAIL  src/utils/__tests__/errorHandler.test.ts [ src/utils/__tests__/errorHandler.test.ts ]
 Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/utils/__tests__/errorHandler.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/37]⎯
 
  FAIL  src/utils/__tests__/familyUtils.test.ts [ src/utils/__tests__/familyUtils.test.ts ]
 Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/utils/__tests__/familyUtils.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/37]⎯
+
+ FAIL  src/components/settings/__tests__/FeaturesSettings.test.ts [ src/components/settings/__tests__/FeaturesSettings.test.ts ]
+Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/FeaturesSettings.test.ts
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/37]⎯
+
+ FAIL  src/components/settings/__tests__/IntegrationsSettings.test.ts [ src/components/settings/__tests__/IntegrationsSettings.test.ts ]
+Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/IntegrationsSettings.test.ts
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/37]⎯
+
+ FAIL  src/components/settings/__tests__/NotificationsSettings.test.ts [ src/components/settings/__tests__/NotificationsSettings.test.ts ]
+Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/NotificationsSettings.test.ts
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/37]⎯
+
+ FAIL  src/components/settings/__tests__/ProfileSettings.test.ts [ src/components/settings/__tests__/ProfileSettings.test.ts ]
+Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/ProfileSettings.test.ts
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/37]⎯
+
+ FAIL  src/views/calendar/__tests__/CalendarView.test.ts [ src/views/calendar/__tests__/CalendarView.test.ts ]
+Error: Failed to load url /src/services/calendar/personalEvents (resolved id: /Users/juliecook/claude/LifeHubOrganizer/src/services/calendar/personalEvents) in /Users/juliecook/claude/LifeHubOrganizer/src/views/calendar/__tests__/CalendarView.test.ts. Does the file exist?
+ ❯ loadAndTransform node_modules/vite/dist/node/chunks/dep-3936e161.js:55018:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/37]⎯
+
+ FAIL  src/views/settings/__tests__/SettingsView.test.ts [ src/views/settings/__tests__/SettingsView.test.ts ]
+Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/views/settings/__tests__/SettingsView.test.ts
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/37]⎯
 
  FAIL  node_modules/fast-uri/test/ajv.test.js [ node_modules/fast-uri/test/ajv.test.js ]
 Error: Cannot find module 'tape'
@@ -741,7 +618,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/ajv.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/37]⎯
 
  FAIL  node_modules/fast-uri/test/compatibility.test.js [ node_modules/fast-uri/test/compatibility.test.js ]
 Error: Cannot find module 'tape'
@@ -751,7 +628,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/compatibility.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/37]⎯
 
  FAIL  node_modules/fast-uri/test/equal.test.js [ node_modules/fast-uri/test/equal.test.js ]
 Error: Cannot find module 'tape'
@@ -761,7 +638,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/equal.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/37]⎯
 
  FAIL  node_modules/fast-uri/test/parse.test.js [ node_modules/fast-uri/test/parse.test.js ]
 Error: Cannot find module 'tape'
@@ -771,7 +648,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/parse.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/37]⎯
 
  FAIL  node_modules/fast-uri/test/resolve.test.js [ node_modules/fast-uri/test/resolve.test.js ]
 Error: Cannot find module 'tape'
@@ -781,7 +658,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/resolve.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/37]⎯
 
  FAIL  node_modules/fast-uri/test/serialize.test.js [ node_modules/fast-uri/test/serialize.test.js ]
 Error: Cannot find module 'tape'
@@ -791,7 +668,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/serialize.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/37]⎯
 
  FAIL  node_modules/fast-uri/test/uri-js.test.js [ node_modules/fast-uri/test/uri-js.test.js ]
 Error: Cannot find module 'tape'
@@ -801,7 +678,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/uri-js.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/37]⎯
 
  FAIL  node_modules/fast-uri/test/util.test.js [ node_modules/fast-uri/test/util.test.js ]
 Error: Cannot find module 'tape'
@@ -811,7 +688,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/fast-uri/test/util.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/37]⎯
 
  FAIL  node_modules/gensync/test/index.test.js [ node_modules/gensync/test/index.test.js ]
 Error: Cannot find module 'util.promisify'
@@ -821,7 +698,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/gensync/test/index.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/37]⎯
 
  FAIL  node_modules/memorystream/test/memorystream.test.js [ node_modules/memorystream/test/memorystream.test.js ]
 Error: Cannot find module 'expect.js'
@@ -831,35 +708,7 @@ Require stack:
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 'MODULE_NOT_FOUND', requireStack: [ '/Users/juliecook/claude/LifeHubOrganizer/node_modules/memorystream/test/memorystream.test.js' ] }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/60]⎯
-
- FAIL  src/components/health/__tests__/CycleTrackingEntry.test.ts [ src/components/health/__tests__/CycleTrackingEntry.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/health/__tests__/CycleTrackingEntry.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/60]⎯
-
- FAIL  src/components/settings/__tests__/FeaturesSettings.test.ts [ src/components/settings/__tests__/FeaturesSettings.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/FeaturesSettings.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/60]⎯
-
- FAIL  src/components/settings/__tests__/IntegrationsSettings.test.ts [ src/components/settings/__tests__/IntegrationsSettings.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/IntegrationsSettings.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/60]⎯
-
- FAIL  src/components/settings/__tests__/NotificationsSettings.test.ts [ src/components/settings/__tests__/NotificationsSettings.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/NotificationsSettings.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/60]⎯
-
- FAIL  src/components/settings/__tests__/ProfileSettings.test.ts [ src/components/settings/__tests__/ProfileSettings.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/components/settings/__tests__/ProfileSettings.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/60]⎯
-
- FAIL  src/views/health/__tests__/CycleTrackingView.test.ts [ src/views/health/__tests__/CycleTrackingView.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/views/health/__tests__/CycleTrackingView.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/60]⎯
-
- FAIL  src/views/settings/__tests__/SettingsView.test.ts [ src/views/settings/__tests__/SettingsView.test.ts ]
-Error: No test suite found in file /Users/juliecook/claude/LifeHubOrganizer/src/views/settings/__tests__/SettingsView.test.ts
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/37]⎯
 
  FAIL  node_modules/@bcoe/v8-coverage/src/test/merge.spec.ts [ node_modules/@bcoe/v8-coverage/src/test/merge.spec.ts ]
 Error: ENOENT: no such file or directory, scandir '/Users/juliecook/claude/LifeHubOrganizer/node_modules/test-data/merge/ranges'
@@ -869,115 +718,36 @@ Error: ENOENT: no such file or directory, scandir '/Users/juliecook/claude/LifeH
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'scandir', path: '/Users/juliecook/claude/LifeHubOrganizer/node_modules/test-data/merge/ranges' }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/37]⎯
 
-⎯⎯⎯⎯⎯⎯ Failed Tests 37 ⎯⎯⎯⎯⎯⎯⎯
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
 
- FAIL  src/router/__tests__/router.test.ts > Router Guards > Authentication Guard > should redirect to login if accessing protected route while not authenticated
-AssertionError: expected "spy" to be called with arguments: [ '/home' ]
-
-Received: 
-
-
-
-Number of calls: 0
-
- ❯ src/router/__tests__/router.test.ts:76:45
-     74|       await guard(to, from, next);
-     75| 
-     76|       expect(mockAuthStore.setRedirectPath).toHaveBeenCalledWith('/hom…
-       |                                             ^
-     77|       expect(next).toHaveBeenCalledWith({ name: 'login' });
-     78|     });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/60]⎯
-
- FAIL  src/router/__tests__/router.test.ts > Router Guards > Authentication Guard > should redirect to home if accessing guest route while authenticated
-AssertionError: expected "spy" to be called with arguments: [ { name: 'home' } ]
-
-Received: 
-
-
-
-Number of calls: 0
-
- ❯ src/router/__tests__/router.test.ts:113:20
-    111|       await guard(to, from, next);
-    112| 
-    113|       expect(next).toHaveBeenCalledWith({ name: 'home' });
-       |                    ^
-    114|     });
-    115|   });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/60]⎯
-
- FAIL  src/router/__tests__/router.test.ts > Router Guards > Error Handling > should redirect to error page on initialization failure
-AssertionError: expected "spy" to be called with arguments: [ { name: 'error', query: { …(2) } } ]
-
-Received: 
-
-
-
-Number of calls: 0
-
- ❯ src/router/__tests__/router.test.ts:241:20
-    239|       await guard(to, from, next);
-    240| 
-    241|       expect(next).toHaveBeenCalledWith({
-       |                    ^
-    242|         name: 'error',
-    243|         query: {
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/60]⎯
-
- FAIL  src/services/__tests__/auth.test.js > Auth Service > signUp > should successfully register a new user
-AssertionError: expected "spy" to be called with arguments: [ { email: 'test@example.com', …(2) } ]
+ FAIL  src/router/__tests__/router.test.ts > Router Guards > Authentication > should redirect unauthenticated users to login
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{ …(3) } ]
 
 Received: 
 
   1st spy call:
 
   Array [
-    Object {
--     "email": "test@example.com",
-+     "email": undefined,
-      "options": Object {
-        "data": Object {
--         "first_name": "John",
--         "last_name": "Doe",
-+         "first_name": undefined,
-+         "last_name": undefined,
-        },
-      },
--     "password": "password123",
-+     "password": undefined,
-    },
+-   ObjectContaining {
+-     "name": "login",
+-   },
++   "/home",
   ]
 
 
 Number of calls: 1
 
- ❯ src/services/__tests__/auth.test.js:48:36
-     46|       expect(result.user).toEqual(mockUser)
-     47|       expect(result.error).toBeNull()
-     48|       expect(supabase.auth.signUp).toHaveBeenCalledWith({
-       |                                    ^
-     49|         email: 'test@example.com',
-     50|         password: 'password123',
+ ❯ src/router/__tests__/router.test.ts:41:30
+     39|       
+     40|       // Check if redirect happened
+     41|       expect(mockRouterPush).toHaveBeenCalledWith(expect.objectContain…
+       |                              ^
+     42|         name: 'login'
+     43|       }));
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/60]⎯
-
- FAIL  src/services/__tests__/auth.test.js > Auth Service > getCurrentUser > should handle get user errors
-Error: Session expired
- ❯ src/services/__tests__/auth.test.js:134:16
-    132|       vi.mocked(supabase.auth.getUser).mockResolvedValue({
-    133|         data: { user: null },
-    134|         error: new Error('Session expired')
-       |                ^
-    135|       })
-    136| 
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/37]⎯
 
  FAIL  src/stores/__tests__/family.test.ts > Family Store > initialization > should handle initialization errors
 AssertionError: expected '[object Object]' to be 'Failed to load family' // Object.is equality
@@ -996,7 +766,7 @@ AssertionError: expected '[object Object]' to be 'Failed to load family' // Obje
     151|       expect(store.currentFamily).toBeNull();
     152|     });
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/37]⎯
 
  FAIL  src/stores/__tests__/family.test.ts > Family Store > family creation > should handle family creation errors
 AssertionError: expected '[object Object]' to be 'Failed to create family' // Object.is equality
@@ -1015,7 +785,7 @@ AssertionError: expected '[object Object]' to be 'Failed to create family' // Ob
     199|       expect(store.currentFamily).toBeNull();
     200|     });
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/37]⎯
 
  FAIL  src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > renders correct number of days
 AssertionError: expected [ DOMWrapper{ …(2) }, …(17) ] to have a length of 7 but got 18
@@ -1034,7 +804,7 @@ AssertionError: expected [ DOMWrapper{ …(2) }, …(17) ] to have a length of 7
      24| 
      25|     // Should render 42 day cells (6 weeks * 7 days)
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/37]⎯
 
  FAIL  src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > emits month-changed event when navigating
 AssertionError: expected { month: 2, year: 2025, …(1) } to deeply equal { month: 3, year: 2025, …(1) }
@@ -1057,7 +827,7 @@ AssertionError: expected { month: 2, year: 2025, …(1) } to deeply equal { mont
      40|       month: 3, // April (0-based)
      41|       year: 2025,
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/37]⎯
 
  FAIL  src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > handles custom day names
 AssertionError: expected '23' to be undefined // Object.is equality
@@ -1077,7 +847,7 @@ undefined
      79|   });
  ❯ src/components/calendar/__tests__/CalendarGrid.test.ts:76:16
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/37]⎯
 
  FAIL  src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > marks today correctly
 AssertionError: expected false to be true // Object.is equality
@@ -1096,7 +866,7 @@ AssertionError: expected false to be true // Object.is equality
     100| 
     101|     // Restore original Date
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/37]⎯
 
  FAIL  src/components/calendar/__tests__/CalendarGrid.test.ts > CalendarGrid.vue > handles date changes through props
 AssertionError: expected { month: 2, year: 2025, …(1) } to deeply equal { month: 3, year: 2025, …(1) }
@@ -1119,129 +889,26 @@ AssertionError: expected { month: 2, year: 2025, …(1) } to deeply equal { mont
     150|       month: 3, // April (0-based)
     151|       year: 2025,
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/37]⎯
 
- FAIL  src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should emit cancel event when clicking cancel button
-SyntaxError: 'button:contains("Cancel")' is not a valid selector
- ❯ emit node_modules/nwsapi/src/nwsapi.js:664:17
- ❯ Object._matches [as match] node_modules/nwsapi/src/nwsapi.js:1544:9
- ❯ HTMLDivElementImpl.ElementImpl.matches node_modules/jsdom/lib/jsdom/living/nodes/Element-impl.js:571:18
- ❯ HTMLDivElement.matches node_modules/jsdom/lib/jsdom/living/generated/Element.js:655:34
- ❯ node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:94
- ❯ VueWrapper.BaseWrapper.findAllDOMElements node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:57
- ❯ VueWrapper.findAll node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7695:21
- ❯ VueWrapper.BaseWrapper.find node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7188:29
- ❯ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts:96:21
-     94|     it('should emit cancel event when clicking cancel button', async (…
-     95|       const wrapper = createWrapper();
-     96|       await wrapper.find('button:contains("Cancel")').trigger('click');
-       |                     ^
-     97|       expect(wrapper.emitted('cancel')).toBeTruthy();
-     98|     });
+ FAIL  src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > DeleteConfirmationModal > Processing State > should disable buttons and show spinner when processing
+AssertionError: expected false to be true // Object.is equality
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/60]⎯
+- Expected
++ Received
 
- FAIL  src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should emit confirm event with correct data when confirming
-SyntaxError: 'button:contains("Delete")' is not a valid selector
- ❯ emit node_modules/nwsapi/src/nwsapi.js:664:17
- ❯ Object._matches [as match] node_modules/nwsapi/src/nwsapi.js:1544:9
- ❯ HTMLDivElementImpl.ElementImpl.matches node_modules/jsdom/lib/jsdom/living/nodes/Element-impl.js:571:18
- ❯ HTMLDivElement.matches node_modules/jsdom/lib/jsdom/living/generated/Element.js:655:34
- ❯ node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:94
- ❯ VueWrapper.BaseWrapper.findAllDOMElements node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:57
- ❯ VueWrapper.findAll node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7695:21
- ❯ VueWrapper.BaseWrapper.find node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7188:29
- ❯ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts:108:21
-    106|     it('should emit confirm event with correct data when confirming', …
-    107|       const wrapper = createWrapper();
-    108|       await wrapper.find('button:contains("Delete")').trigger('click');
-       |                     ^
-    109|       
-    110|       expect(wrapper.emitted('confirm')).toBeTruthy();
+- true
++ false
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/60]⎯
+ ❯ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts:80:65
+     78|       expect(findByTestId(wrapper, 'cancel-button').attributes('disabl…
+     79|       expect(findByTestId(wrapper, 'confirm-button').attributes('disab…
+     80|       expect(findByTestId(wrapper, 'loading-spinner').exists()).toBe(t…
+       |                                                                 ^
+     81|     });
+     82|   });
 
- FAIL  src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Interactions > should include deleteEntireSeries in confirm event when selected
-SyntaxError: 'button:contains("Delete")' is not a valid selector
- ❯ emit node_modules/nwsapi/src/nwsapi.js:664:17
- ❯ Object._matches [as match] node_modules/nwsapi/src/nwsapi.js:1544:9
- ❯ HTMLDivElementImpl.ElementImpl.matches node_modules/jsdom/lib/jsdom/living/nodes/Element-impl.js:571:18
- ❯ HTMLDivElement.matches node_modules/jsdom/lib/jsdom/living/generated/Element.js:655:34
- ❯ node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:94
- ❯ VueWrapper.BaseWrapper.findAllDOMElements node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:57
- ❯ VueWrapper.findAll node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7695:21
- ❯ VueWrapper.BaseWrapper.find node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7188:29
- ❯ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts:124:21
-    122|       
-    123|       // Click confirm button
-    124|       await wrapper.find('button:contains("Delete")').trigger('click');
-       |                     ^
-    125|       
-    126|       expect(wrapper.emitted('confirm')?.[0]).toEqual([{
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/60]⎯
-
- FAIL  src/components/calendar/__tests__/DeleteConfirmationModal.test.ts > Delete Confirmation Modal > Processing State > should disable buttons when processing
-SyntaxError: 'button:contains("Delete")' is not a valid selector
- ❯ emit node_modules/nwsapi/src/nwsapi.js:664:17
- ❯ Object._matches [as match] node_modules/nwsapi/src/nwsapi.js:1544:9
- ❯ HTMLDivElementImpl.ElementImpl.matches node_modules/jsdom/lib/jsdom/living/nodes/Element-impl.js:571:18
- ❯ HTMLDivElement.matches node_modules/jsdom/lib/jsdom/living/generated/Element.js:655:34
- ❯ node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:94
- ❯ VueWrapper.BaseWrapper.findAllDOMElements node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:57
- ❯ VueWrapper.findAll node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7695:21
- ❯ VueWrapper.BaseWrapper.find node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7188:29
- ❯ src/components/calendar/__tests__/DeleteConfirmationModal.test.ts:137:37
-    135|       const wrapper = createWrapper({ processing: true });
-    136|       
-    137|       const confirmButton = wrapper.find('button:contains("Delete")');
-       |                                     ^
-    138|       const cancelButton = wrapper.find('button:contains("Cancel")');
-    139|       
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/60]⎯
-
- FAIL  src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > displays event details correctly in view mode
-AssertionError: expected '​Event DetailsEvent TypePersonalTitle…' to include 'March 5, 2025 9:00 AM'
- ❯ src/components/calendar/__tests__/EventModal.test.ts:46:30
-     44|       expect(wrapper.text()).toContain('Test Description');
-     45|       expect(wrapper.text()).toContain('Test Location');
-     46|       expect(wrapper.text()).toContain('March 5, 2025 9:00 AM'); // Us…
-       |                              ^
-     47|     });
-     48| 
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/60]⎯
-
- FAIL  src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > View Mode > shows edit and delete buttons in view mode
-SyntaxError: 'button:has(svg + span:contains("Edit"))' is not a valid selector
- ❯ emit node_modules/nwsapi/src/nwsapi.js:664:17
- ❯ Object._matches [as match] node_modules/nwsapi/src/nwsapi.js:1544:9
- ❯ HTMLDivElementImpl.ElementImpl.matches node_modules/jsdom/lib/jsdom/living/nodes/Element-impl.js:571:18
- ❯ HTMLDivElement.matches node_modules/jsdom/lib/jsdom/living/generated/Element.js:655:34
- ❯ node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:94
- ❯ VueWrapper.BaseWrapper.findAllDOMElements node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7164:57
- ❯ VueWrapper.findAll node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7695:21
- ❯ VueWrapper.BaseWrapper.find node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7188:29
- ❯ src/components/calendar/__tests__/EventModal.test.ts:59:34
-     57| 
-     58|       // Look for buttons by their text content
-     59|       const editButton = wrapper.find('button:has(svg + span:contains(…
-       |                                  ^
-     60|       const deleteButton = wrapper.find('button:has(svg + span:contain…
-     61|       
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
-Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[41/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/37]⎯
 
  FAIL  src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > shows work schedule options for work events
 AssertionError: expected false to be true // Object.is equality
@@ -1252,18 +919,18 @@ AssertionError: expected false to be true // Object.is equality
 - true
 + false
 
- ❯ src/components/calendar/__tests__/EventModal.test.ts:234:52
-    232|       });
-    233| 
-    234|       expect(wrapper.find('#recurrence').exists()).toBe(true);
+ ❯ src/components/calendar/__tests__/EventModal.test.ts:238:52
+    236|       })
+    237| 
+    238|       expect(wrapper.find('#recurrence').exists()).toBe(true)
        |                                                    ^
-    235|     });
-    236| 
+    239|     })
+    240| 
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[42/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/37]⎯
 
  FAIL  src/components/calendar/__tests__/EventModal.test.ts > EventModal.vue > Feature-specific Behavior > validates required fields before submission
-AssertionError: expected [ [ { id: '', title: '', …(9) } ] ] to be falsy
+AssertionError: expected [ [ { id: '', title: '', …(10) } ] ] to be falsy
 
 - Expected: 
 Array [
@@ -1271,13 +938,14 @@ Array [
     Object {
       "color": "#3B82F6",
       "description": "",
-      "end_time": "2025-03-06T15:00:00.000Z",
+      "end_time": "2025-03-09T14:00:00.000Z",
       "event_type": "personal",
       "id": "",
       "is_all_day": false,
       "location": "",
+      "metadata": Object {},
       "recurrence_rule": "",
-      "start_time": "2025-03-06T14:00:00.000Z",
+      "start_time": "2025-03-09T13:00:00.000Z",
       "title": "",
       "visibility": "private",
     },
@@ -1287,77 +955,15 @@ Array [
 + Received: 
 false
 
- ❯ src/components/calendar/__tests__/EventModal.test.ts:285:39
-    283| 
-    284|       // Verify that the form wasn't submitted
-    285|       expect(wrapper.emitted('save')).toBeFalsy();
+ ❯ src/components/calendar/__tests__/EventModal.test.ts:289:39
+    287| 
+    288|       // Verify that the form wasn't submitted
+    289|       expect(wrapper.emitted('save')).toBeFalsy()
        |                                       ^
-    286|     });
-    287|   });
+    290|     })
+    291|   })
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[43/60]⎯
-
- FAIL  src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should display loading state
-AssertionError: expected false to be true // Object.is equality
-
-- Expected
-+ Received
-
-- true
-+ false
-
- ❯ src/components/health/__tests__/HealthStats.test.ts:58:57
-     56|     
-     57|     // Check if loading indicator is visible initially
-     58|     expect(wrapper.find('.loading-indicator').exists()).toBe(true);
-       |                                                         ^
-     59|     
-     60|     await wrapper.vm.$nextTick();
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[44/60]⎯
-
- FAIL  src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should calculate average cycle length correctly
-AssertionError: expected '' to include '28'
- ❯ src/components/health/__tests__/HealthStats.test.ts:71:28
-     69|     
-     70|     // Check if the average cycle length is calculated and displayed
-     71|     expect(wrapper.text()).toContain('28');
-       |                            ^
-     72|   });
-     73|   
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[45/60]⎯
-
- FAIL  src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should predict next cycle start date
-AssertionError: expected '' to include 'April'
- ❯ src/components/health/__tests__/HealthStats.test.ts:79:28
-     77|     
-     78|     // Check if the prediction is displayed
-     79|     expect(wrapper.text()).toContain('April');
-       |                            ^
-     80|   });
-     81|   
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[46/60]⎯
-
- FAIL  src/components/health/__tests__/HealthStats.test.ts > HealthStats.vue > should handle errors gracefully
-AssertionError: expected false to be true // Object.is equality
-
-- Expected
-+ Received
-
-- true
-+ false
-
- ❯ src/components/health/__tests__/HealthStats.test.ts:119:53
-    117|     
-    118|     // Check if error message is displayed
-    119|     expect(wrapper.find('.error-message').exists()).toBe(true);
-       |                                                     ^
-    120|     expect(wrapper.text()).toContain('Failed to load');
-    121|   });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[47/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/37]⎯
 
  FAIL  src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Rendering > should show personal mode message when isPersonalOnly is true
 SyntaxError: 'button:contains("Create a Family")' is not a valid selector
@@ -1379,7 +985,7 @@ SyntaxError: 'button:contains("Create a Family")' is not a valid selector
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[48/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/37]⎯
 
  FAIL  src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit create-family event when clicking create family button
 SyntaxError: 'button:contains("Create a Family")' is not a valid selector
@@ -1401,7 +1007,7 @@ SyntaxError: 'button:contains("Create a Family")' is not a valid selector
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[49/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/37]⎯
 
  FAIL  src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should emit invite-member event when clicking invite member button
 SyntaxError: 'button:contains("Add Family Member")' is not a valid selector
@@ -1423,7 +1029,7 @@ SyntaxError: 'button:contains("Add Family Member")' is not a valid selector
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[50/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/37]⎯
 
  FAIL  src/components/settings/__tests__/FamilySettings.test.ts > Family Settings Component > Interactions > should disable invite button when saving
 SyntaxError: 'button:contains("Add Family Member")' is not a valid selector
@@ -1445,143 +1051,10 @@ SyntaxError: 'button:contains("Add Family Member")' is not a valid selector
 
 ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
 Serialized Error: { code: 12, INDEX_SIZE_ERR: 1, DOMSTRING_SIZE_ERR: 2, HIERARCHY_REQUEST_ERR: 3, WRONG_DOCUMENT_ERR: 4, INVALID_CHARACTER_ERR: 5, NO_DATA_ALLOWED_ERR: 6, NO_MODIFICATION_ALLOWED_ERR: 7, NOT_FOUND_ERR: 8, NOT_SUPPORTED_ERR: 9, INUSE_ATTRIBUTE_ERR: 10, INVALID_STATE_ERR: 11, SYNTAX_ERR: 12, INVALID_MODIFICATION_ERR: 13, NAMESPACE_ERR: 14, INVALID_ACCESS_ERR: 15, VALIDATION_ERR: 16, TYPE_MISMATCH_ERR: 17, SECURITY_ERR: 18, NETWORK_ERR: 19, ABORT_ERR: 20, URL_MISMATCH_ERR: 21, QUOTA_EXCEEDED_ERR: 22, TIMEOUT_ERR: 23, INVALID_NODE_TYPE_ERR: 24, DATA_CLONE_ERR: 25 }
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[51/60]⎯
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/37]⎯
 
- FAIL  src/views/calendar/__tests__/CalendarView.test.ts > CalendarView > Initialization > loads events on mount
-AssertionError: expected false to be true // Object.is equality
-
-- Expected
-+ Received
-
-- true
-+ false
-
- ❯ src/views/calendar/__tests__/CalendarView.test.ts:122:37
-    120|       // This avoids VM property access issues
-    121|       const eventElement = wrapper.find('.calendar-grid');
-    122|       expect(eventElement.exists()).toBe(true);
-       |                                     ^
-    123|     });
-    124|   });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[52/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Initialization > should load events on mount
-AssertionError: expected 0 to be greater than 0
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:102:32
-    100|       // Test through rendered output rather than accessing vm propert…
-    101|       const eventList = wrapper.findAll('.event-item');
-    102|       expect(eventList.length).toBeGreaterThan(0);
-       |                                ^
-    103|     });
-    104|   });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[53/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Tab Navigation > should have tab buttons
-AssertionError: expected 0 to be greater than 0
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:110:27
-    108|       const wrapper = createWrapper();
-    109|       const tabs = wrapper.findAll('.tab-button');
-    110|       expect(tabs.length).toBeGreaterThan(0);
-       |                           ^
-    111|     });
-    112|     
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[54/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Tab Navigation > should switch tabs when clicked
-Error: Cannot call trigger on an empty DOMWrapper.
- ❯ Object.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:1574:27
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:118:25
-    116|       // Find tab buttons
-    117|       const personalTab = wrapper.find('[data-tab="personal"]');
-    118|       await personalTab.trigger('click');
-       |                         ^
-    119|       
-    120|       // Verify active tab styling
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[55/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Event Creation > should show add event button
-AssertionError: expected false to be true // Object.is equality
-
-- Expected
-+ Received
-
-- true
-+ false
-
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:129:34
-    127|       const wrapper = createWrapper();
-    128|       const addButton = wrapper.find('.add-event-button');
-    129|       expect(addButton.exists()).toBe(true);
-       |                                  ^
-    130|     });
-    131|     
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[56/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Event Creation > should call create event service when form submitted
-Error: Cannot call trigger on an empty DOMWrapper.
- ❯ Object.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:1574:27
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:150:47
-    148|         // Fallback to DOM interaction if method is not accessible
-    149|         // Open the event modal first
-    150|         await wrapper.find('.add-event-button').trigger('click');
-       |                                               ^
-    151|         
-    152|         // Fill in the form fields
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[57/60]⎯
-
- FAIL  src/views/calendar/__tests__/PersonalEventsView.test.ts > PersonalEventsView > Error Handling > should show error messages when service fails
-AssertionError: expected false to be true // Object.is equality
-
-- Expected
-+ Received
-
-- true
-+ false
-
- ❯ src/views/calendar/__tests__/PersonalEventsView.test.ts:181:32
-    179|       // Error should be displayed in UI
-    180|       const errorEl = wrapper.find('.error-message');
-    181|       expect(errorEl.exists()).toBe(true);
-       |                                ^
-    182|     });
-    183|   });
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[58/60]⎯
-
- FAIL  src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > deleteEntry > should successfully delete an entry
-TypeError: supabase.from(...).delete(...).eq is not a function
- ❯ Object.deleteEntry src/services/health/cycleTracking.ts:101:8
-     99|       .from('cycle_tracking')
-    100|       .delete()
-    101|       .eq('id', id);
-       |        ^
-    102|     
-    103|     return { error };
- ❯ src/services/health/__tests__/cycleTracking.test.ts:182:49
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[59/60]⎯
-
- FAIL  src/services/health/__tests__/cycleTracking.test.ts > cycleTrackingService > deleteEntry > should handle errors when deleting entry
-TypeError: supabase.from(...).delete(...).eq is not a function
- ❯ Object.deleteEntry src/services/health/cycleTracking.ts:101:8
-     99|       .from('cycle_tracking')
-    100|       .delete()
-    101|       .eq('id', id);
-       |        ^
-    102|     
-    103|     return { error };
- ❯ src/services/health/__tests__/cycleTracking.test.ts:198:49
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[60/60]⎯
-
- Test Files  34 failed | 28 passed (62)
-      Tests  37 failed | 387 passed | 17 todo (441)
-   Start at  00:39:06
-   Duration  17.66s (transform 2.14s, setup 10.92s, collect 5.66s, tests 3.33s, environment 73.93s, prepare 9.26s)
+ Test Files  28 failed | 27 passed (55)
+      Tests  15 failed | 359 passed | 17 todo (391)
+   Start at  22:35:06
+   Duration  24.82s (transform 2.43s, setup 17.67s, collect 6.08s, tests 5.54s, environment 95.67s, prepare 16.29s)
 

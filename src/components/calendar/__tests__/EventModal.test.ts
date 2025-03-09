@@ -1,15 +1,15 @@
 // src/components/calendar/__tests__/EventModal.test.ts
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { mount, VueWrapper } from '@vue/test-utils';
-import EventModal from '../EventModal.vue';
-import { formatDateTime } from '@/utils/dateUtils';
-import type { CalendarEvent } from '@/types/calendar';
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { mount, VueWrapper } from '@vue/test-utils'
+import EventModal from '../EventModal.vue'
+import { formatDateTime } from '@/utils/dateUtils'
+import type { CalendarEvent } from '@/types/calendar'
 
-// Mock the dateUtils functions 
+// Mock the dateUtils functions
 vi.mock('@/utils/dateUtils', () => ({
   formatDateTime: vi.fn((date: string) => 'March 5, 2025 9:00 AM'),
-  formatTime: vi.fn((date: string) => '9:00 AM')
-}));
+  formatTime: vi.fn((date: string) => '9:00 AM'),
+}))
 
 describe('EventModal.vue', () => {
   // Create a valid CalendarEvent for testing
@@ -23,12 +23,12 @@ describe('EventModal.vue', () => {
     is_all_day: false,
     event_type: 'personal',
     visibility: 'private',
-    color: '#3B82F6'
-  };
+    color: '#3B82F6',
+  }
 
   beforeEach(() => {
-    vi.clearAllMocks();
-  });
+    vi.clearAllMocks()
+  })
 
   describe('View Mode', () => {
     it('displays event details correctly in view mode', () => {
@@ -36,34 +36,40 @@ describe('EventModal.vue', () => {
         props: {
           show: true,
           mode: 'view',
-          event: mockEvent
-        }
-      });
+          event: mockEvent,
+        },
+      })
 
-      expect(wrapper.text()).toContain('Test Event');
-      expect(wrapper.text()).toContain('Test Description');
-      expect(wrapper.text()).toContain('Test Location');
-      expect(wrapper.text()).toContain('March 5, 2025 9:00 AM'); // Using mock
-    });
+      expect(wrapper.text()).toContain('Test Event')
+      expect(wrapper.text()).toContain('Test Description')
+      expect(wrapper.text()).toContain('Test Location')
+      expect(wrapper.text()).toContain('March 5, 2025 9:00 AM') // Using mock
+    })
 
     it('shows edit and delete buttons in view mode', () => {
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'view',
-          event: mockEvent
-        }
-      });
+          event: mockEvent,
+        },
+      })
 
       // Look for buttons by their text content
-      const editButton = wrapper.find('button:has(svg + span:contains("Edit"))');
-      const deleteButton = wrapper.find('button:has(svg + span:contains("Delete"))');
-      
-      // If exact selectors fail, look for text content
-      expect(editButton.exists() || wrapper.text().includes('Edit')).toBe(true);
-      expect(deleteButton.exists() || wrapper.text().includes('Delete')).toBe(true);
-    });
-  });
+      const buttons = wrapper.findAll('button')
+      const editButton = Array.from(buttons).find((btn) => btn.text().includes('Edit'))
+      const deleteButton = Array.from(buttons).find((btn) => btn.text().includes('Delete'))
+
+      // Check if buttons exist or if text is included elsewhere in the component
+      const hasEditButton = editButton !== undefined
+      const hasDeleteButton = deleteButton !== undefined
+      const hasEditText = wrapper.text().includes('Edit')
+      const hasDeleteText = wrapper.text().includes('Delete')
+
+      expect(hasEditButton || hasEditText).toBe(true)
+      expect(hasDeleteButton || hasDeleteText).toBe(true)
+    })
+  })
 
   describe('Edit Mode', () => {
     it('populates form fields correctly in edit mode', () => {
@@ -71,36 +77,36 @@ describe('EventModal.vue', () => {
         props: {
           show: true,
           mode: 'edit',
-          event: mockEvent
-        }
-      });
+          event: mockEvent,
+        },
+      })
 
-      const titleInput = wrapper.find('#event-title');
-      const descriptionInput = wrapper.find('#description');
-      const locationInput = wrapper.find('#location');
-      
-      expect((titleInput.element as HTMLInputElement).value).toBe('Test Event');
-      expect((descriptionInput.element as HTMLTextAreaElement).value).toBe('Test Description');
-      expect((locationInput.element as HTMLInputElement).value).toBe('Test Location');
-    });
+      const titleInput = wrapper.find('#event-title')
+      const descriptionInput = wrapper.find('#description')
+      const locationInput = wrapper.find('#location')
+
+      expect((titleInput.element as HTMLInputElement).value).toBe('Test Event')
+      expect((descriptionInput.element as HTMLTextAreaElement).value).toBe('Test Description')
+      expect((locationInput.element as HTMLInputElement).value).toBe('Test Location')
+    })
 
     it('emits save event with updated data', async () => {
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'edit',
-          event: mockEvent
-        }
-      });
+          event: mockEvent,
+        },
+      })
 
-      await wrapper.find('#event-title').setValue('Updated Event');
-      await wrapper.find('form').trigger('submit');
+      await wrapper.find('#event-title').setValue('Updated Event')
+      await wrapper.find('form').trigger('submit')
 
-      expect(wrapper.emitted('save')).toBeTruthy();
-      const savedEvent = wrapper.emitted('save')?.[0][0] as CalendarEvent;
-      expect(savedEvent.title).toBe('Updated Event');
-    });
-  });
+      expect(wrapper.emitted('save')).toBeTruthy()
+      const savedEvent = wrapper.emitted('save')?.[0][0] as CalendarEvent
+      expect(savedEvent.title).toBe('Updated Event')
+    })
+  })
 
   describe('Create Mode', () => {
     it('shows empty form in create mode', () => {
@@ -109,25 +115,25 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: newEvent as CalendarEvent
-        }
-      });
+          event: newEvent as CalendarEvent,
+        },
+      })
 
-      const titleInput = wrapper.find('#event-title');
-      const descriptionInput = wrapper.find('#description');
-      const locationInput = wrapper.find('#location');
-      
-      expect((titleInput.element as HTMLInputElement).value).toBe('');
-      expect((descriptionInput.element as HTMLTextAreaElement).value).toBe('');
-      expect((locationInput.element as HTMLInputElement).value).toBe('');
-    });
+      const titleInput = wrapper.find('#event-title')
+      const descriptionInput = wrapper.find('#description')
+      const locationInput = wrapper.find('#location')
+
+      expect((titleInput.element as HTMLInputElement).value).toBe('')
+      expect((descriptionInput.element as HTMLTextAreaElement).value).toBe('')
+      expect((locationInput.element as HTMLInputElement).value).toBe('')
+    })
 
     it('emits save event with new event data', async () => {
       const newEvent: Partial<CalendarEvent> = {
@@ -135,27 +141,27 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: newEvent as CalendarEvent
-        }
-      });
+          event: newEvent as CalendarEvent,
+        },
+      })
 
-      await wrapper.find('#event-title').setValue('New Event');
-      await wrapper.find('#description').setValue('New Description');
-      await wrapper.find('form').trigger('submit');
+      await wrapper.find('#event-title').setValue('New Event')
+      await wrapper.find('#description').setValue('New Description')
+      await wrapper.find('form').trigger('submit')
 
-      expect(wrapper.emitted('save')).toBeTruthy();
-      const savedEvent = wrapper.emitted('save')?.[0][0] as CalendarEvent;
-      expect(savedEvent.title).toBe('New Event');
-      expect(savedEvent.description).toBe('New Description');
-    });
-  });
+      expect(wrapper.emitted('save')).toBeTruthy()
+      const savedEvent = wrapper.emitted('save')?.[0][0] as CalendarEvent
+      expect(savedEvent.title).toBe('New Event')
+      expect(savedEvent.description).toBe('New Description')
+    })
+  })
 
   describe('Modal Controls', () => {
     it('closes modal when clicking cancel', async () => {
@@ -164,29 +170,27 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: newEvent as CalendarEvent
-        }
-      });
+          event: newEvent as CalendarEvent,
+        },
+      })
 
       // Find the cancel button
-      const buttons = wrapper.findAll('button');
-      const cancelButton = Array.from(buttons).find(
-        btn => btn.text().includes('Cancel')
-      );
-      
+      const buttons = wrapper.findAll('button')
+      const cancelButton = Array.from(buttons).find((btn) => btn.text().includes('Cancel'))
+
       if (cancelButton) {
-        await cancelButton.trigger('click');
+        await cancelButton.trigger('click')
       }
-      
-      expect(wrapper.emitted('close')).toBeTruthy();
-    });
+
+      expect(wrapper.emitted('close')).toBeTruthy()
+    })
 
     it('disables form submission while processing', async () => {
       const newEvent: Partial<CalendarEvent> = {
@@ -194,23 +198,23 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
           event: newEvent as CalendarEvent,
-          processing: true
-        }
-      });
+          processing: true,
+        },
+      })
 
-      const submitButton = wrapper.find('button[type="submit"]');
-      expect(submitButton.attributes('disabled')).toBeDefined();
-      expect(submitButton.text().includes('Processing') || submitButton.find('.animate-spin').exists()).toBeTruthy();
-    });
-  });
+      const submitButton = wrapper.find('button[type="submit"]')
+      expect(submitButton.attributes('disabled')).toBeDefined()
+      expect(submitButton.text().includes('Processing') || submitButton.find('.animate-spin').exists()).toBeTruthy()
+    })
+  })
 
   describe('Feature-specific Behavior', () => {
     it('shows work schedule options for work events', async () => {
@@ -220,19 +224,19 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'work',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: workEvent
-        }
-      });
+          event: workEvent,
+        },
+      })
 
-      expect(wrapper.find('#recurrence').exists()).toBe(true);
-    });
+      expect(wrapper.find('#recurrence').exists()).toBe(true)
+    })
 
     it('handles all-day event toggle correctly', async () => {
       const newEvent: Partial<CalendarEvent> = {
@@ -240,25 +244,25 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: newEvent as CalendarEvent
-        }
-      });
+          event: newEvent as CalendarEvent,
+        },
+      })
 
-      await wrapper.find('#all-day').setValue(true);
+      await wrapper.find('#all-day').setValue(true)
 
-      const startTime = wrapper.find('#start-time');
-      const endTime = wrapper.find('#end-time');
+      const startTime = wrapper.find('#start-time')
+      const endTime = wrapper.find('#end-time')
 
-      expect(startTime.attributes('disabled')).toBeDefined();
-      expect(endTime.attributes('disabled')).toBeDefined();
-    });
+      expect(startTime.attributes('disabled')).toBeDefined()
+      expect(endTime.attributes('disabled')).toBeDefined()
+    })
 
     it('validates required fields before submission', async () => {
       const newEvent: Partial<CalendarEvent> = {
@@ -267,22 +271,22 @@ describe('EventModal.vue', () => {
         end_time: '2025-03-05T10:00:00Z',
         is_all_day: false,
         event_type: 'personal',
-        visibility: 'private'
-      };
-      
+        visibility: 'private',
+      }
+
       const wrapper = mount(EventModal, {
         props: {
           show: true,
           mode: 'create',
-          event: newEvent as CalendarEvent
-        }
-      });
+          event: newEvent as CalendarEvent,
+        },
+      })
 
       // Try to submit without required fields
-      await wrapper.find('form').trigger('submit');
+      await wrapper.find('form').trigger('submit')
 
       // Verify that the form wasn't submitted
-      expect(wrapper.emitted('save')).toBeFalsy();
-    });
-  });
-});
+      expect(wrapper.emitted('save')).toBeFalsy()
+    })
+  })
+})
